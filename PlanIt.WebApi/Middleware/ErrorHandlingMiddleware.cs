@@ -28,21 +28,7 @@ namespace PlanIt.WebApi.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            var code = HttpStatusCode.InternalServerError;
             var result = JsonSerializer.Serialize(new {error = "An error occurred while processing your request"});
-
-            /*
-
-            var problem = new ProblemDetails{
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-                Title = "An error occurred while processing your request",
-                Status = (int)HttpStatusCode.InternalServerError
-            };
-
-            context.Response = problem;
-            return context.Response.WriteAsync(result);
-            */
-
             return context.Response.WriteAsync(result);
         }
     }

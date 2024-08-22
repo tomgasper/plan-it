@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.Contracts.Authenthication;
-using PlanIt.Application.Services;
-using PlanIt.Application.Services.Authentication;
-using Microsoft.AspNetCore.Components.Forms;
+using MediatR;
+using PlanIt.Application.Authentication.Commands.Register;
+using PlanIt.Application.Authentication.Commands.Queries.Login;
+using MapsterMapper;
 
 namespace PlanIt.WebApi.Controllers;
 
@@ -10,29 +11,32 @@ namespace PlanIt.WebApi.Controllers;
 [Route("auth")]
 public class AuthenthicationController : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService;
-
-    public AuthenthicationController(IAuthenticationService authenticationService)
+    private readonly ISender _mediator;
+    private readonly IMapper _mapper;
+    public AuthenthicationController(ISender mediator, IMapper mapper)
     {
-            _authenticationService = authenticationService;
+        _mediator = mediator;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var authResult = _authenticationService.Register(request.FirstName, request.LastName, request.Email,request.Password);
+        var command = _mapper.Map<RegisterCommand>(request);
+        var authResult = await _mediator.Send(command);
 
-        var response = new AuthenticationResponse(authResult.User.Id, authResult.User.FirstName, authResult.User.LastName, authResult.User.Email, authResult.Token);
+        var response = _mapper.Map<AuthenticationResponse>(authResult);
 
         return Ok(response);
     }
 
     [Route("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        var authResult = _authenticationService.Login(request.Email,request.Password);
+        var query = _mapper.Map<LoginQuery>(request);
+        var authResult = await _mediator.Send(query);
 
-        var response = new AuthenticationResponse(authResult.User.Id, authResult.User.FirstName, authResult.User.LastName, authResult.User.Email, authResult.Token);
+        var response = _mapper.Map<AuthenticationResponse>(authResult);
 
         return Ok(response);
     }
