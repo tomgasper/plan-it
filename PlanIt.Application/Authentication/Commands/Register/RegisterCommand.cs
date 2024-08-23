@@ -1,3 +1,4 @@
+using FluentResults;
 using MediatR;
 using PlanIt.Application.Services.Authentication.Common;
 
@@ -8,4 +9,4 @@ public record RegisterCommand(
     string LastName,
     string Email,
     string Password
-) : IRequest<AuthenticationResult>;
+) : IRequest<Result<AuthenticationResult>>;

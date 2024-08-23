@@ -1,3 +1,4 @@
+using FluentResults;
 using MediatR;
 using PlanIt.Application.Authentication.Commands.Queries.Login;
 using PlanIt.Application.Common.Interfaces.Authentication;
@@ -5,7 +6,7 @@ using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Services.Authentication.Common;
 using PlanIt.Domain.Entities;
 
-public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthenticationResult>
+public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthenticationResult>>
 {
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IUserRepository _userRepository;
@@ -17,7 +18,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthenticationResul
     }
 
 
-    public async Task<AuthenticationResult> Handle(LoginQuery query, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
         // 1. Check the user exists
         if (_userRepository.GetUserByEmail(query.Email) is not User user)

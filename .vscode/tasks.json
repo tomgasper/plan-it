@@ -9,7 +9,8 @@
                 "build",
                 "${workspaceFolder}/PlanIt.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign",
+                "/p:Configuration=Debug"
             ],
             "problemMatcher": "$msCompile"
         },

@@ -1,29 +1,39 @@
+using FluentResults;
 using FluentValidation;
 using MediatR;
-using PlanIt.Application.Authentication.Commands.Register;
-using PlanIt.Application.Services.Authentication.Common;
+
 
 namespace PlanIt.Application.Common.Behaviors;
 
-public class ValidateRegisterCommandBehavior : IPipelineBehavior<RegisterCommand, AuthenticationResult>
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
-    private readonly IValidator<RegisterCommand> _validator;
+    private readonly IValidator<TRequest>? _validator;
 
-    public ValidateRegisterCommandBehavior(IValidator<RegisterCommand> validator)
+    public ValidationBehavior(IValidator<TRequest>? validator = null)
     {
         _validator = validator;
     }
 
-    public async Task<AuthenticationResult> Handle(
-        RegisterCommand request,
-        RequestHandlerDelegate<AuthenticationResult> next,
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-        // Before the handler
-        var result = await next();
-        // After the handler
+        if (_validator is null)
+        {
+            return await next();
+        }
 
-        return result;
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
+        if (validationResult.IsValid){
+            return await next();
+        }
+
+        var errors = validationResult.Errors.ConvertAll( e => Result.Fail(new ValidationError(e.ErrorMessage, e.PropertyName)));
+        var mergedErrors = errors.Merge();
+
+        return (dynamic)mergedErrors;
     }
 }

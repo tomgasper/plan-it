@@ -1,3 +1,4 @@
+using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Persistence;
@@ -7,7 +8,7 @@ using PlanIt.Domain.Entities;
 namespace PlanIt.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler : 
-    IRequestHandler<RegisterCommand, AuthenticationResult>
+    IRequestHandler<RegisterCommand, Result<AuthenticationResult>>
 {
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IUserRepository _userRepository;
@@ -18,12 +19,12 @@ public class RegisterCommandHandler :
         _userRepository = userRepository;
     }
 
-    public async Task<AuthenticationResult> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
        // 1. Validate the user doesn't exist
         if (_userRepository.GetUserByEmail(command.Email) is not null)
         {
-            throw new Exception("User with given email aready exists!");
+            return Result.Fail<AuthenticationResult>(new DuplicateEmailError());
         }
 
         // 2. Create user (generate unique ID) & Persist to DB
