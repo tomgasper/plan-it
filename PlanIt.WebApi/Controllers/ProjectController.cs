@@ -1,11 +1,13 @@
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.Application.Projects.CreateProject;
 using PlanIt.Contracts.Projects;
 
 namespace PlanIt.WebApi.Controllers;
 
+[AllowAnonymous]
 [Route("projectOwners/{projectOwnerId}/project")]
 public class ProjectController : ApiController
 {
@@ -33,6 +35,6 @@ public class ProjectController : ApiController
             return Problem(createProjectResult.Errors);
         }
 
-        return Ok(_mapper.Map<ProjectResponse>(createProjectResult));
+        return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
     }
 }

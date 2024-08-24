@@ -16,6 +16,11 @@ public sealed class TaskOwnerId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static TaskOwnerId Create(string Id)
+    {
+        return new(Guid.Parse(Id));
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

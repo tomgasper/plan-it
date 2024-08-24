@@ -4,6 +4,7 @@ using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.Projects.CreateProject;
 
@@ -26,6 +27,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             description: request.Description,
             projectOwnerId: ProjectOwnerId.Create(request.ProjectOwnerId),
             projectTasks: request.ProjectTasks.ConvertAll( projectTask => ProjectTask.Create(
+                taskOwnerId: TaskOwnerId.Create(request.ProjectOwnerId),
                 name: projectTask.Name,
                 description: projectTask.Description
             ))

@@ -1,9 +1,8 @@
 @host=https://localhost:5234
-@projectOwnerId=1
+@projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
 
 POST {{host}}/projectOwners/{{projectOwnerId}}/project
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZjJmZDRkYi1kNjZhLTRiN2EtOTgxNC0xNDI0NjNiNDgzNmEiLCJnaXZlbl9uYW1lIjoiYXN4ZCIsImZhbWlseV9uYW1lIjoiZGRkZGQiLCJqdGkiOiIwYmYwY2RkZC0yYTU3LTQ2NDAtOGE2Mi1kOWFmOGE1ZjE3YWIiLCJleHAiOjE3MjQ0OTcwMzYsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9._OFLP0hSv2jXkUxRPkWiio5dVilERUpccrZdB6bPfmA
 
 {
     "name": "A great project",

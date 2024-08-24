@@ -4,7 +4,7 @@ public record ProjectResponse(
     Guid Id,
     string Name,
     string Description,
-    List<ProjectTaskResponse> ProjectTaskResponses,
+    List<ProjectTaskResponse> ProjectTasks,
     string ProjectOwnerId,
     DateTime CreatedDateTime,
     DateTime UpdatedDateTime

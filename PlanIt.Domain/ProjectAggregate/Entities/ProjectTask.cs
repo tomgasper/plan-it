@@ -7,11 +7,12 @@ namespace PlanIt.Domain.ProjectAggregate.Entities;
 
 public sealed class ProjectTask : Entity<ProjectTaskId>
 {
-    private readonly List<TaskCommentId> _taskComments;
-    private readonly List<ProjectWorkerId> _projectWorkers;
-    private ProjectTask(ProjectTaskId id, string name, string description) : base(id)
+    private readonly List<TaskCommentId> _taskComments = new();
+    private readonly List<ProjectWorkerId> _projectWorkers = new();
+    private ProjectTask(ProjectTaskId id, TaskOwnerId taskOwnerId, string name, string description) : base(id)
     {
         Id = id;
+        TaskOwnerId = taskOwnerId;
         Name = name;
         Description = description;
     }
@@ -23,10 +24,11 @@ public sealed class ProjectTask : Entity<ProjectTaskId>
     public IReadOnlyList<TaskCommentId> TaskCommentIds => _taskComments;
     public IReadOnlyList<ProjectWorkerId> ProjectWorkerIds => _projectWorkers;
 
-    public static ProjectTask Create(string name, string description)
+    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
     {
         return new(
             ProjectTaskId.CreateUnique(),
+            taskOwnerId,
             name,
             description
         );
