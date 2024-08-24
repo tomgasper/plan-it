@@ -1,0 +1,17 @@
+@host=https://localhost:5234
+@projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
+
+POST {{host}}/projectOwners/{{projectOwnerId}}/project
+Content-Type: application/json
+
+{
+    "name": "A great project",
+    "description": "A project that will be perfect",
+    "projectTasks": 
+        [
+            {
+                "name": "Some task",
+                "description": "Descirption of the task"
+            }
+        ]
+}

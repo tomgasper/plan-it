@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi;
 

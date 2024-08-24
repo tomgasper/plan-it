@@ -1,4 +1,5 @@
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PlanIt.WebApi.Common.Http;
@@ -6,6 +7,7 @@ using PlanIt.WebApi.Common.Http;
 namespace PlanIt.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 public class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<IError> errors)
