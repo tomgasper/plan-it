@@ -4,11 +4,12 @@ using MediatR;
 using PlanIt.Application.Authentication.Commands.Register;
 using PlanIt.Application.Authentication.Commands.Queries.Login;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlanIt.WebApi.Controllers;
 
-[ApiController]
 [Route("auth")]
+[AllowAnonymous]
 public class AuthenthicationController : ApiController
 {
     private readonly ISender _mediator;
