@@ -13,12 +13,12 @@ namespace PlanIt.Domain.Project.ValueObjects
 
         public static ProjectOwnerId CreateUnique()
         {
-            return new(Guid.NewGuid());
+            return new ProjectOwnerId(Guid.NewGuid());
         }
 
-        public static ProjectOwnerId Create(string projectOwnerId)
+        public static ProjectOwnerId Create(Guid projectOwnerId)
         {
-            return new(Guid.Parse(projectOwnerId));
+            return new ProjectOwnerId(projectOwnerId);
         }
 
         public override IEnumerable<object> GetEqualityComponents()

@@ -25,7 +25,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         var project = Project.Create(
             name: request.Name,
             description: request.Description,
-            projectOwnerId: ProjectOwnerId.Create(request.ProjectOwnerId),
+            projectOwnerId: ProjectOwnerId.Create(new Guid(request.ProjectOwnerId)),
             projectTasks: request.ProjectTasks.ConvertAll( projectTask => ProjectTask.Create(
                 taskOwnerId: TaskOwnerId.Create(request.ProjectOwnerId),
                 name: projectTask.Name,

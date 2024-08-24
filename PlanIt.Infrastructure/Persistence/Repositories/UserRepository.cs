@@ -1,7 +1,7 @@
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.Entities;
 
-namespace PlanIt.Infrastructure.Authentication.Persistence
+namespace PlanIt.Infrastructure.Persistence.Repositories
 {
     public class UserRepository : IUserRepository
     {

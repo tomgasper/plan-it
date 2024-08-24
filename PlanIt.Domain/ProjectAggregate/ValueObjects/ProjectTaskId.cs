@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using PlanIt.Domain.Models;
 
 namespace PlanIt.Domain.ProjectAggregate.ValueObjects
@@ -9,6 +10,11 @@ namespace PlanIt.Domain.ProjectAggregate.ValueObjects
         private ProjectTaskId(Guid value)
         {
             Value = value;
+        }
+
+        public static ProjectTaskId Create(Guid value)
+        {
+            return new ProjectTaskId(value);
         }
 
         public static ProjectTaskId CreateUnique()

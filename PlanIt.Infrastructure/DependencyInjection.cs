@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -8,8 +9,8 @@ using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Common.Interfaces.Services;
 using PlanIt.Infrastructure.Authentication;
-using PlanIt.Infrastructure.Authentication.Persistence;
 using PlanIt.Infrastructure.Persistence;
+using PlanIt.Infrastructure.Persistence.Repositories;
 using PlanIt.Infrastructure.Services;
 
 namespace PlanIt.Infrastructure;
@@ -22,7 +23,7 @@ public static class DependencyInjection
         services.AddAuth(configuration);
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddPersistence();
-        
+
         return services;
     }
 
@@ -58,6 +59,8 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
+        services.AddDbContext<PlanItDbContext>(options => options.UseSqlServer());
+
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         return services;

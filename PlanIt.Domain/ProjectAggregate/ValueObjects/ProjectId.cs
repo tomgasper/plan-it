@@ -11,9 +11,14 @@ namespace PlanIt.Domain.ProjectAggregate.ValueObjects
             Value = value;
         }
 
+        public static ProjectId Create(Guid value)
+        {
+            return new ProjectId(value);
+        }
+
         public static ProjectId CreateUnique()
         {
-            return new(Guid.NewGuid());
+            return new ProjectId(Guid.NewGuid());
         }
 
         public override IEnumerable<object> GetEqualityComponents()
