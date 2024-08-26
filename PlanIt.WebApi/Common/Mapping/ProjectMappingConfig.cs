@@ -24,6 +24,6 @@ public class ProjectMappingConfig : IRegister
             .Map(dest => dest.Id, src => src.Id.Value)
             .Map(dest => dest.TaskOwnerId, src => src.TaskOwnerId.Value )
             .Map(dest => dest.TaskCommentIds, src => src.TaskCommentIds.Select( id => id.Value).ToList())
-            .Map(dest => dest.ProjectWorkerIds, src => src.ProjectWorkerIds.Select( id => id.Value).ToList()); 
+            .Map(dest => dest.ProjectWorkerIds, src => src.TaskWorkerIds.Select( id => id.Value).ToList()); 
     }
 }

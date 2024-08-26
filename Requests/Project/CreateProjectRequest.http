@@ -3,6 +3,7 @@
 
 POST {{host}}/projectOwners/{{projectOwnerId}}/project
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZTcyYWQ3MS0zYTcxLTRjZmMtOTZiNC0zMTY4N2IwYzZlNTciLCJnaXZlbl9uYW1lIjoiYXN4ZCIsImZhbWlseV9uYW1lIjoiZGRkZGQiLCJqdGkiOiIxMDVkMTRkMS04ZDBlLTQwNmUtOGVkNi04YWUwODFmNzllMmMiLCJleHAiOjE3MjQ2NzQ5MTAsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.d4JZOynu4sT6Ym55SPRtdTL5zwWTgR7Y2bYzuqZTieU
 
 {
     "name": "A great project",
@@ -12,6 +13,10 @@ Content-Type: application/json
             {
                 "name": "Some task",
                 "description": "Descirption of the task"
+            },
+            {
+                "name": "Some task2",
+                "description": "Descirption of the task2"
             }
         ]
 }
