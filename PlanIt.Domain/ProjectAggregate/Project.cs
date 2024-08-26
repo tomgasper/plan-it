@@ -24,12 +24,19 @@ public sealed class Project : AggregateRoot<ProjectId>
         UpdatedDateTime = updatedDateTime;
     }
 
+    #pragma warning disable CS8618
+    private Project()
+    {
+
+    }
+    #pragma warning restore CS8618
+
     private readonly List<ProjectTask> _projectTasks;
-    public string Name { get; }
-    public string Description { get; }
-    public ProjectOwnerId ProjectOwnerId { get; }
-    public DateTime CreatedDateTime { get; }
-    public DateTime UpdatedDateTime { get; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public ProjectOwnerId ProjectOwnerId { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
     public static Project Create(string name,
         string description,

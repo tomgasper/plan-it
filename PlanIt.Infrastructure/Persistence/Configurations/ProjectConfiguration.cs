@@ -1,4 +1,3 @@
-using System.ComponentModel.Design;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanIt.Domain.Project.ValueObjects;
@@ -14,21 +13,20 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
        ConfigureProjectsTable(builder);
        ConfigureProjectTasksTable(builder);
     }
-
     private void ConfigureProjectTasksTable(EntityTypeBuilder<Project> builder)
     {
-        builder.OwnsMany(p => p.ProjectTasks, pb => {
-            pb.ToTable("ProjectTasks");
-            pb.WithOwner().HasForeignKey("ProjectId");
+        builder.OwnsMany(ptb => ptb.ProjectTasks, pt => {
+            pt.ToTable("ProjectTasks");
+            pt.WithOwner().HasForeignKey("ProjectId");
 
             // Create primary key that will be a combination of ProjectTaskId and ProjectId
             // Combination is need so that the entities are specified uniquely in the DB
             // For example if we had some ProjectTaskId with Id = 1 and two Projects
             // that both had a ProjectTask inside with Id = 1 and we deleted it
             // in one of the Projects then the ProjectTask is gone in another project as well
-            pb.HasKey("Id", "ProjectId");
+            pt.HasKey("Id", "ProjectId");
 
-            pb.Property(s => s.Id)
+            pt.Property(s => s.Id)
                 .HasColumnName("ProjectTaskId")
                 .ValueGeneratedNever()
                 .HasConversion(
@@ -36,12 +34,67 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
                     value => ProjectTaskId.Create(value)
                 );
 
-            pb.Property(s => s.Name)
+            pt.Property(s => s.TaskOwnerId)
+                .HasConversion(
+                    id => id.Value,
+                    value => TaskOwnerId.Create(value)
+                );
+
+            pt.Property(s => s.Name)
                 .HasMaxLength(100);
 
-            pb.Property(s => s.Description)
+            pt.Property(s => s.Description)
                 .HasMaxLength(200);
 
+            // TaskCommentIds Table
+            pt.OwnsMany( tcb => tcb.TaskCommentIds, tc => {
+                tc.ToTable("TaskCommentIds");
+                
+                tc.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
+
+                tc.Property<string>("Id").ValueGeneratedOnAdd();
+                tc.HasKey("Id");
+
+                tc.Property( t => t.Value )
+                    .HasColumnName("TaskCommentId")
+                    .ValueGeneratedNever();
+
+                tc.Property<ProjectTaskId>("ProjectTaskId")
+                    .HasConversion(
+                        id => id.Value,
+                        value => ProjectTaskId.Create(value)
+                    );
+
+                //tc.Ignore("ProjectId");
+            });
+
+            // TaskOwnerIds Tabel
+            pt.OwnsMany( twb => twb.TaskWorkerIds, tw => {
+                tw.ToTable("TaskWorkerIds");
+                
+                tw.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
+                
+                tw.Property<string>("Id").ValueGeneratedOnAdd();
+                tw.HasKey("Id");
+
+                tw.Property( t => t.Value )
+                    .HasColumnName("TaskWorkerId")
+                    .ValueGeneratedNever();
+
+                tw.Property<ProjectTaskId>("ProjectTaskId")
+                    .HasConversion(
+                        id => id.Value,
+                        value => ProjectTaskId.Create(value)
+                    );
+
+                //tw.Ignore("ProjectId");
+            });
+
+            pt.Navigation( p => p.TaskCommentIds).Metadata.SetField("_taskComments");
+            pt.Navigation( p => p.TaskCommentIds).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            pt.Navigation( p => p.TaskWorkerIds).Metadata.SetField("_taskWorkers");
+            pt.Navigation( p => p.TaskWorkerIds).UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
         builder.Metadata.FindNavigation(nameof(Project.ProjectTasks))!.SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -70,5 +123,7 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
                 id => id.Value,
                 value => ProjectOwnerId.Create(value)
             );
+
+        builder.Metadata.FindNavigation(nameof(Project.ProjectTasks))!.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

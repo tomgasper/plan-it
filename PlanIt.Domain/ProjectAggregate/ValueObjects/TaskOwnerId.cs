@@ -16,9 +16,9 @@ public sealed class TaskOwnerId : ValueObject
         return new(Guid.NewGuid());
     }
 
-    public static TaskOwnerId Create(string Id)
+    public static TaskOwnerId Create(Guid id)
     {
-        return new(Guid.Parse(Id));
+        return new TaskOwnerId(id);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
