@@ -52,20 +52,13 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
                 
                 tc.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
 
-                tc.Property<string>("Id").ValueGeneratedOnAdd();
+                tc.Property<int>("Id").ValueGeneratedOnAdd();
                 tc.HasKey("Id");
 
                 tc.Property( t => t.Value )
                     .HasColumnName("TaskCommentId")
                     .ValueGeneratedNever();
 
-                tc.Property<ProjectTaskId>("ProjectTaskId")
-                    .HasConversion(
-                        id => id.Value,
-                        value => ProjectTaskId.Create(value)
-                    );
-
-                //tc.Ignore("ProjectId");
             });
 
             // TaskOwnerIds Tabel
@@ -74,20 +67,13 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
                 
                 tw.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
                 
-                tw.Property<string>("Id").ValueGeneratedOnAdd();
+                tw.Property<int>("Id").ValueGeneratedOnAdd();
                 tw.HasKey("Id");
 
                 tw.Property( t => t.Value )
                     .HasColumnName("TaskWorkerId")
                     .ValueGeneratedNever();
 
-                tw.Property<ProjectTaskId>("ProjectTaskId")
-                    .HasConversion(
-                        id => id.Value,
-                        value => ProjectTaskId.Create(value)
-                    );
-
-                //tw.Ignore("ProjectId");
             });
 
             pt.Navigation( p => p.TaskCommentIds).Metadata.SetField("_taskComments");

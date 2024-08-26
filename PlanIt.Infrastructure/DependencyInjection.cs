@@ -59,7 +59,7 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        services.AddDbContext<PlanItDbContext>(options => options.UseSqlServer());
+        services.AddDbContext<PlanItDbContext>(options => options.UseSqlServer("Server=localhost;Database=PlanIt;User Id=sa;Password=Pass1234$;Encrypt=false;"));
 
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();

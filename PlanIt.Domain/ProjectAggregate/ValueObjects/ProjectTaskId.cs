@@ -3,9 +3,9 @@ using PlanIt.Domain.Models;
 
 namespace PlanIt.Domain.ProjectAggregate.ValueObjects
 {
-    public sealed class ProjectTaskId : ValueObject
+    public sealed class ProjectTaskId : AggregateRootId<Guid>
     {
-        public Guid Value { get; }
+        public override Guid Value { get; protected set; }
 
         private ProjectTaskId(Guid value)
         {

@@ -2,9 +2,9 @@ using PlanIt.Domain.Models;
 
 namespace PlanIt.Domain.ProjectAggregate.ValueObjects;
 
-public sealed class TaskOwnerId : ValueObject
+public sealed class TaskOwnerId : AggregateRootId<Guid>
 {
-    public Guid Value { get; }
+    public override Guid Value { get; protected set; }
 
     private TaskOwnerId(Guid value)
     {

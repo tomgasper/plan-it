@@ -5,7 +5,7 @@ using PlanIt.Domain.TaskWorker.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate.Entities;
 
-public sealed class ProjectTask : Entity<ProjectTaskId>
+public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
 {
     private readonly List<TaskCommentId> _taskComments = new();
     private readonly List<TaskWorkerId> _taskWorkers = new();

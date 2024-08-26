@@ -86,9 +86,11 @@ namespace PlanIt.Infrastructure.Migrations
 
                             b1.OwnsMany("PlanIt.Domain.TaskComment.ValueObjects.TaskCommentId", "TaskCommentIds", b2 =>
                                 {
-                                    b2.Property<string>("Id")
+                                    b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
-                                        .HasColumnType("nvarchar(450)");
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
 
                                     b2.Property<Guid?>("ProjectId")
                                         .HasColumnType("uniqueidentifier");
@@ -112,9 +114,11 @@ namespace PlanIt.Infrastructure.Migrations
 
                             b1.OwnsMany("PlanIt.Domain.TaskWorker.ValueObjects.TaskWorkerId", "TaskWorkerIds", b2 =>
                                 {
-                                    b2.Property<string>("Id")
+                                    b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
-                                        .HasColumnType("nvarchar(450)");
+                                        .HasColumnType("int");
+
+                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
 
                                     b2.Property<Guid?>("ProjectId")
                                         .HasColumnType("uniqueidentifier");

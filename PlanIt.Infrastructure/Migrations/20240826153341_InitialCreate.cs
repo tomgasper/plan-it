@@ -52,7 +52,8 @@ namespace PlanIt.Infrastructure.Migrations
                 name: "TaskCommentIds",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TaskCommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProjectTaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -72,7 +73,8 @@ namespace PlanIt.Infrastructure.Migrations
                 name: "TaskWorkerIds",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TaskWorkerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProjectTaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)

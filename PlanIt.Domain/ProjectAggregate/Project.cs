@@ -5,7 +5,7 @@ using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate;
 
-public sealed class Project : AggregateRoot<ProjectId>
+public sealed class Project : AggregateRoot<ProjectId, Guid>
 {
     private Project(
         ProjectId id,
