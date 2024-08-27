@@ -3,10 +3,10 @@
 
 POST {{host}}/projectOwners/{{projectOwnerId}}/project
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZTcyYWQ3MS0zYTcxLTRjZmMtOTZiNC0zMTY4N2IwYzZlNTciLCJnaXZlbl9uYW1lIjoiYXN4ZCIsImZhbWlseV9uYW1lIjoiZGRkZGQiLCJqdGkiOiIxMDVkMTRkMS04ZDBlLTQwNmUtOGVkNi04YWUwODFmNzllMmMiLCJleHAiOjE3MjQ2NzQ5MTAsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.d4JZOynu4sT6Ym55SPRtdTL5zwWTgR7Y2bYzuqZTieU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiYTNjZjVkMC1jYTg0LTQ3YzItOWI2MS1mNDA3NDFlOGQ4NmEiLCJnaXZlbl9uYW1lIjoiYXN4ZCIsImZhbWlseV9uYW1lIjoiZGRkZGQiLCJqdGkiOiIwY2JiNDBlOC05YWI2LTQ1MmQtOTZmMS1kOGE2Y2U0YTE2YjgiLCJleHAiOjE3MjQ3NDAzNTgsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.e574dGTdxV9Byf8Uuasgs70_ufs1QcGraMcKppd-pEI
 
 {
-    "name": "A great project",
+    "name": "Bolonez niemiecki",
     "description": "A project that will be perfect",
     "projectTasks": 
         [

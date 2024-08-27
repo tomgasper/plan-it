@@ -6,7 +6,7 @@ using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
-namespace PlanIt.Application.Projects.CreateProject;
+namespace PlanIt.Application.Projects.CreateProject.Commands;
 
 public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<Project>>
 {
@@ -26,7 +26,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             name: request.Name,
             description: request.Description,
             projectOwnerId: ProjectOwnerId.Create(new Guid(request.ProjectOwnerId)),
-            projectTasks: request.ProjectTasks.ConvertAll( projectTask => ProjectTask.Create(
+            projectTasks: request.ProjectTasks.ConvertAll(projectTask => ProjectTask.Create(
                 taskOwnerId: TaskOwnerId.Create(new Guid(request.ProjectOwnerId)),
                 name: projectTask.Name,
                 description: projectTask.Description
@@ -35,7 +35,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
 
         // Persist Project
         _projectRepository.Add(project);
-        
+
         return project;
     }
 }

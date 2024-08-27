@@ -2,7 +2,7 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.Application.Projects.CreateProject;
+using PlanIt.Application.Projects.CreateProject.Commands;
 using PlanIt.Contracts.Projects;
 
 namespace PlanIt.WebApi.Controllers;
