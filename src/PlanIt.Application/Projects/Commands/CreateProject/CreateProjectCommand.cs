@@ -8,9 +8,9 @@ public record CreateProjectCommand(
     string ProjectOwnerId,
     string Name,
     string Description,
-    List<ProjectTaskCommand> ProjectTasks
+    List<CreateProjectTaskCommand> ProjectTasks
 ) : IRequest<Result<Project>>;
-public record ProjectTaskCommand
+public record CreateProjectTaskCommand
 (
     string Name,
     string Description

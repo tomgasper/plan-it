@@ -26,7 +26,20 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
 
     public override bool Equals(object? obj)
     {
+        /*
         return obj is Entity<TId> entity && Id.Equals(entity.Id);
+        */
+
+        if (obj is not Entity<TId> entity)
+        return false;
+    
+        if (ReferenceEquals(this, entity))
+            return true;
+
+        if (Id is null || entity.Id is null)
+            return false;
+
+        return Id.Equals(entity.Id);
     }
 
     public bool Equals(Entity<TId>? other)
