@@ -10,6 +10,7 @@ using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Common.Interfaces.Services;
 using PlanIt.Infrastructure.Authentication;
 using PlanIt.Infrastructure.Persistence;
+using PlanIt.Infrastructure.Persistence.Interceptors;
 using PlanIt.Infrastructure.Persistence.Repositories;
 using PlanIt.Infrastructure.Services;
 
@@ -61,6 +62,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<PlanItDbContext>(options => options.UseSqlServer("Server=localhost;Database=PlanIt;User Id=sa;Password=Pass1234$;Encrypt=false;"));
 
+        services.AddScoped<PublishDomainEventsInterceptor>();
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         return services;

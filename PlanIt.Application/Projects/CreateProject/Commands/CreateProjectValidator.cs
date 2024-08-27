@@ -1,7 +1,7 @@
 using System.Data;
 using FluentValidation;
 
-namespace PlanIt.Application.Projects.CreateProject;
+namespace PlanIt.Application.Projects.CreateProject.Commands;
 
 public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
 {

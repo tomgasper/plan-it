@@ -1,6 +1,7 @@
 using PlanIt.Domain.Models;
 using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate.Entities;
+using PlanIt.Domain.ProjectAggregate.Events;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate;
@@ -43,7 +44,7 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         ProjectOwnerId projectOwnerId,
         List<ProjectTask> projectTasks)
     {
-        return new(
+        var project = new Project(
             ProjectId.CreateUnique(),
             name,
             description,
@@ -52,6 +53,10 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
             DateTime.UtcNow,
             DateTime.UtcNow
         );
+
+        project.AddDomainEvent(new ProjectCreated(project));
+
+        return project;
     }
 
     public IReadOnlyList<ProjectTask> ProjectTasks => _projectTasks.AsReadOnly();
