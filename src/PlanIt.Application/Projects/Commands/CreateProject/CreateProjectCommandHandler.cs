@@ -6,7 +6,7 @@ using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
-namespace PlanIt.Application.Projects.CreateProject.Commands;
+namespace PlanIt.Application.Projects.Commands.CreateProject;
 
 public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<Project>>
 {

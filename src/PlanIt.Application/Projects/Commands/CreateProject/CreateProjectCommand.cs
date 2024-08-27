@@ -2,7 +2,7 @@ using FluentResults;
 using MediatR;
 using PlanIt.Domain.ProjectAggregate;
 
-namespace PlanIt.Application.Projects.CreateProject.Commands;
+namespace PlanIt.Application.Projects.Commands.CreateProject;
 
 public record CreateProjectCommand(
     string ProjectOwnerId,
