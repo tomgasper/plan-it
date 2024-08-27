@@ -23,7 +23,8 @@ public class ProjectRepository : IProjectRepository
 
     public async Task<Project?> GetAsync(string projectId)
     {
-        Guid projectIdGuid = Guid.Parse(projectId);
+        // Converting to Id stored as Value Object
+        if (!Guid.TryParse(projectId, out Guid projectIdGuid)) return null;
         var projectIdObj = ProjectId.Create(projectIdGuid);
         
         return await _dbContext.Projects.FirstOrDefaultAsync( p => p.Id == projectIdObj  );

@@ -19,6 +19,11 @@ public class ProjectTasksQueryHandler : IRequestHandler<ProjectTasksQuery, Resul
         // Retrieve project
         var project = await _projectRepository.GetAsync(request.ProjectId);
 
+        if (project is null)
+        {
+            return Result.Fail<IReadOnlyList<ProjectTask>>(new NotFoundError($"No project found with provided Project Id: {request.ProjectId}"));
+        }
+
         // Get tasks from project
         var projectTasks = project.ProjectTasks;
 

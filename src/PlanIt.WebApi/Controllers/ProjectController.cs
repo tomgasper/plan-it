@@ -41,6 +41,23 @@ public class ProjectController : ApiController
         return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
     }
 
+    [HttpGet("{projectId}/tasks")]
+    public async Task<IActionResult> GetProjectTasks(
+        string projectId
+    )
+    {
+        var command = new ProjectTasksQuery(projectId);
+
+        var projectTasksResult = await _mediator.Send(command);
+
+        if (projectTasksResult.IsFailed)
+        {
+            return Problem(projectTasksResult.Errors);
+        }
+
+        return Ok(_mapper.Map<List<ProjectTaskResponse>>(projectTasksResult.Value));
+    }
+
     [HttpPost("{projectId}/addTask")]
     public async Task<IActionResult> CreateProjectTask(
         CreateTaskRequest request,
@@ -57,22 +74,5 @@ public class ProjectController : ApiController
         }
 
         return Ok(_mapper.Map<ProjectTaskResponse>(createdProjectTaskResult.Value));
-    }
-
-    [HttpGet("{projectId}/tasks")]
-    public async Task<IActionResult> GetProjectTasks(
-        string projectId
-    )
-    {
-        var command = new ProjectTasksQuery(projectId);
-
-        var projectTasksResult = await _mediator.Send(command);
-
-        if (projectTasksResult.IsFailed)
-        {
-            return Problem(projectTasksResult.Errors);
-        }
-
-        return Ok(_mapper.Map<List<ProjectTaskResponse>>(projectTasksResult.Value));
     }
 }

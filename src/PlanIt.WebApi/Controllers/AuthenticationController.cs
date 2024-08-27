@@ -43,7 +43,7 @@ public class AuthenthicationController : ApiController
 
         if (authResult.IsFailed)
         {
-        return Problem(authResult.Errors);
+            return Problem(authResult.Errors);
         }
 
         var response = _mapper.Map<AuthenticationResponse>(authResult);

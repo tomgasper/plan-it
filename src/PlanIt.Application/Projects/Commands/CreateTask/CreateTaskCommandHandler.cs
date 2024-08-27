@@ -21,6 +21,11 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
         // Make sure the Project exists
         var project = await _projectRepository.GetAsync(request.ProjectId);
 
+        if (project is null)
+        {
+            return Result.Fail<ProjectTask>(new NotFoundError($"The project with provided Id: {request.ProjectId} doesn't exist."));
+        }
+
         // Create task and add to the Project
         var createdTask = project.CreateNewTask(request.Name, request.Description);
 

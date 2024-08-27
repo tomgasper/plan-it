@@ -6,7 +6,7 @@ namespace PlanIt.Infrastructure.Persistence.Repositories
     public class UserRepository : IUserRepository
     {
         private static readonly List<User> _users = new();
-        public void Add(User user)
+        public async Task AddAsync(User user)
         {
             _users.Add(user);
         }

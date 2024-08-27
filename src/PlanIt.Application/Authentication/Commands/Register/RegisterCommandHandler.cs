@@ -36,7 +36,7 @@ public class RegisterCommandHandler :
             Password = command.Password
         };
 
-        _userRepository.Add(user);
+        await _userRepository.AddAsync(user);
 
         // 3. Create JWT token
 
