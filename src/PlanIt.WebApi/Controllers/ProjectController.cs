@@ -1,8 +1,11 @@
+using Azure.Core;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlanIt.Application.Projects.Commands.AddTaskToProject;
 using PlanIt.Application.Projects.Commands.CreateProject;
+using PlanIt.Application.Projects.Queries;
 using PlanIt.Contracts.Projects;
 
 namespace PlanIt.WebApi.Controllers;
@@ -20,7 +23,7 @@ public class ProjectController : ApiController
         _mediator = mediator;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateProject(
         CreateProjectRequest request,
         string projectOwnerId
@@ -36,5 +39,40 @@ public class ProjectController : ApiController
         }
 
         return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
+    }
+
+    [HttpPost("{projectId}/addTask")]
+    public async Task<IActionResult> CreateProjectTask(
+        CreateTaskRequest request,
+        string projectId
+        )
+    {
+        var command = _mapper.Map<CreateTaskCommand>((request, projectId));
+
+        var createdProjectTaskResult = await _mediator.Send(command);
+
+        if (createdProjectTaskResult.IsFailed)
+        {
+            return Problem(createdProjectTaskResult.Errors);
+        }
+
+        return Ok(_mapper.Map<ProjectTaskResponse>(createdProjectTaskResult.Value));
+    }
+
+    [HttpGet("{projectId}/tasks")]
+    public async Task<IActionResult> GetProjectTasks(
+        string projectId
+    )
+    {
+        var command = new ProjectTasksQuery(projectId);
+
+        var projectTasksResult = await _mediator.Send(command);
+
+        if (projectTasksResult.IsFailed)
+        {
+            return Problem(projectTasksResult.Errors);
+        }
+
+        return Ok(_mapper.Map<List<ProjectTaskResponse>>(projectTasksResult.Value));
     }
 }

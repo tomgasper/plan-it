@@ -59,6 +59,18 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return project;
     }
 
+    public ProjectTask CreateNewTask(string name, string description)
+    {
+        var newTask = ProjectTask.Create(
+                taskOwnerId: TaskOwnerId.Create(ProjectOwnerId.Value),
+                name: name,
+                description: description);
+
+        _projectTasks.Add(newTask);
+
+        return newTask;
+    }
+
     public IReadOnlyList<ProjectTask> ProjectTasks => _projectTasks.AsReadOnly();
 
 }

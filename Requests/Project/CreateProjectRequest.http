@@ -1,7 +1,7 @@
 @host=https://localhost:5234
 @projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
 
-POST {{host}}/projectOwners/{{projectOwnerId}}/project
+POST {{host}}/projectOwners/{{projectOwnerId}}/project/create
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwN2ZiMDIxNi00NzdiLTQyNzUtOGZkZS1lNmNkOTA3ZGUxM2YiLCJnaXZlbl9uYW1lIjoiYXN4ZCIsImZhbWlseV9uYW1lIjoiZGRkZGQiLCJqdGkiOiJiMTU5ODRkZC04YTczLTQ1NzctOTMxOS02MGNjZWM2OGE5M2EiLCJleHAiOjE3MjQ3NDQ1MTAsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.v3TlYpuiejqIo2fHcdEFlvDUMAb7OD1ngtDao2vAjPg
 

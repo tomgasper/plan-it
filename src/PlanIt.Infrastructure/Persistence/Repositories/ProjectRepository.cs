@@ -1,5 +1,8 @@
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.ProjectAggregate;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Infrastructure.Persistence.Repositories;
 
@@ -16,5 +19,18 @@ public class ProjectRepository : IProjectRepository
     {
         _dbContext.Add(project);
         _dbContext.SaveChanges();
+    }
+
+    public async Task<Project?> GetAsync(string projectId)
+    {
+        Guid projectIdGuid = Guid.Parse(projectId);
+        var projectIdObj = ProjectId.Create(projectIdGuid);
+        
+        return await _dbContext.Projects.FirstOrDefaultAsync( p => p.Id == projectIdObj  );
+    }
+
+    public async Task UpdateAsync()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }
