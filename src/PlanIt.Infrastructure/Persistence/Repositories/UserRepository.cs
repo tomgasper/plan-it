@@ -1,19 +1,36 @@
+using FluentResults;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.Entities;
+using PlanIt.Infrastructure.Authentication;
+using PlanIt.Infrastructure.Common.Mapping;
 
-namespace PlanIt.Infrastructure.Persistence.Repositories
+namespace PlanIt.Infrastructure.Persistence.Repositories;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
-    {
-        private static readonly List<User> _users = new();
-        public async Task AddAsync(User user)
-        {
-            _users.Add(user);
-        }
+    private readonly UserManager<ApplicationUser> _userManager;
 
-        public User? GetUserByEmail(string email)
-        {
-            return _users.SingleOrDefault(u => u.Email == email);
-        }
+    public UserRepository(UserManager<ApplicationUser> userManager)
+    {
+        _userManager = userManager;
+    }
+
+    public async Task<Result<User>> AddAsync(User user, string userPassword)
+    {
+        var appUser = user.ToApplicationUser();
+        var createUserResult = await _userManager.CreateAsync(appUser, userPassword);
+
+        if (createUserResult.Succeeded) return appUser.ToUser();
+        else return Result.Fail<User>(createUserResult.Errors.Select(e => new IdentityError(e.Description) ));
+    }
+
+    public async Task<User?> GetUserByEmail(string email)
+    {
+        var appUser = await _userManager.FindByEmailAsync(email);
+
+        if (appUser is not null) return appUser.ToUser();
+        else return null;
     }
 }

@@ -5,6 +5,7 @@ using PlanIt.Application.Authentication.Commands.Register;
 using PlanIt.Application.Authentication.Commands.Queries.Login;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi.Controllers;
 
@@ -46,7 +47,8 @@ public class AuthenthicationController : ApiController
             return Problem(authResult.Errors);
         }
 
-        var response = _mapper.Map<AuthenticationResponse>(authResult);
+        // var response = _mapper.Map<AuthenticationResponse>(authResult);
+        var response = authResult.Value.ToResponse();
 
         return Ok(response);
     }

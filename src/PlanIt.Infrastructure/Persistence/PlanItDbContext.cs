@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PlanIt.Domain.Models;
 using PlanIt.Domain.ProjectAggregate;
+using PlanIt.Infrastructure.Authentication;
 using PlanIt.Infrastructure.Persistence.Interceptors;
 
 namespace PlanIt.Infrastructure.Persistence;
 
-public class PlanItDbContext : DbContext
+public class PlanItDbContext : IdentityDbContext<ApplicationUser,IdentityRole<Guid>, Guid>
 {
     private readonly PublishDomainEventsInterceptor _publishDomainEventsInterceptor;
     public PlanItDbContext(DbContextOptions<PlanItDbContext> options, PublishDomainEventsInterceptor publishDomainEventsInterceptor) : base(options)

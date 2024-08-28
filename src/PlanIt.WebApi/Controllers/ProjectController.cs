@@ -10,7 +10,6 @@ using PlanIt.Contracts.Projects;
 
 namespace PlanIt.WebApi.Controllers;
 
-[AllowAnonymous]
 [Route("projectOwners/{projectOwnerId}/project")]
 public class ProjectController : ApiController
 {
@@ -41,6 +40,7 @@ public class ProjectController : ApiController
         return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
     }
 
+    [AllowAnonymous]
     [HttpGet("{projectId}/tasks")]
     public async Task<IActionResult> GetProjectTasks(
         string projectId
