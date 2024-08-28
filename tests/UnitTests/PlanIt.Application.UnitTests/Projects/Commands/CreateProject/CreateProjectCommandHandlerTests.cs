@@ -9,8 +9,8 @@ namespace PlanIt.Application.UnitTests.Projects.Commands.CreateProject;
 
 public class CreateProjectCommandHandlerTest
 {
-    private readonly CreateProjectCommandHandler _handler;
     private readonly IProjectRepository _mockProjectRepository;
+    private readonly CreateProjectCommandHandler _handler;
 
     public CreateProjectCommandHandlerTest()
     {
@@ -24,8 +24,8 @@ public class CreateProjectCommandHandlerTest
 
     // public void T1_T2_T3() {}
     [Theory]
-    [MemberData(nameof(ValidCreateMenuCommands))]
-    public async Task HandleCreateProjectCommand_WhenProjectIsValid_ShouldCreateAndReturnMenu(CreateProjectCommand createProjectCommand )
+    [MemberData(nameof(ValidCreateProjectCommands))]
+    public async Task HandleCreateProjectCommand_WhenProjectIsValid_ShouldCreateAndReturnProject(CreateProjectCommand createProjectCommand )
     {
         // Arrange
         // The hold of a valid project
@@ -44,7 +44,7 @@ public class CreateProjectCommandHandlerTest
         _mockProjectRepository.Received(1).Add(result.Value);
     }
 
-    public static IEnumerable<object[]> ValidCreateMenuCommands()
+    public static IEnumerable<object[]> ValidCreateProjectCommands()
     {
         yield return new[] { CreateProjectCommandUtils.CreateCommand()};
         yield return new[] { CreateProjectCommandUtils.CreateCommand(
