@@ -1,6 +1,6 @@
 @host=https://localhost:5234
 @projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
-@projectId=d1c88986-1192-4722-8851-f92ad4a2c3a
+@projectId=6956027d-aaf3-44af-830a-d0528323d612
 
 POST {{host}}/projectOwners/{{projectOwnerId}}/project/{{projectId}}/addTask
 Content-Type: application/json
