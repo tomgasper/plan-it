@@ -1,4 +1,4 @@
-namespace PlanIt.Contracts.Projects;
+namespace PlanIt.Contracts.Projects.Requests;
 
 public record CreateProjectRequest(
     string Name,

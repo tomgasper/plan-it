@@ -34,4 +34,10 @@ public class ProjectRepository : IProjectRepository
     {
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteAsync(Project project)
+    {
+        _dbContext.Projects.Remove(project);
+        await _dbContext.SaveChangesAsync();
+    }
 }

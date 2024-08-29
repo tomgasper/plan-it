@@ -39,6 +39,15 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
 
+    public void Update( string name,
+                        string description
+                        )
+    {
+        Name = name;
+        Description = description;
+        UpdatedDateTime = DateTime.Now;
+    }
+
     public static Project Create(string name,
         string description,
         ProjectOwnerId projectOwnerId,

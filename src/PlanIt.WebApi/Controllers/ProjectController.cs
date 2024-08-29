@@ -1,12 +1,11 @@
-using System.Security.Claims;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.Application.Projects.Commands.AddTaskToProject;
 using PlanIt.Application.Projects.Commands.CreateProject;
-using PlanIt.Application.Projects.Queries;
+using PlanIt.Application.Projects.Commands.DeleteProject;
 using PlanIt.Application.Projects.Queries.GetProject;
-using PlanIt.Contracts.Projects;
+using PlanIt.Contracts.Projects.Requests;
+using PlanIt.Contracts.Projects.Responses;
 using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi.Controllers;
@@ -24,12 +23,10 @@ public class ProjectController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject(
-        CreateProjectRequest request
-    )
+    public async Task<IActionResult> CreateProject([FromBody]CreateProjectRequest request)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var command = _mapper.Map<CreateProjectCommand>((request, userId));
+        var userId = GetUserId();
+        CreateProjectCommand command = _mapper.Map<CreateProjectCommand>((request, userId));
 
         var createProjectResult = await _mediator.Send(command);
 
@@ -44,7 +41,7 @@ public class ProjectController : ApiController
     [HttpGet("{projectId}")]
     public async Task<IActionResult> GetProject(string projectId)
     {
-        var query = new GetProjectQuery(projectId);
+        GetProjectQuery query = new (projectId);
 
         var getProjectResult = await _mediator.Send(query);
 
@@ -56,52 +53,35 @@ public class ProjectController : ApiController
         return Ok(getProjectResult.Value.MapToResponse());
     }
 
-    public async Task<IActionResult> UpdateProject(string projectId)
+    [HttpPut("{projectId}")]
+    public async Task<IActionResult> UpdateProject([FromBody]UpdateProjectRequest request, string projectId)
     {
-        var command = new UpdateProjectQuery(projectId);
+        var userId = GetUserId();
+        UpdateProjectCommand command = request.MapToCommand(projectId, userId);
 
         var updateProjectResult = await _mediator.Send(command);
 
-        if (updateProjectResulot.IsFailed)
+        if (updateProjectResult.IsFailed)
         {
             return Problem(updateProjectResult.Errors);
         }
 
-        return Ok(updateProjectResult.MapToResponse());
+        return Ok(updateProjectResult.Value.MapToResponse());
     }
 
-    [HttpGet("{projectId}/tasks")]
-    public async Task<IActionResult> GetProjectTasks(
-        string projectId
-    )
+    [HttpDelete("{projectId}")]
+    public async Task<IActionResult> DeleteProject(string projectId)
     {
-        var command = new ProjectTasksQuery(projectId);
+        var userId = GetUserId();
+        DeleteProjectCommand command = new (projectId, userId);
 
-        var projectTasksResult = await _mediator.Send(command);
+        var deleteProjectResult = await _mediator.Send(command);
 
-        if (projectTasksResult.IsFailed)
+        if (deleteProjectResult.IsFailed)
         {
-            return Problem(projectTasksResult.Errors);
+            return Problem(deleteProjectResult.Errors);
         }
 
-        return Ok(_mapper.Map<List<ProjectTaskResponse>>(projectTasksResult.Value));
-    }
-
-    [HttpPost("{projectId}/addTask")]
-    public async Task<IActionResult> CreateProjectTask(
-        CreateTaskRequest request,
-        string projectId
-        )
-    {
-        var command = _mapper.Map<CreateTaskCommand>((request, projectId));
-
-        var createdProjectTaskResult = await _mediator.Send(command);
-
-        if (createdProjectTaskResult.IsFailed)
-        {
-            return Problem(createdProjectTaskResult.Errors);
-        }
-
-        return Ok(_mapper.Map<ProjectTaskResponse>(createdProjectTaskResult.Value));
+        return Ok();
     }
 }

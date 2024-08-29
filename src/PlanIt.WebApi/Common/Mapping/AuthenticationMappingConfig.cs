@@ -1,6 +1,6 @@
 using Mapster;
 using PlanIt.Application.Projects.Commands.CreateProject;
-using PlanIt.Contracts.Projects;
+using PlanIt.Contracts.Projects.Requests;
 
 namespace PlanIt.WebApi.Common.Mapping;
 

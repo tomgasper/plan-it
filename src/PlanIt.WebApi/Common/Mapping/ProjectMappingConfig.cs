@@ -4,7 +4,8 @@ using PlanIt.Application.Projects.Commands.AddTaskToProject;
 using PlanIt.Application.Projects.Queries;
 using PlanIt.Application.Services.Authentication.Common;
 using PlanIt.Contracts.Authenthication;
-using PlanIt.Contracts.Projects;
+using PlanIt.Contracts.Projects.Requests;
+using PlanIt.Contracts.Projects.Responses;
 using PlanIt.Domain.ProjectAggregate;
 
 using ProjectTask = PlanIt.Domain.ProjectAggregate.Entities.ProjectTask;
