@@ -1,4 +1,7 @@
 using Mapster;
+using Microsoft.Data.SqlClient;
+using PlanIt.Application.Projects.Commands.AddTaskToProject;
+using PlanIt.Application.Projects.Queries;
 using PlanIt.Application.Services.Authentication.Common;
 using PlanIt.Contracts.Authenthication;
 using PlanIt.Contracts.Projects;
@@ -24,6 +27,10 @@ public class ProjectMappingConfig : IRegister
             .Map(dest => dest.Id, src => src.Id.Value)
             .Map(dest => dest.TaskOwnerId, src => src.TaskOwnerId.Value )
             .Map(dest => dest.TaskCommentIds, src => src.TaskCommentIds.Select( id => id.Value).ToList())
-            .Map(dest => dest.ProjectWorkerIds, src => src.TaskWorkerIds.Select( id => id.Value).ToList()); 
+            .Map(dest => dest.ProjectWorkerIds, src => src.TaskWorkerIds.Select( id => id.Value).ToList());
+
+        config.NewConfig<(CreateTaskRequest Request, string ProjectId), CreateTaskCommand>()
+            .Map(dest => dest.ProjectId, src => src.ProjectId)
+            .Map(dest => dest, src => src.Request);
     }
 }

@@ -1,10 +1,11 @@
+using FluentResults;
 using PlanIt.Domain.Entities;
 
 namespace PlanIt.Application.Common.Interfaces.Persistence
 {
     public interface IUserRepository
     {
-        User? GetUserByEmail(string email);
-        void Add(User user);
+        public Task<User?> GetUserByEmail(string email);
+        public Task<Result<User>> AddAsync(User user, string password);
     }
 }

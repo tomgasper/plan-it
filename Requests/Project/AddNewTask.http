@@ -1,0 +1,11 @@
+@host=https://localhost:5234
+@projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
+@projectId=6956027d-aaf3-44af-830a-d0528323d612
+
+POST {{host}}/projectOwners/{{projectOwnerId}}/project/{{projectId}}/addTask
+Content-Type: application/json
+
+{
+    "name": "Another one!",
+    "description": "Some newly added task description 2"
+}

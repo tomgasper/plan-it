@@ -15,6 +15,6 @@ public record ProjectTaskResponse(
     string Name,
     string Description,
     string TaskOwnerId,
-    List<string> TaskCommentIds,
-    List<string> ProjectWorkerIds
+    IReadOnlyList<string> TaskCommentIds,
+    IReadOnlyList<string> ProjectWorkerIds
 );

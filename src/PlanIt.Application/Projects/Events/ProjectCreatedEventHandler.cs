@@ -1,7 +1,7 @@
 using MediatR;
 using PlanIt.Domain.ProjectAggregate.Events;
 
-namespace PlanIt.Application.Projects.CreateProject.Events;
+namespace PlanIt.Application.Projects.Events;
 
 public class ProjectCreatedEventHandler : INotificationHandler<ProjectCreated>
 {
