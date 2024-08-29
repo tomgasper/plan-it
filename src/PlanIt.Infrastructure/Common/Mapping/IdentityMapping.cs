@@ -4,7 +4,7 @@ using PlanIt.Infrastructure.Authentication;
 
 namespace PlanIt.Infrastructure.Common.Mapping;
 
-public static class AuthenticationMapping
+public static class IdentityMapping
 {
     public static User ToUser(this ApplicationUser applicationUser) => (
         new User{

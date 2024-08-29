@@ -1,16 +1,17 @@
-using Azure.Core;
+using System.Security.Claims;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.Application.Projects.Commands.AddTaskToProject;
 using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Application.Projects.Queries;
+using PlanIt.Application.Projects.Queries.GetProject;
 using PlanIt.Contracts.Projects;
+using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi.Controllers;
 
-[Route("projectOwners/{projectOwnerId}/project")]
+[Route("api/projects")]
 public class ProjectController : ApiController
 {
     private readonly IMapper _mapper;
@@ -22,13 +23,13 @@ public class ProjectController : ApiController
         _mediator = mediator;
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> CreateProject(
-        CreateProjectRequest request,
-        string projectOwnerId
+        CreateProjectRequest request
     )
     {
-        var command = _mapper.Map<CreateProjectCommand>((request, projectOwnerId));
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var command = _mapper.Map<CreateProjectCommand>((request, userId));
 
         var createProjectResult = await _mediator.Send(command);
 
@@ -40,7 +41,21 @@ public class ProjectController : ApiController
         return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
     }
 
-    [AllowAnonymous]
+    [HttpGet("{projectId}")]
+    public async Task<IActionResult> GetProject(string projectId)
+    {
+        var query = new GetProjectQuery(projectId);
+
+        var getProjectResult = await _mediator.Send(query);
+
+        if (getProjectResult.IsFailed)
+        {
+            return Problem(getProjectResult.Errors);
+        }
+
+        return Ok(getProjectResult.Value.MapToResponse());
+    }
+
     [HttpGet("{projectId}/tasks")]
     public async Task<IActionResult> GetProjectTasks(
         string projectId

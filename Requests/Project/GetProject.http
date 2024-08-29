@@ -1,0 +1,5 @@
+@host=https://localhost:5234
+@projectId=d4effab5-cad5-4eb4-93a1-aff94b62db5c
+
+GET {{host}}/api/projects/{{projectId}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NDUxYTJjZS0zMzRkLTRmN2MtN2QzMy0wOGRjYzc2MmE5ZjEiLCJnaXZlbl9uYW1lIjoiRmlzdE5hbWUxIiwiZmFtaWx5X25hbWUiOiJMYXN0TmFtZTEiLCJqdGkiOiIyMjIwNjIyMy0wMWJkLTRmOTMtOTViMi05YzI3OTc0ZWE4NmEiLCJleHAiOjE3MjQ5MTQyNDMsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.-ZI7D2o4iEFCoN2un8FlfeYO1nGLE-_YSBP1xdqbaJw
