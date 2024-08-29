@@ -56,6 +56,20 @@ public class ProjectController : ApiController
         return Ok(getProjectResult.Value.MapToResponse());
     }
 
+    public async Task<IActionResult> UpdateProject(string projectId)
+    {
+        var command = new UpdateProjectQuery(projectId);
+
+        var updateProjectResult = await _mediator.Send(command);
+
+        if (updateProjectResulot.IsFailed)
+        {
+            return Problem(updateProjectResult.Errors);
+        }
+
+        return Ok(updateProjectResult.MapToResponse());
+    }
+
     [HttpGet("{projectId}/tasks")]
     public async Task<IActionResult> GetProjectTasks(
         string projectId
