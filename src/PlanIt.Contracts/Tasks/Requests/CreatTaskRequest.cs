@@ -1,4 +1,4 @@
-namespace PlanIt.Contracts.Projects.Requests;
+namespace PlanIt.Contracts.Tasks.Requests;
 
 public record CreateTaskRequest(
     string Name,

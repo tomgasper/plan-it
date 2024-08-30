@@ -1,5 +1,4 @@
 using FluentResults;
-using PlanIt.Domain.Entities;
 
 namespace PlanIt.Application.Common.Interfaces.Authentication;
 

@@ -35,7 +35,8 @@ class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, Result
         }
 
         // Update the entry
-        project.Update(request.Name, request.Description);
+        project.ChangeName(request.Name);
+        project.ChangeDescription(request.Description);
 
         // Persist the entry
         await _projectRepository.UpdateAsync();

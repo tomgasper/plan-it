@@ -7,8 +7,10 @@ class Project
 {
     Project Create();
     void AddTask(ProjectTask task);
+    void UpdateTask(ProjectTask task);
     void RemoveTask(ProjectTask task);
     void ChangeName(string newName);
+    void ChangeDescription(string newDescription);
 }
 ```
 

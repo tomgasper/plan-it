@@ -3,9 +3,9 @@ namespace PlanIt.Contracts.Projects.Requests;
 public record CreateProjectRequest(
     string Name,
     string Description,
-    List<ProjectTask> ProjectTasks
+    List<ProjectTaskRequest> ProjectTasks
 );
-public record ProjectTask
+public record ProjectTaskRequest
 (
     string Name,
     string Description

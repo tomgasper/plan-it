@@ -1,13 +1,13 @@
 using FluentAssertions;
 using NSubstitute;
 using PlanIt.Application.Common.Interfaces.Persistence;
-using PlanIt.Application.Projects.Commands.CreateTask;
 using PlanIt.Application.UnitTests.Projects.Commands.TestUtils;
 using PlanIt.Application.UnitTests.TestUtils.Tasks;
 using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Application.UnitTests.TestUtils.Constants;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.Project.ValueObjects;
+using PlanIt.Application.Tasks.Commands.CreateTask;
 
 namespace PlanIt.Application.UnitTests.Projects.Commands.CreateTask;
 

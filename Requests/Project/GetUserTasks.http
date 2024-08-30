@@ -1,4 +1,0 @@
-@host=https://localhost:5234
-@userEmail="user1@email.com"
-
-GET {{host}}/projectOwners/{{projectOwnerId}}/project/{{projectId}}/tasks

@@ -2,14 +2,17 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.Application.Projects.Commands.AddTaskToProject;
 using PlanIt.Application.Projects.Queries;
-using PlanIt.Contracts.Projects.Requests;
-using PlanIt.Contracts.Projects.Responses;
+using PlanIt.Application.Tasks.Commands.CreateTask;
+using PlanIt.Contracts.Tasks.Requests;
+using PlanIt.WebApi.Common.Mapping;
+using FluentResults;
+using PlanIt.Domain.ProjectAggregate.Entities;
+using PlanIt.Application.Tasks.Commands.DeleteTask;
 
 namespace PlanIt.WebApi.Controllers;
 
-[Route("api/projects/{projectId}")]
+[Route("api/projects/{projectId}/tasks")]
 public class TaskController : ApiController
 {
     private readonly IMapper _mapper;
@@ -21,30 +24,14 @@ public class TaskController : ApiController
         _mediator = mediator;
     }
 
-    [HttpGet("tasks")]
-    public async Task<IActionResult> GetProjectTasks(
-        string projectId
-    )
-    {
-        var command = new ProjectTasksQuery(projectId);
-
-        var projectTasksResult = await _mediator.Send(command);
-
-        if (projectTasksResult.IsFailed)
-        {
-            return Problem(projectTasksResult.Errors);
-        }
-
-        return Ok(_mapper.Map<List<ProjectTaskResponse>>(projectTasksResult.Value));
-    }
-
-    [HttpPost("addTask")]
+    [HttpPost]
     public async Task<IActionResult> CreateProjectTask(
         CreateTaskRequest request,
         string projectId
         )
     {
-        var command = _mapper.Map<CreateTaskCommand>((request, projectId));
+        var userId = GetUserId();
+        CreateTaskCommand command = request.MapToCommand(userId, projectId);
 
         var createdProjectTaskResult = await _mediator.Send(command);
 
@@ -53,6 +40,61 @@ public class TaskController : ApiController
             return Problem(createdProjectTaskResult.Errors);
         }
 
-        return Ok(_mapper.Map<ProjectTaskResponse>(createdProjectTaskResult.Value));
+        return Ok(createdProjectTaskResult.Value.MapToResponse());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProjectTasks(
+        string projectId
+    )
+    {
+        var command = new ProjectTasksQuery(projectId);
+
+        Result<IReadOnlyList<ProjectTask>> projectTasksResult = await _mediator.Send(command);
+
+        if (projectTasksResult.IsFailed)
+        {
+            return Problem(projectTasksResult.Errors);
+        }
+
+        return Ok(projectTasksResult.Value.MapToResponse());
+    }
+
+    [HttpPut("{taskId}")]
+    public async Task<IActionResult> UpdateProjectTask(
+        [FromBody] UpdateTaskRequest request,
+        string projectId,
+        string taskId
+    )
+    {
+        var userId = GetUserId();
+        var command = request.MapToCommand(userId, projectId, taskId);
+
+        Result<ProjectTask> projectTasksResult = await _mediator.Send(command);
+
+        if (projectTasksResult.IsFailed)
+        {
+            return Problem(projectTasksResult.Errors);
+        }
+
+        return Ok(projectTasksResult.Value.MapToResponse());
+    }
+
+    [HttpDelete("{taskId}")]
+    public async Task<IActionResult> DeleteProjectTask(
+        string projectId,
+        string taskId
+    )
+    {
+        var command = new DeleteTaskCommand(projectId, taskId);
+
+        Result deleteTaskResult = await _mediator.Send(command);
+
+        if (deleteTaskResult.IsFailed)
+        {
+            return Problem(deleteTaskResult.Errors);
+        }
+
+        return Ok();
     }
 }

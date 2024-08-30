@@ -31,6 +31,16 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
     public IReadOnlyList<TaskCommentId> TaskCommentIds => _taskComments;
     public IReadOnlyList<TaskWorkerId> TaskWorkerIds => _taskWorkers;
 
+    public void ChangeName(string newName)
+    {
+        Name = newName;
+    }
+
+    public void ChangeDescription(string description)
+    {
+        Description = description;
+    }
+
     public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
     {
         return new(

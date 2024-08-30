@@ -1,5 +1,6 @@
 using PlanIt.Contracts.Projects.Requests;
 using PlanIt.Contracts.Projects.Responses;
+using PlanIt.Contracts.Tasks.Responses;
 using PlanIt.Domain.ProjectAggregate;
 
 namespace PlanIt.WebApi.Common.Mapping;
@@ -17,7 +18,7 @@ public static class ProjectMapping
                 Description: task.Description,
                 TaskOwnerId: task.TaskOwnerId.Value.ToString(),
                 TaskCommentIds: new List<string>(), // Temporary
-                ProjectWorkerIds: new List<string>() // Temporary
+                TaskWorkerIds: new List<string>() // Temporary
             )).ToList(),
             ProjectOwnerId: project.ProjectOwnerId.Value.ToString(),
             CreatedDateTime: project.CreatedDateTime,

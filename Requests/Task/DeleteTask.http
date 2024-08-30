@@ -1,0 +1,7 @@
+@host=https://localhost:5234
+@projectId=d0b41044-c9c0-40d3-9750-b1a72d4acbf4
+@projectTaskId=79ac124a-f41f-4eae-a124-15bc33ca9d30
+
+DELETE {{host}}/api/projects/{{projectId}}/tasks/{{projectTaskId}}
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NDUxYTJjZS0zMzRkLTRmN2MtN2QzMy0wOGRjYzc2MmE5ZjEiLCJnaXZlbl9uYW1lIjoiRmlzdE5hbWUxIiwiZmFtaWx5X25hbWUiOiJMYXN0TmFtZTEiLCJqdGkiOiI1YTViNTczMy1jZGU3LTQ1YmUtOGRkNy02MWQxODA4MGMyNDEiLCJleHAiOjE3MjUwMDY5NjQsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.gaZnIK2jNy4Si4licpdLnRd7oHeZ0XxwFKq_k2Ag5vg

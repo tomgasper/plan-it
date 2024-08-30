@@ -1,9 +1,6 @@
-using System.Data;
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using PlanIt.Application.Projects.Commands.AddTaskToProject;
 
-namespace PlanIt.Application.Projects.Commands.CreateTask;
+namespace PlanIt.Application.Tasks.Commands.CreateTask;
 
 public class CreateTaskValidator : AbstractValidator<CreateTaskCommand>
 {

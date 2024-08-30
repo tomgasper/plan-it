@@ -1,11 +1,9 @@
 using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
-using PlanIt.Application.Projects.Commands.AddTaskToProject;
-using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 
-namespace PlanIt.Application.Projects.Commands.CreateTask;
+namespace PlanIt.Application.Tasks.Commands.CreateTask;
 
 public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Result<ProjectTask>>
 {
@@ -27,7 +25,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
         }
 
         // Create task and add to the Project
-        var createdTask = project.CreateNewTask(request.Name, request.Description);
+        var createdTask = project.AddNewTask(request.Name, request.Description);
 
         // Persist Project
         await _projectRepository.UpdateAsync();
