@@ -1,5 +1,5 @@
 using FluentAssertions;
-using PlanIt.Application.Projects.Commands.AddTaskToProject;
+using PlanIt.Application.Tasks.Commands.CreateTask;
 using PlanIt.Domain.ProjectAggregate.Entities;
 
 namespace PlanIt.Application.UnitTests.TestUtils.Tasks;

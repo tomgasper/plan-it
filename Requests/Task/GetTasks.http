@@ -1,0 +1,6 @@
+@host=https://localhost:5234
+@projectId=d0b41044-c9c0-40d3-9750-b1a72d4acbf4
+
+GET {{host}}/api/projects/{{projectId}}/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NDUxYTJjZS0zMzRkLTRmN2MtN2QzMy0wOGRjYzc2MmE5ZjEiLCJnaXZlbl9uYW1lIjoiRmlzdE5hbWUxIiwiZmFtaWx5X25hbWUiOiJMYXN0TmFtZTEiLCJqdGkiOiI3MGVhZjEwZS1iMWU5LTQzYmUtOWVmOC04Y2IyYzA2YjQxMTYiLCJleHAiOjE3MjQ5NDI0NTEsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.S5zCDzOYBINhuNuaRgRfX5rSNMkZkNggF6UCFaZNLaY

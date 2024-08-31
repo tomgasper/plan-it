@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,10 +53,25 @@ public class ApiController : ControllerBase
             ErrorType.Conflict => StatusCodes.Status409Conflict,
             ErrorType.Validation => StatusCodes.Status400BadRequest,
             ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
             _ => StatusCodes.Status500InternalServerError
         };
 
         return Problem(statusCode: statusCode, title: applicationError.Message);
     }
-}
 
+    protected string GetUserId()
+    {
+        if (User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            throw new Exception("User must be authenticated in order to get the Id");
+        }
+
+        var userIdFromJwt = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdFromJwt)) throw new Exception(
+            "Couldn't retrieve User's id from Claims Principal."
+            );
+        
+        return userIdFromJwt;
+    }
+}

@@ -45,6 +45,8 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<PlanItDbContext>();
 
         services.AddScoped<IIdentity, Identity>();
+        
+        services.AddScoped<IUserContext, UserContext>();
 
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters

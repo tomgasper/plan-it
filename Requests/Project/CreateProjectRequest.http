@@ -2,20 +2,20 @@
 
 POST {{host}}/api/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NDUxYTJjZS0zMzRkLTRmN2MtN2QzMy0wOGRjYzc2MmE5ZjEiLCJnaXZlbl9uYW1lIjoiRmlzdE5hbWUxIiwiZmFtaWx5X25hbWUiOiJMYXN0TmFtZTEiLCJqdGkiOiIxNzU5Y2UyOS02NGJlLTRhYTItOTQ5OC1kNTY3YTlmOGFiZjciLCJleHAiOjE3MjQ4NTc1MjAsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.1LMnxWycAAH63Mx6acFND-tPjDl4ZuGDN68Uycu7Siw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NDUxYTJjZS0zMzRkLTRmN2MtN2QzMy0wOGRjYzc2MmE5ZjEiLCJnaXZlbl9uYW1lIjoiRmlzdE5hbWUxIiwiZmFtaWx5X25hbWUiOiJMYXN0TmFtZTEiLCJqdGkiOiI1YTU2NDM5Yy1kMDFlLTQ4MDAtYmJmYi0yOWE3YzFmY2MzMTMiLCJleHAiOjE3MjQ5MzEyOTQsImlzcyI6IlBsYW5JdCIsImF1ZCI6IlBsYW5JdCJ9.9M3QHT0aekoYZ7Ldqq7WmeZ4C_9nl0P-L_LQYVt5wgw
 
 {
-    "name": "A new project",
-    "description": "A project that will be perfect",
+    "name": "Project 1",
+    "description": "Project 1 description",
     "projectTasks": 
         [
             {
-                "name": "Some task",
-                "description": "Descirption of the task"
+                "name": "Task 1",
+                "description": "Task 1 description"
             },
             {
-                "name": "Another task",
-                "description": "Another description"
+                "name": "Task 2",
+                "description": "Task 2 description"
             }
         ]
 }

@@ -39,6 +39,38 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
 
+    public void ChangeName(string newName)
+    {
+        Name = newName;
+        UpdatedDateTime = DateTime.Now;
+    }
+
+    public void ChangeDescription(string newDescription)
+    {
+        Description = newDescription;
+        UpdatedDateTime = DateTime.Now;
+    }
+
+    public ProjectTask? ChangeTaskNameDescription(
+        ProjectTaskId taskId,
+        string userId,
+        string newName,
+        string newDescription)
+    {
+        var task = ProjectTasks.FirstOrDefault(t => t.Id == taskId);
+        
+        if (task is null || !IsUserAllowedToEditTask(userId, task))
+        {
+            return null;
+        }
+
+        task.ChangeName(newName);
+        task.ChangeDescription(newDescription);
+        UpdatedDateTime = DateTime.UtcNow;
+
+        return task;
+    }
+
     public static Project Create(string name,
         string description,
         ProjectOwnerId projectOwnerId,
@@ -59,9 +91,9 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return project;
     }
 
-    public ProjectTask CreateNewTask(string name, string description)
+    public ProjectTask AddNewTask(string name, string description)
     {
-        var newTask = ProjectTask.Create(
+        ProjectTask? newTask = ProjectTask.Create(
                 taskOwnerId: TaskOwnerId.Create(ProjectOwnerId.Value),
                 name: name,
                 description: description);
@@ -71,6 +103,27 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return newTask;
     }
 
+    public void DeleteTask(ProjectTaskId taskId, string userId)
+    {
+        ProjectTask? task = ProjectTasks.FirstOrDefault(t => t.Id == taskId);
+        
+        if (task is null || !IsUserAllowedToDeleteTask(userId, task))
+        {
+            return;
+        }
+
+        _projectTasks.Remove(task);
+    }
+
     public IReadOnlyList<ProjectTask> ProjectTasks => _projectTasks.AsReadOnly();
 
+    private bool IsUserAllowedToEditTask(string userId, ProjectTask task)
+    {
+        return ProjectOwnerId.Value.ToString() == userId || task.TaskOwnerId.Value.ToString() == userId;
+    }
+
+    private bool IsUserAllowedToDeleteTask(string userId, ProjectTask task)
+    {
+        return ProjectOwnerId.Value.ToString() == userId || task.TaskOwnerId.Value.ToString() == userId;
+    }
 }
