@@ -1,41 +1,16 @@
-import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
-import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { useState } from "react";
-import { Project } from "../Project/Project";
-import classes from "./MainWindow.module.css";
+import { Flex, Title } from "@mantine/core";
+import { MultipleContainers } from '../SortableItems/ManyItems';
+import classes from './MainWindow.module.css';
+import { useGetProjectByIdQuery } from "../../services/planit-api";
 
-export function MainWindow()
-{
-    const [items, setItems] = useState([1, 2, 3]);
-    
-    function handleDragEnd(event : DragEndEvent) {
-        const {active, over} = event;
-        
-        if (active.id !== over.id) {
-          setItems((items) => {
-            const oldIndex = items.indexOf(active.id);
-            const newIndex = items.indexOf(over.id);
-            
-            return arrayMove(items, oldIndex, newIndex);
-          });
-        }
-      }
+export function MainWindow() {
+    const { data, error, isLoading } = useGetProjectByIdQuery('d0b41044-c9c0-40d3-9750-b1a72d4acbf4');
 
     return (
-        <div className={classes.container}>
-            <DndContext
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-                >
-                <SortableContext
-                items={items}
-                strategy={rectSortingStrategy}
-                >
-                    {items.map((item) => (
-                    <Project key={item} id={item} />
-                    ))}
-                </SortableContext>
-        </DndContext>
-        </div>
-    )
+        <Flex className={classes.container} direction="column">
+            { isLoading && <div>Loading...</div>} {data?.name}
+            <Title>Workspace</Title>
+            <MultipleContainers />
+        </Flex>
+    );  
 }
