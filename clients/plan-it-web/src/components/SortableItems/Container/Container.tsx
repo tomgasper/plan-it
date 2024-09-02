@@ -32,6 +32,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       onClick,
       onRemove,
       label,
+      content,
       placeholder,
       style,
       scrollable,
@@ -67,7 +68,11 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       >
         {label ? (
           <div className={styles.Header}>
-            <Project onRemove={onRemove} handleProps={handleProps}/>
+            <Project
+            name={content?.name}
+            description={content?.description}
+            onRemove={onRemove}
+            handleProps={handleProps}/>
             </div>
         ) : null}
         {placeholder ? children : <ul>{children}</ul>}

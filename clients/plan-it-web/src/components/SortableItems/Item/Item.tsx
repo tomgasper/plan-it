@@ -61,6 +61,7 @@ export const Item = React.memo(
         onRemove,
         sorting,
         style,
+        content,
         transition,
         transform,
         value,
@@ -128,7 +129,7 @@ export const Item = React.memo(
             {...(!handle ? listeners : undefined)}
             tabIndex={!handle ? 0 : undefined}
           >
-            <Task  key={0} id={0} />
+            <Task id={content.id} name={content.name} description={content.description} />
             <span className={styles.Actions}>
               {onRemove ? (
                 <Remove className={styles.Remove} onClick={onRemove} />

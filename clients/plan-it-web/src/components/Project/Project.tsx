@@ -11,13 +11,15 @@ const avatars = [
 interface ProjectProps {
     onRemove : (() => void) | undefined;
     handleProps : React.HTMLAttributes<unknown> | undefined;
+    name: string;
+    description: string;
 }
 
-export function Project({ onRemove, handleProps } : ProjectProps ) {
+export function Project({ onRemove, handleProps, name, description } : ProjectProps ) {
   return (
         <Stack className={classes.headerContainer} align="stretch">
         <Group justify="space-between">
-        <Title order={3} >Project name</Title>
+        <Title order={3} >{name} </Title>
             <Group>
                 {onRemove ? <Remove onClick={onRemove} /> : undefined}
                 <Handle {...handleProps} />

@@ -27,7 +27,7 @@ export const collisionDetectionStrategy =
       if (overId != null) {
 
         if (overId in items) {
-          const containerItems = items[overId];
+          const containerItems = items[overId].projectTasks;
 
           // If a container is matched and it contains items (columns 'A', 'B', 'C')
           if (containerItems.length > 0) {
@@ -37,7 +37,7 @@ export const collisionDetectionStrategy =
               droppableContainers: args.droppableContainers.filter(
                 (container) =>
                   container.id !== overId &&
-                  containerItems.includes(container.id)
+                  containerItems.map( item => item.id).includes(container.id)
               ),
             })[0]?.id;
           }

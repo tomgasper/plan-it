@@ -5,20 +5,21 @@ import classes from './TaskCard.module.css';
 interface TaskCardProps
 {
   id: number;
+  name: string;
+  description: string;
 };
 
-export function TaskCard( {id} : TaskCardProps) {
+export function TaskCard( {id, name, description} : TaskCardProps) {
   const theme = useMantineTheme();
 
   return (
     <Card pt={0} pl={10} pb={15} className={classes.container} >
       <Stack gap={5}>
       <Text pt={0} fz="lg" fw={500} mt="sm">
-        Task {id}
+        {name}
       </Text>
       <Text c={"#545454"} fz="sm" mt={5}>
-        Form context management, Switch, Grid and Indicator components improvements, new hook and
-        10+ other changes
+        {description}
       </Text>
 
       <Group mt={10}>

@@ -41,8 +41,9 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) =>
 function DroppableContainer({
   children,
   columns = 1,
-  disabled,
   id,
+  content,
+  disabled,
   items,
   style,
   ...props
@@ -88,6 +89,7 @@ function DroppableContainer({
         ...attributes,
         ...listeners,
       }}
+      content={content}
       columns={columns}
       {...props}
     >
@@ -153,10 +155,10 @@ export function MultipleContainers({
   const [items, setItems] = useState<Items>(
     () =>
       initialItems ?? {
-        A: createRange(itemCount, (index) => `A${index + 1}`),
-        B: createRange(itemCount, (index) => `B${index + 1}`),
-        C: createRange(itemCount, (index) => `C${index + 1}`),
-        D: createRange(itemCount, (index) => `D${index + 1}`),
+        '0': createRange(itemCount, (index) => `0${index + 1}`),
+        '1': createRange(itemCount, (index) => `1${index + 1}`),
+        '2': createRange(itemCount, (index) => `2${index + 1}`),
+        '3': createRange(itemCount, (index) => `3${index + 1}`),
       }
   );
   const [containers, setContainers] = useState(
@@ -181,12 +183,23 @@ export function MultipleContainers({
     useSensor(MouseSensor),
     useSensor(TouchSensor),
   );
+
+  const getProjectTasksIds = ( (project) => {
+    console.log(project);
+    if (!project || project.projectTasks.length === 0) {
+      return [];
+    }
+    return project.projectTasks.map((value, index) => value.id);
+  });
+
   const findContainer = (id: UniqueIdentifier) => {
     if (id in items) {
       return id;
     }
 
-    return Object.keys(items).find((key) => items[key].includes(id));
+    return Object.keys(items).find((key) => {
+      return getProjectTasksIds(items[key]).includes(id);
+    });
   };
 
   const getIndex = (id: UniqueIdentifier) => {
@@ -196,7 +209,7 @@ export function MultipleContainers({
       return -1;
     }
 
-    const index = items[container].indexOf(id);
+    const index = items[container].projectTasks.indexOf(id);
 
     return index;
   };
@@ -247,8 +260,8 @@ export function MultipleContainers({
 
         if (activeContainer !== overContainer) {
           setItems((items) => {
-            const activeItems = items[activeContainer];
-            const overItems = items[overContainer];
+            const activeItems = getProjectTasksIds(items[activeContainer]);
+            const overItems = getProjectTasksIds(items[overContainer]);
             const overIndex = overItems.indexOf(overId);
             const activeIndex = activeItems.indexOf(active.id);
 
@@ -273,17 +286,22 @@ export function MultipleContainers({
 
             return {
               ...items,
-              [activeContainer]: items[activeContainer].filter(
-                (item) => item !== active.id
-              ),
-              [overContainer]: [
-                ...items[overContainer].slice(0, newIndex),
-                items[activeContainer][activeIndex],
-                ...items[overContainer].slice(
-                  newIndex,
-                  items[overContainer].length
-                ),
-              ],
+              [activeContainer]: {
+                ...items[activeContainer],
+                projectTasks: items[activeContainer].projectTasks.filter(
+                (item) => item.id !== active.id
+              )},
+              [overContainer]: {
+                ...items[overContainer], 
+                projectTasks: [
+                  ...items[overContainer].projectTasks.slice(0, newIndex),
+                  items[activeContainer].projectTasks.find(item => item.id === active.id),
+                  ...items[overContainer].projectTasks.slice(
+                    newIndex,
+                    items[overContainer].projectTasks.length
+                  ),
+                ],
+              }
             };
           });
         }
@@ -319,10 +337,17 @@ export function MultipleContainers({
             setContainers((containers) => [...containers, newContainerId]);
             setItems((items) => ({
               ...items,
-              [activeContainer]: items[activeContainer].filter(
+              [activeContainer]:
+              {
+                ...items[activeContainer],
+                projectTasks: items[activeContainer].filter(
                 (id) => id !== activeId
-              ),
-              [newContainerId]: [active.id],
+              )},
+              [newContainerId]:
+              {
+                ...items[newContainerId],
+                projectTasks: [ projectTasks[active.id] ]
+              },
             }));
             setActiveId(null);
           });
@@ -332,17 +357,25 @@ export function MultipleContainers({
         const overContainer = findContainer(overId);
 
         if (overContainer) {
-          const activeIndex = items[activeContainer].indexOf(active.id);
-          const overIndex = items[overContainer].indexOf(overId);
+          const activeIndex = getProjectTasksIds(items[activeContainer]).indexOf(active.id);
+          const overIndex = getProjectTasksIds(items[overContainer]).indexOf(overId);
+
+          console.log("Active Index:", activeIndex);
+          console.log("Over Index:", overIndex);
+          console.log("Project tasks ids: " + getProjectTasksIds(items[overContainer]));
 
           if (activeIndex !== overIndex) {
             setItems((items) => ({
               ...items,
-              [overContainer]: arrayMove(
-                items[overContainer],
-                activeIndex,
-                overIndex
-              ),
+              [overContainer]: 
+              {
+                ...items[overContainer],
+                projectTasks: arrayMove(
+                  items[overContainer].projectTasks,
+                  activeIndex,
+                  overIndex
+                )
+              },
             }));
           }
         }
@@ -364,23 +397,26 @@ export function MultipleContainers({
         >
           {containers.map((containerId) => (
             <DroppableContainer
+              id={containerId}
               key={containerId}
+              content={items[containerId]}
               id={containerId}
               label={`Column ${containerId}`}
               columns={columns}
-              items={items[containerId]}
+              items={items[containerId].projectTasks.map((value, index) => value.id)}
               scrollable={scrollable}
               style={containerStyle}
               onRemove={() => handleRemove(containerId)}
             >
-              <SortableContext items={items[containerId]} strategy={strategy}>
-                {items[containerId].map((value, index) => {
+              <SortableContext items={ items[containerId].projectTasks.map( task => task.id )} strategy={strategy}>
+                {items[containerId].projectTasks.map( (task) => {
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
-                      key={value}
-                      id={value}
-                      index={index}
+                      key={task.id}
+                      id={task.id}
+                      content={task}
+                      index={task.id}
                       handle={handle}
                       style={getItemStyles}
                       wrapperStyle={wrapperStyle}
@@ -417,15 +453,19 @@ export function MultipleContainers({
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
+    const containerId = findContainer(id) as UniqueIdentifier;
+    const projectTask = items[containerId].projectTasks.find( (task) => task.id === id);
+
     return (
       <Item
-        value={id}
+        value={projectTask.id}
+        content={projectTask}
         handle={handle}
         style={getItemStyles({
-          containerId: findContainer(id) as UniqueIdentifier,
+          containerId: containerId,
           overIndex: -1,
-          index: getIndex(id),
-          value: id,
+          index: getIndex(projectTask.id),
+          value: projectTask.id,
           isSorting: true,
           isDragging: true,
           isDragOverlay: true,
@@ -442,17 +482,19 @@ export function MultipleContainers({
       <Container
         label={`Column ${containerId}`}
         columns={columns}
+        content={items[containerId]}
         style={{
           height: '100%',
         }}
         shadow
         unstyled={false}
       >
-        {items[containerId].map((item, index) => (
+        {items[containerId].projectTasks.map((item, index) => (
           <Item
-            key={item}
-            value={item}
+            key={item.id}
+            value={item.id}
             handle={handle}
+            content={item}
             style={getItemStyles({
               containerId,
               overIndex: -1,
@@ -483,16 +525,18 @@ export function MultipleContainers({
       setContainers((containers) => [...containers, newContainerId]);
       setItems((items) => ({
         ...items,
-        [newContainerId]: [],
+        [newContainerId]: {
+          name: "New project",
+          description: "",
+          projectTasks: []
+        },
       }));
     });
   }
 
   function getNextContainerId() {
-    const containerIds = Object.keys(items);
-    const lastContainerId = containerIds[containerIds.length - 1];
 
-    return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
+    return crypto.randomUUID();
   }
 }
 
@@ -528,6 +572,7 @@ function SortableItem({
   index,
   handle,
   style,
+  content,
   containerId,
   getIndex,
   wrapperStyle,
@@ -557,6 +602,7 @@ function SortableItem({
       handle={handle}
       handleProps={handle ? {ref: setActivatorNodeRef} : undefined}
       index={index}
+      content={content}
       wrapperStyle={wrapperStyle({index})}
       style={style({
         index,
