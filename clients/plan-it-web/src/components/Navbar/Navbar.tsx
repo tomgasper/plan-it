@@ -12,7 +12,7 @@ import {
     Tooltip,
   } from '@mantine/core';
   import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus } from '@tabler/icons-react';
-  // import { UserButton } from '../UserButton/UserButton';
+  import { UserButton } from '../UserButton/UserButton';
   import classes from './Navbar.module.css';
   
   
@@ -64,7 +64,7 @@ import {
     return (
       <nav className={classes.navbar}>
         <div className={classes.section}>
-          
+          <UserButton />
         </div>
   
         <TextInput
@@ -84,7 +84,7 @@ import {
         <div className={classes.section}>
           <Group className={classes.collectionsHeader} justify="space-between">
             <Text size="xs" fw={500} c="dimmed">
-              Collections
+              Workspaces
             </Text>
             <Tooltip label="Create collection" withArrow position="right">
               <ActionIcon variant="default" size={18}>

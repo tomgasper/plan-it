@@ -1,6 +1,3 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi;
@@ -10,6 +7,15 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
+
+        services.AddCors( options => {
+            options.AddDefaultPolicy(
+                builder => {
+                    // Allow any part on localhost for dev purposes
+                    builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                }
+            );
+        });
         /*
         services.Configure<ApiBehaviorOptions>(options =>
         {

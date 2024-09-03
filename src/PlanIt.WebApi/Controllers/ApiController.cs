@@ -8,7 +8,7 @@ using PlanIt.WebApi.Common.Http;
 namespace PlanIt.WebApi.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 public class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<IError> errors)

@@ -11,6 +11,7 @@ export default tseslint.config(
     settings: { react: { version: '18.3' } },
     extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked, ...tseslint.configs.stylisticTypeChecked],
     files: ['**/*.{ts,tsx}'],
+    
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -30,6 +31,7 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-unsafe-assignment": "warn",
       ...react.configs.recommended.rules,
     ...react.configs['jsx-runtime'].rules,
     },
