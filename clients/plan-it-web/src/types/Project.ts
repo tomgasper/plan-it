@@ -3,3 +3,9 @@ export interface Project {
     name: string;
     description: string;
 }
+
+export interface ProjectTask {
+    id: string,
+    name: string,
+    description: string
+}

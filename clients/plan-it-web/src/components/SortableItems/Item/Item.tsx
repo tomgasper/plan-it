@@ -10,8 +10,9 @@ import {Handle, Remove} from './components';
 
 import styles from './Item.module.css';
 import { Task } from '../../Task/Task';
+import { ProjectTask } from '../../../types/Project';
 
-export interface Props {
+export interface ItemProps {
   dragOverlay?: boolean;
   color?: string;
   disabled?: boolean;
@@ -21,6 +22,7 @@ export interface Props {
   height?: number;
   index?: number;
   fadeIn?: boolean;
+  content: ProjectTask;
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
   sorting?: boolean;
@@ -38,24 +40,22 @@ export interface Props {
     listeners: DraggableSyntheticListeners;
     ref: React.Ref<HTMLElement>;
     style: React.CSSProperties | undefined;
-    transform: Props['transform'];
-    transition: Props['transition'];
-    value: Props['value'];
+    transform: ItemProps['transform'];
+    transition: ItemProps['transition'];
+    value: ItemProps['value'];
   }): React.ReactElement;
 }
 
 export const Item = React.memo(
-  React.forwardRef<HTMLLIElement, Props>(
+  React.forwardRef<HTMLLIElement, ItemProps>(
     (
       {
-        color,
         dragOverlay,
         dragging,
         disabled,
         fadeIn,
         handle,
         handleProps,
-        height,
         index,
         listeners,
         onRemove,
@@ -64,7 +64,6 @@ export const Item = React.memo(
         content,
         transition,
         transform,
-        value,
         wrapperStyle,
         ...props
       },
@@ -109,7 +108,6 @@ export const Item = React.memo(
                 ? `${transform.scaleY}`
                 : undefined,
               '--index': index,
-              '--color': color,
             } as React.CSSProperties
           }
           {...props}
@@ -122,14 +120,13 @@ export const Item = React.memo(
               handle && styles.withHandle,
               dragOverlay && styles.dragOverlay,
               disabled && styles.disabled,
-              color && styles.color
             )}
             style={style}
             data-cypress="draggable-item"
             {...(!handle ? listeners : undefined)}
             tabIndex={!handle ? 0 : undefined}
           >
-            <Task id={content.id} name={content.name} description={content.description} />
+            <Task key={content.id} id={content.id} name={content.name} description={content.description} />
             <span className={styles.Actions}>
               {onRemove ? (
                 <Remove className={styles.Remove} onClick={onRemove} />

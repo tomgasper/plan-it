@@ -1,5 +1,5 @@
 import { Flex, Title } from "@mantine/core";
-import { MultipleContainers } from '../SortableItems/ManyItems';
+import { MultipleSortableProjects } from '../SortableItems/MultipleSortableProjects';
 import classes from './MainWindow.module.css';
 import { useGetProjectByIdQuery } from "../../services/planit-api";
 
@@ -26,7 +26,7 @@ export function MainWindow() {
             { isLoading ? <div>Loading...</div> :
             <>
                 <Title>Workspace</Title>
-                <MultipleContainers items={projects} />
+                <MultipleSortableProjects projects={projects} />
                 </>
             }
         </Flex>
