@@ -2,7 +2,7 @@ using FluentResults;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using PlanIt.Application.Common.Interfaces.Persistence;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 using PlanIt.Infrastructure.Authentication;
 using PlanIt.Infrastructure.Common.Mapping;
 

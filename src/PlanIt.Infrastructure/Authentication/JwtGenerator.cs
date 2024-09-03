@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Services;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 
 namespace PlanIt.Infrastructure.Authentication;
 

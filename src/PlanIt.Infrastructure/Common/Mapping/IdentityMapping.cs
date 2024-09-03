@@ -1,5 +1,5 @@
 using Microsoft.Identity.Client;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 using PlanIt.Infrastructure.Authentication;
 
 namespace PlanIt.Infrastructure.Common.Mapping;

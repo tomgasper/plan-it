@@ -5,7 +5,7 @@ using PlanIt.Application.Authentication.Commands.Queries.Login;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Services.Authentication.Common;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthenticationResult>>
 {

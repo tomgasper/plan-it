@@ -1,4 +1,4 @@
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 
 namespace PlanIt.Application.Common.Interfaces.Authentication;
 
