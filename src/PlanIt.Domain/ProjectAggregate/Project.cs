@@ -3,7 +3,6 @@ using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.Events;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
-using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate;
 

@@ -17,7 +17,7 @@ public static class ProjectMapping
                 Name: task.Name,
                 Description: task.Description,
                 TaskOwnerId: task.TaskOwnerId.Value.ToString(),
-                TaskCommentIds: new List<string>(), // Temporary
+                TaskComments: task.TaskComments.Select( tc => new TaskCommentResponse(tc.Name, tc.Description)).ToList(), // Temporary
                 TaskWorkerIds: new List<string>() // Temporary
             )).ToList(),
             ProjectOwnerId: project.ProjectOwnerId.Value.ToString(),

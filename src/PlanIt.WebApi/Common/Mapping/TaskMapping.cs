@@ -31,7 +31,7 @@ public static class TaskMapping
             Name: projectTask.Name,
             Description: projectTask.Description,
             TaskOwnerId: projectTask.TaskOwnerId.MapToResponse(),
-            TaskCommentIds: IdMapping.MapIdsToStrings(projectTask.TaskCommentIds),
+            TaskComments: projectTask.TaskComments.Select( tc => new TaskCommentResponse(tc.Name, tc.Description)).ToList(),
             TaskWorkerIds: IdMapping.MapIdsToStrings(projectTask.TaskWorkerIds)
         )
     );

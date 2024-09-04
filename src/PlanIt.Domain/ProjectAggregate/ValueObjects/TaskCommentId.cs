@@ -10,4 +10,9 @@ public sealed class TaskCommentId : IdValueObject
     {
         return new(Guid.NewGuid());
     }
+
+    public static TaskCommentId Create(Guid value)
+    {
+        return new(value);
+    }
 }
