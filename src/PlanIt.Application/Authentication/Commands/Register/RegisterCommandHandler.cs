@@ -3,7 +3,7 @@ using MediatR;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Services.Authentication.Common;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 
 namespace PlanIt.Application.Authentication.Commands.Register;
 
@@ -30,19 +30,20 @@ public class RegisterCommandHandler :
         }
 
         // 2. Create user (generate unique ID) & Persist to DB
-        var user = new User
-        {
-            FirstName = command.FirstName,
-            LastName = command.LastName,
-            Email = command.Email
-        };
+        var user = User.Create(
+            id: Guid.NewGuid(),
+            firstName: command.FirstName,
+            lastName: command.LastName
+        );
 
-        var createdUser = await _userRepository.AddAsync(user, command.Password);
+        var createdUser = await _userRepository.AddAsync(user, command.Email, command.Password);
 
         if (createdUser.IsFailed)
         {
             return Result.Fail<AuthenticationResult>( createdUser.Errors );
         }
+
+        await _userRepository.SaveChangesAsync();
 
         // 3. Create JWT token
         var token = _jwtGenerator.GenerateToken(user);

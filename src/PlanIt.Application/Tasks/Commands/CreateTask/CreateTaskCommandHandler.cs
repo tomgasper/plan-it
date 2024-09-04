@@ -2,6 +2,7 @@ using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.ProjectAggregate.Entities;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.Tasks.Commands.CreateTask;
 
@@ -16,12 +17,14 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
 
     public async Task<Result<ProjectTask>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
     {
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
+
         // Make sure the Project exists
-        var project = await _projectRepository.GetAsync(request.ProjectId);
+        var project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail<ProjectTask>(new NotFoundError($"The project with provided Id: {request.ProjectId} doesn't exist."));
+            return Result.Fail<ProjectTask>(new NotFoundError($"The project with provided Id: {projectId} doesn't exist."));
         }
 
         // Create task and add to the Project

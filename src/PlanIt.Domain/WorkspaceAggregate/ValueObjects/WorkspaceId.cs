@@ -16,6 +16,11 @@ public sealed class WorkspaceId : AggregateRootId<Guid>
         return new WorkspaceId(Guid.NewGuid());
     }
 
+    public static WorkspaceId Create(Guid value)
+    {
+        return new WorkspaceId(value);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

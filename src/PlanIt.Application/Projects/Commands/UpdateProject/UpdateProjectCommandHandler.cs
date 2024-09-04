@@ -2,6 +2,7 @@ using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.ProjectAggregate;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.Projects.Commands.UpdateProject;
 
@@ -16,12 +17,14 @@ class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, Result
 
     public async Task<Result<Project>> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
+        
         // Check if the project exists
-        var project = await _projectRepository.GetAsync(request.ProjectId);
+        var project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail<Project>(new NotFoundError($"The project with id: {request.ProjectId} couldn't be found."));
+            return Result.Fail<Project>(new NotFoundError($"The project with id: {projectId.Value} couldn't be found."));
         }
 
         var userId = new Guid(request.UserId);

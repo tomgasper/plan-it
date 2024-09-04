@@ -19,13 +19,15 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Resul
 
     public async Task<Result<ProjectTask>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
+
         // Check if the project exists
         var userId = new Guid(request.UserId);
-        Project? project = await _projectRepository.GetAsync(request.ProjectId);
+        Project? project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail<ProjectTask>(new NotFoundError($"The project with id: {request.ProjectId} couldn't be found."));
+            return Result.Fail<ProjectTask>(new NotFoundError($"The project with id: {projectId.Value} couldn't be found."));
         }
         
         // Check if the task exists

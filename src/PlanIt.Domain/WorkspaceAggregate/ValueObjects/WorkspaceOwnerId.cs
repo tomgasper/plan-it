@@ -10,4 +10,9 @@ public sealed class WorkspaceOwnerId : IdValueObject
     {
         return new WorkspaceOwnerId(Guid.NewGuid());
     }
+
+    public static WorkspaceOwnerId Create(Guid value)
+    {
+        return new WorkspaceOwnerId(value);
+    }
 }

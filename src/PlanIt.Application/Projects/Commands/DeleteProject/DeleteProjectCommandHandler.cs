@@ -1,6 +1,7 @@
 using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.Projects.Commands.DeleteProject;
 
@@ -15,12 +16,14 @@ public record DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand
 
     public async Task<Result> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
+        
         // Check if the project exists
-        var project = await _projectRepository.GetAsync(request.ProjectId);
+        var project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail(new NotFoundError($"The project with id: {request.ProjectId} couldn't be found."));
+            return Result.Fail(new NotFoundError($"The project with id: {projectId.Value} couldn't be found."));
         }
 
         var userId = new Guid(request.UserId);

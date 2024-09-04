@@ -1,6 +1,5 @@
 using FluentResults;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using PlanIt.Application.Authentication.Commands.Queries.Login;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Persistence;

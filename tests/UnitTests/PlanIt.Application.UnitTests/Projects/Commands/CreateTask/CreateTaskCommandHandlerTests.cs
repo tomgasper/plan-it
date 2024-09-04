@@ -8,6 +8,7 @@ using PlanIt.Application.UnitTests.TestUtils.Constants;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Application.Tasks.Commands.CreateTask;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.UnitTests.Projects.Commands.CreateTask;
 
@@ -34,7 +35,7 @@ public class CreateTaskCommandHandlerTests
             new List<ProjectTask>()
         );
 
-        _mockProjectRepository.GetAsync(Arg.Any<string>()).Returns(mockProject);
+        _mockProjectRepository.GetAsync(Arg.Any<ProjectId>()).Returns(mockProject);
 
         // Act
         var result = await _handler.Handle(createTaskCommand, default);
