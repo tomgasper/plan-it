@@ -1,0 +1,6 @@
+@host=https://localhost:5234
+@workspaceId=e02023fa-6b10-46b8-9315-f53a081bf46d
+
+DELETE {{host}}/api/workspaces/{{workspaceId}}
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6ImIyMGExOTU5LTllYWYtNDU4ZS04NjI3LWQ3NDAzMzNkZmZjNSIsImV4cCI6MTcyNTYzMjgzMCwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.ZN8-8TdKJoS2KyxB0tM8yJcweCrdLuu9ucy9Dby45OM

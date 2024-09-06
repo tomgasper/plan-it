@@ -65,4 +65,14 @@ public sealed class Workspace : AggregateRoot<WorkspaceId, Guid>
 
         // Add domain event
     }
+
+    public void ChangeName(string newName)
+    {
+        Name = newName;
+    }
+
+    public void ChangeDescription(string newDescription)
+    {
+        Description = newDescription;
+    }
 }

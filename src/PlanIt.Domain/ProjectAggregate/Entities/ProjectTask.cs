@@ -29,7 +29,15 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
     public TaskOwnerId TaskOwnerId { get; private set; }
     public IReadOnlyList<TaskComment> TaskComments => _taskComments;
     public IReadOnlyList<TaskWorkerId> TaskWorkerIds => _taskWorkerIds;
-
+    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
+    {
+        return new(
+            ProjectTaskId.CreateUnique(),
+            taskOwnerId,
+            name,
+            description
+        );
+    }
     public void ChangeName(string newName)
     {
         Name = newName;
@@ -40,13 +48,9 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
         Description = description;
     }
 
-    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
+    public void AddComment(string commentName, string commentDescription)
     {
-        return new(
-            ProjectTaskId.CreateUnique(),
-            taskOwnerId,
-            name,
-            description
-        );
+        var comment = TaskComment.Create(Id, commentName, commentDescription);
+        _taskComments.Add(comment);
     }
 }

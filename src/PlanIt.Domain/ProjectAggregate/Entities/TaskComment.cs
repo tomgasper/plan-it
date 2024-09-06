@@ -4,7 +4,7 @@ using PlanIt.Domain.TaskComment.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate.Entities;
 
-public sealed class TaskComment : Entity<TaskCommentId>
+public class TaskComment : Entity<TaskCommentId>
 {
     public string Name { get; private set; }
     public string Description { get; private set; }

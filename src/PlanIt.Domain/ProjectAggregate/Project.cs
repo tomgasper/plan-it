@@ -116,6 +116,12 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         _projectTasks.Remove(task);
     }
 
+    public void AddCommentToTask(Entities.TaskComment taskComment)
+    {
+        var projectTask = _projectTasks.FirstOrDefault( pt => pt.Id == taskComment.ProjectTaskId);
+        projectTask!.AddComment(taskComment.Name, taskComment.Description);
+    }
+
     private bool IsUserAllowedToEditTask(string userId, ProjectTask task)
     {
         return ProjectOwnerId.Value.ToString() == userId || task.TaskOwnerId.Value.ToString() == userId;

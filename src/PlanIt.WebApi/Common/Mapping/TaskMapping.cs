@@ -1,3 +1,4 @@
+using PlanIt.Application.Tasks.Commands.AddComment;
 using PlanIt.Application.Tasks.Commands.CreateTask;
 using PlanIt.Application.Tasks.Commands.UpdateTask;
 using PlanIt.Contracts.Tasks.Requests;
@@ -38,5 +39,14 @@ public static class TaskMapping
 
     public static List<ProjectTaskResponse> MapToResponse(this IReadOnlyList<ProjectTask> projectTasks) => (
         projectTasks.Select( task => task.MapToResponse()).ToList()
+    );
+
+    public static AddCommentCommand MapToCommand(this AddCommentRequest request, string projectId, string taskId) => (
+        new AddCommentCommand(
+            ProjectId: projectId,
+            TaskId: taskId,
+            Name: request.Name,
+            Description: request.Description
+        )
     );
 }

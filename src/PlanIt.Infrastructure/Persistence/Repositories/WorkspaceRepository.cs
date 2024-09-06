@@ -23,6 +23,12 @@ public class WorkspaceRepository : IWorkspaceRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task DeleteAsync(Workspace workspace)
+    {
+        _dbContext.Workspaces.Remove(workspace);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task<Workspace?> GetAsync(WorkspaceId workspaceId)
     {
         return await _dbContext.Workspaces.FirstOrDefaultAsync( w => w.Id == workspaceId);

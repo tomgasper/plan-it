@@ -21,6 +21,11 @@ public sealed class WorkspaceId : AggregateRootId<Guid>
         return new WorkspaceId(value);
     }
 
+    public static WorkspaceId FromString(string id)
+    {
+        return new WorkspaceId(new Guid(id));
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

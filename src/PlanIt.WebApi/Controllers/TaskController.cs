@@ -97,4 +97,19 @@ public class TaskController : ApiController
 
         return Ok();
     }
+
+    [HttpPost]
+    [Route("{taskId}/comments")]
+    public async Task<IActionResult> AddCommentToTask([FromBody] AddCommentRequest addCommentRequest, string projectId, string taskId)
+    {
+        var addCommentCommand = addCommentRequest.MapToCommand(projectId, taskId);
+
+        var addCommentResult = await _mediator.Send(addCommentCommand);
+
+        if (addCommentResult.IsFailed){
+            return Problem(addCommentResult.Errors);
+        }
+
+        return Ok(addCommentResult.Value);
+    }
 }

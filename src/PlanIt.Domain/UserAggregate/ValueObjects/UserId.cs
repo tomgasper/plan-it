@@ -21,6 +21,11 @@ public sealed class UserId : AggregateRootId<Guid>
         return new UserId(Guid.NewGuid());
     }
 
+    public static UserId FromString(string id)
+    {
+        return new UserId(new Guid(id));
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
