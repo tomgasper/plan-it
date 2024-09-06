@@ -3,7 +3,7 @@ using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 
-namespace PlanIt.Application.UnitTests.TestUtils.Projects.Extensions;
+namespace PlanIt.Application.UnitTests.TestUtils.Projects;
 public static partial class ProjectExtensions
 {
     public static void ValidateCreatedFrom(this Project project, CreateProjectCommand command)

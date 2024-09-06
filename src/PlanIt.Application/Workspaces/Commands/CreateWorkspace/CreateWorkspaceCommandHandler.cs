@@ -11,7 +11,7 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
     private readonly IWorkspaceRepository _workspaceRepository;
     private readonly IUserContext _userContext;
 
-    public CreateWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository, IUserContext userContext)
+    public CreateWorkspaceCommandHandler(IUserContext userContext, IWorkspaceRepository workspaceRepository)
     {
         _workspaceRepository = workspaceRepository;
         _userContext = userContext;
