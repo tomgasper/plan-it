@@ -2,6 +2,7 @@ using FluentResults;
 using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.ProjectAggregate.Entities;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
 
 namespace PlanIt.Application.Projects.Queries;
 
@@ -16,12 +17,14 @@ public class ProjectTasksQueryHandler : IRequestHandler<ProjectTasksQuery, Resul
 
     public async Task<Result<IReadOnlyList<ProjectTask>>> Handle(ProjectTasksQuery request, CancellationToken cancellationToken)
     {
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
+        
         // Retrieve project
-        var project = await _projectRepository.GetAsync(request.ProjectId);
+        var project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail<IReadOnlyList<ProjectTask>>(new NotFoundError($"No project found with provided Project Id: {request.ProjectId}"));
+            return Result.Fail<IReadOnlyList<ProjectTask>>(new NotFoundError($"No project found with provided Project Id: {projectId}"));
         }
 
         // Get tasks from project

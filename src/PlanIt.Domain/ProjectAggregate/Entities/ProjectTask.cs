@@ -1,14 +1,13 @@
 using PlanIt.Domain.Models;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
-using PlanIt.Domain.TaskComment.ValueObjects;
 using PlanIt.Domain.TaskWorker.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate.Entities;
 
 public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
 {
-    private readonly List<TaskCommentId> _taskComments = new();
-    private readonly List<TaskWorkerId> _taskWorkers = new();
+    private readonly List<TaskComment> _taskComments = new();
+    private readonly List<TaskWorkerId> _taskWorkerIds = new();
     private ProjectTask(ProjectTaskId id, TaskOwnerId taskOwnerId, string name, string description) : base(id)
     {
         Id = id;
@@ -28,9 +27,17 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
     public string Description { get; private set; }
 
     public TaskOwnerId TaskOwnerId { get; private set; }
-    public IReadOnlyList<TaskCommentId> TaskCommentIds => _taskComments;
-    public IReadOnlyList<TaskWorkerId> TaskWorkerIds => _taskWorkers;
-
+    public IReadOnlyList<TaskComment> TaskComments => _taskComments;
+    public IReadOnlyList<TaskWorkerId> TaskWorkerIds => _taskWorkerIds;
+    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
+    {
+        return new(
+            ProjectTaskId.CreateUnique(),
+            taskOwnerId,
+            name,
+            description
+        );
+    }
     public void ChangeName(string newName)
     {
         Name = newName;
@@ -41,13 +48,9 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
         Description = description;
     }
 
-    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
+    public void AddComment(string commentName, string commentDescription)
     {
-        return new(
-            ProjectTaskId.CreateUnique(),
-            taskOwnerId,
-            name,
-            description
-        );
+        var comment = TaskComment.Create(Id, commentName, commentDescription);
+        _taskComments.Add(comment);
     }
 }

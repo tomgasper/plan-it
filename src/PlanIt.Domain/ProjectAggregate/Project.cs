@@ -38,6 +38,7 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
     public ProjectOwnerId ProjectOwnerId { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
+    public IReadOnlyList<ProjectTask> ProjectTasks => _projectTasks.AsReadOnly();
 
     public void ChangeName(string newName)
     {
@@ -115,7 +116,11 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         _projectTasks.Remove(task);
     }
 
-    public IReadOnlyList<ProjectTask> ProjectTasks => _projectTasks.AsReadOnly();
+    public void AddCommentToTask(Entities.TaskComment taskComment)
+    {
+        var projectTask = _projectTasks.FirstOrDefault( pt => pt.Id == taskComment.ProjectTaskId);
+        projectTask!.AddComment(taskComment.Name, taskComment.Description);
+    }
 
     private bool IsUserAllowedToEditTask(string userId, ProjectTask task)
     {

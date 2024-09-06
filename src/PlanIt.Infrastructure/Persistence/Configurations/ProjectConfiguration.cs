@@ -1,8 +1,12 @@
+
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate;
+using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.TaskComment.ValueObjects;
 
 namespace PlanIt.Infrastructure.Persistence.Configurations;
 
@@ -47,15 +51,18 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
                 .HasMaxLength(200);
 
             // TaskCommentIds Table
-            pt.OwnsMany( tcb => tcb.TaskCommentIds, tc => {
-                tc.ToTable("TaskCommentIds");
+            pt.OwnsMany( tcb => tcb.TaskComments, tc => {
+                tc.ToTable("TaskComment");
                 
                 tc.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
 
-                tc.Property<int>("Id").ValueGeneratedOnAdd();
-                tc.HasKey("Id");
+                tc.Property( t => t.Id)
+                    .HasConversion(
+                        id => id.Value,
+                        value => TaskCommentId.Create(value)
+                    );
 
-                tc.Property( t => t.Value )
+                tc.Property( t => t.Id )
                     .HasColumnName("TaskCommentId")
                     .ValueGeneratedNever();
 
@@ -63,7 +70,7 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
 
             // TaskOwnerIds Tabel
             pt.OwnsMany( twb => twb.TaskWorkerIds, tw => {
-                tw.ToTable("TaskWorkerIds");
+                tw.ToTable("TaskWorker");
                 
                 tw.WithOwner().HasForeignKey("ProjectTaskId", "ProjectId");
                 
@@ -76,10 +83,10 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
 
             });
 
-            pt.Navigation( p => p.TaskCommentIds).Metadata.SetField("_taskComments");
-            pt.Navigation( p => p.TaskCommentIds).UsePropertyAccessMode(PropertyAccessMode.Field);
+            pt.Navigation( p => p.TaskComments).Metadata.SetField("_taskComments");
+            pt.Navigation( p => p.TaskComments).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-            pt.Navigation( p => p.TaskWorkerIds).Metadata.SetField("_taskWorkers");
+            pt.Navigation( p => p.TaskWorkerIds).Metadata.SetField("_taskWorkerIds");
             pt.Navigation( p => p.TaskWorkerIds).UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 

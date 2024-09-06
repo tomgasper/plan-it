@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+
 namespace PlanIt.Contracts.Tasks.Responses;
 
 public record ProjectTaskResponse(
@@ -5,6 +7,12 @@ public record ProjectTaskResponse(
     string Name,
     string Description,
     string TaskOwnerId,
-    IReadOnlyList<string> TaskCommentIds,
+    IReadOnlyList<TaskCommentResponse> TaskComments,
     IReadOnlyList<string> TaskWorkerIds
+);
+
+public record TaskCommentResponse
+(
+    string Name,
+    string Description
 );

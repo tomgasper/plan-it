@@ -21,12 +21,13 @@ public class DeletTaskCommandHandler : IRequestHandler<DeleteTaskCommand, Result
     {
         var userId = _userContext.TryGetUserId();
         var taskId = ProjectTaskId.Create(new Guid(request.TaskId));
+        var projectId = ProjectId.Create(new Guid(request.ProjectId));
 
-        Project? project = await _projectRepository.GetAsync(request.ProjectId);
+        Project? project = await _projectRepository.GetAsync(projectId);
 
         if (project is null)
         {
-            return Result.Fail(new NotFoundError($"The project with id: {request.ProjectId} couldn't be found."));
+            return Result.Fail(new NotFoundError($"The project with id: {projectId.Value} couldn't be found."));
         }
 
         project.DeleteTask(taskId, userId);

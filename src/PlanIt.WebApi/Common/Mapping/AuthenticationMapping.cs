@@ -10,7 +10,6 @@ public static class AuthenthicationMapping
             Id: authResult.User.Id,
             FirstName: authResult.User.FirstName,
             LastName: authResult.User.LastName,
-            Email: authResult.User.Email,
             Token: authResult.Token
         )
     );

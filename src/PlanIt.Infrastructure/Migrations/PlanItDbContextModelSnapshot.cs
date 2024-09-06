@@ -182,6 +182,55 @@ namespace PlanIt.Infrastructure.Migrations
                     b.ToTable("Projects", (string)null);
                 });
 
+            modelBuilder.Entity("PlanIt.Domain.UserAggregate.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FirstName");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("LastName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("PlanIt.Domain.WorkspaceAggregate.Workspace", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WorkspaceOwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Workspaces", (string)null);
+                });
+
             modelBuilder.Entity("PlanIt.Infrastructure.Authentication.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -201,14 +250,6 @@ namespace PlanIt.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -340,29 +381,29 @@ namespace PlanIt.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ProjectId");
 
-                            b1.OwnsMany("PlanIt.Domain.TaskComment.ValueObjects.TaskCommentId", "TaskCommentIds", b2 =>
+                            b1.OwnsMany("PlanIt.Domain.ProjectAggregate.Entities.TaskComment", "TaskComments", b2 =>
                                 {
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("int");
-
-                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
-
-                                    b2.Property<Guid?>("ProjectId")
-                                        .HasColumnType("uniqueidentifier");
-
                                     b2.Property<Guid>("ProjectTaskId")
                                         .HasColumnType("uniqueidentifier");
 
-                                    b2.Property<Guid>("Value")
+                                    b2.Property<Guid>("ProjectId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<Guid>("Id")
                                         .HasColumnType("uniqueidentifier")
                                         .HasColumnName("TaskCommentId");
 
-                                    b2.HasKey("Id");
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(max)");
 
-                                    b2.HasIndex("ProjectTaskId", "ProjectId");
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(max)");
 
-                                    b2.ToTable("TaskCommentIds", (string)null);
+                                    b2.HasKey("ProjectTaskId", "ProjectId", "Id");
+
+                                    b2.ToTable("TaskComment", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("ProjectTaskId", "ProjectId");
@@ -390,18 +431,84 @@ namespace PlanIt.Infrastructure.Migrations
 
                                     b2.HasIndex("ProjectTaskId", "ProjectId");
 
-                                    b2.ToTable("TaskWorkerIds", (string)null);
+                                    b2.ToTable("TaskWorker", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("ProjectTaskId", "ProjectId");
                                 });
 
-                            b1.Navigation("TaskCommentIds");
+                            b1.Navigation("TaskComments");
 
                             b1.Navigation("TaskWorkerIds");
                         });
 
                     b.Navigation("ProjectTasks");
+                });
+
+            modelBuilder.Entity("PlanIt.Domain.UserAggregate.User", b =>
+                {
+                    b.HasOne("PlanIt.Infrastructure.Authentication.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlanIt.Domain.WorkspaceAggregate.Workspace", b =>
+                {
+                    b.OwnsMany("PlanIt.Domain.ProjectAggregate.ValueObjects.ProjectId", "ProjectIds", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("ProjectId");
+
+                            b1.Property<Guid>("WorkspaceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("WorkspaceId");
+
+                            b1.ToTable("WorkspaceProject", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("WorkspaceId");
+                        });
+
+                    b.OwnsMany("PlanIt.Domain.UserAggregate.ValueObjects.UserId", "UserIds", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("UserId");
+
+                            b1.Property<Guid>("WorkspaceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("WorkspaceId");
+
+                            b1.ToTable("WorkspaceUser", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("WorkspaceId");
+                        });
+
+                    b.Navigation("ProjectIds");
+
+                    b.Navigation("UserIds");
                 });
 #pragma warning restore 612, 618
         }

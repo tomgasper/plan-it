@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlanIt.Application.Common.Interfaces.Authentication;
 using PlanIt.Application.Common.Interfaces.Services;
-using PlanIt.Domain.Entities;
+using PlanIt.Domain.UserAggregate;
 
 namespace PlanIt.Infrastructure.Authentication;
 
@@ -39,7 +39,7 @@ public class JwtGenerator : IJwtGenerator
         var securityToken = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
-            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinnutes),
+            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             claims: claims,
             signingCredentials: signingCredentials
         );

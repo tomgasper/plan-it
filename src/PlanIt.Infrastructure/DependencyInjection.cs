@@ -73,6 +73,7 @@ public static class DependencyInjection
 
         services.AddScoped<PublishDomainEventsInterceptor>();
         services.AddScoped<IUserRepository,UserRepository>();
+        services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         return services;
     }

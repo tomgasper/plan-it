@@ -28,7 +28,7 @@ public class ProjectMappingConfig : IRegister
         config.NewConfig<ProjectTask, ProjectTaskResponse>()
             .Map(dest => dest.Id, src => src.Id.Value)
             .Map(dest => dest.TaskOwnerId, src => src.TaskOwnerId.Value )
-            .Map(dest => dest.TaskCommentIds, src => src.TaskCommentIds.Select( id => id.Value).ToList())
+            .Map(dest => dest.TaskComments, src => src.TaskComments.Select( tc => new TaskCommentResponse(tc.Name, tc.Description)))
             .Map(dest => dest.TaskWorkerIds, src => src.TaskWorkerIds.Select( id => id.Value).ToList());
 
         config.NewConfig<(CreateTaskRequest Request, string ProjectId), CreateTaskCommand>()

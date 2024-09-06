@@ -1,0 +1,10 @@
+@host=https://localhost:5234
+
+POST {{host}}/api/workspaces
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6ImIzMzY5NDhjLTA4NzItNDNiOS1iNTM2LWI1NmQ0NWM1MGQzZCIsImV4cCI6MTcyNTQ1NzQ2MCwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.Kthaohv5Pl4cdwBWJluPxOTs6m6ETRM6iaxt6ZXZSLc
+
+{
+    "name": "Workspace 1",
+    "description": "Workspace 1 description"
+}

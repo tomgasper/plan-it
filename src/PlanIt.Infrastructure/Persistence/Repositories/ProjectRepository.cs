@@ -21,13 +21,9 @@ public class ProjectRepository : IProjectRepository
         _dbContext.SaveChanges();
     }
 
-    public async Task<Project?> GetAsync(string projectId)
+    public async Task<Project?> GetAsync(ProjectId projectId)
     {
-        // Converting to Id stored as Value Object
-        if (!Guid.TryParse(projectId, out Guid projectIdGuid)) return null;
-        var projectIdObj = ProjectId.Create(projectIdGuid);
-        
-        return await _dbContext.Projects.FirstOrDefaultAsync( p => p.Id == projectIdObj  );
+        return await _dbContext.Projects.FirstOrDefaultAsync( p => p.Id == projectId  );
     }
 
     public async Task UpdateAsync()
