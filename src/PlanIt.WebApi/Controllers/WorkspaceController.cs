@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.Application.Workspaces.Commands.AssignProjectToWorkspace;
+using PlanIt.Application.Workspaces.Queries.GetWorkspace;
 using PlanIt.Application.Workspaces.Commands.CreateWorkspace;
 using PlanIt.Application.Workspaces.Commands.DeleteWorkspace;
 using PlanIt.Application.Workspaces.Commands.UpdateWorkspace;
@@ -21,6 +22,23 @@ public class WorkspaceController : ApiController
     {
         _mediator = mediator;
     }
+
+    [HttpGet]
+    [Route("{workspaceId}")]
+    public async Task<IActionResult> GetWorkspace(string workspaceId)
+    {
+        GetWorkspaceQuery query = new(workspaceId);
+
+        Result<Workspace> workspaceQueryResult = await _mediator.Send(query);
+
+        if (workspaceQueryResult.IsFailed)
+        {
+            return Problem(workspaceQueryResult.Errors);
+        }
+
+        return Ok(workspaceQueryResult.Value.MapToResponse());
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceRequest createWorkspaceRequest)
