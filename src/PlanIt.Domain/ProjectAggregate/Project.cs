@@ -3,6 +3,7 @@ using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.Events;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate;
 
@@ -10,6 +11,7 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
 {
     private Project(
         ProjectId id,
+        WorkspaceId workspaceId,
         string name,
         string description,
         ProjectOwnerId projectOwnerId,
@@ -20,6 +22,7 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         Name = name;
         Description = description;
         _projectTasks = projectTasks;
+        WorkspaceId = workspaceId;
         ProjectOwnerId = projectOwnerId;
         CreatedDateTime = createdDateTime;
         UpdatedDateTime = updatedDateTime;
@@ -35,6 +38,7 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
     private readonly List<ProjectTask> _projectTasks;
     public string Name { get; private set; }
     public string Description { get; private set; }
+    public WorkspaceId WorkspaceId {get; private set; }
     public ProjectOwnerId ProjectOwnerId { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
@@ -72,13 +76,16 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return task;
     }
 
-    public static Project Create(string name,
+    public static Project Create(
+        string name,
         string description,
+        WorkspaceId workspaceId,
         ProjectOwnerId projectOwnerId,
         List<ProjectTask> projectTasks)
     {
         var project = new Project(
             ProjectId.CreateUnique(),
+            workspaceId,
             name,
             description,
             projectOwnerId,

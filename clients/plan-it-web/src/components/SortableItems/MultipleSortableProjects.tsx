@@ -1,51 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { CancelDrop, DndContext, DragOverlay, Modifiers } from '@dnd-kit/core';
 import { SortableContext, SortingStrategy } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
-import { Flex, Group, useMantineTheme } from '@mantine/core';
+import { Box, Button, Flex, Group, useMantineTheme } from '@mantine/core';
 
-import { projects, useMultipleContainers } from '../../hooks/useMultipleProjectsHook';
+import { useMultipleContainers } from '../../hooks/useMultipleProjectsHook';
 import { DroppableContainer } from './Container/DroppableContainer';
 import { SortableItem } from './Item/SortableItem';
 import { getNextContainerId } from '../../utils/containerUtils';
 import classes from './MultipleSortableProjects.module.css';
 
 import { IconCirclePlus } from '@tabler/icons-react';
+import { Project } from '../../types/Project';
+import { useDeleteProjectMutation } from '../../services/planit-api';
 
 const PLACEHOLDER_ID = 'placeholder';
 
 export interface MultipleSortableProjectsProps {
   adjustScale?: boolean;
   cancelDrop?: CancelDrop;
+  onAddNewProject: () => Promise<Project>;
   columns?: number;
   containerStyle?: React.CSSProperties;
-  projects?: projects;
   handle?: boolean;
   strategy?: SortingStrategy;
   modifiers?: Modifiers;
   scrollable?: boolean;
+  projectsIn: Record<string, Project>;
 }
-
 
 export function MultipleSortableProjects({
   adjustScale = false,
   cancelDrop,
+  onAddNewProject,
   columns,
   handle = false,
-  projects: initialprojects,
+  projectsIn,
   containerStyle,
   modifiers,
   strategy,
   scrollable,
 }: MultipleSortableProjectsProps) {
   const theme = useMantineTheme();
-  const [projects, setprojects] = useState<projects>(initialprojects);
+  const [projects, setProjects] = useState(projectsIn);
+  const [deleteProject] = useDeleteProjectMutation();
+
+  console.log(projects);
+
+  useEffect(() => {
+    setProjects(structuredClone(projectsIn));
+  }, [JSON.stringify(projectsIn)])
 
   const {
     sensors,
     activeId,
-    containers,
-    setContainers,
     onDragStart,
     onDragOver,
     onDragEnd,
@@ -53,24 +61,36 @@ export function MultipleSortableProjects({
     getIndex,
     renderSortableItemDragOverlay,
     renderContainerDragOverlay,
-  } = useMultipleContainers(projects, setprojects);
+  } = useMultipleContainers(projects, setProjects);
+  
+  const containers = useMemo(() => Object.keys(projects), [projects]);
 
-  const handleRemove = (containerID: string) => {
-    setContainers((containers) => containers.filter((id) => id !== containerID));
-  };
-
-  const handleAddColumn = () => {
+  const handleAddColumn = async () => {
+    const newProject = await onAddNewProject();
     const newContainerId = getNextContainerId();
-    setContainers((containers) => [...containers, newContainerId]);
-    setprojects((projects) => ({
-      ...projects,
+    setProjects((prevProjects) => ({
+      ...prevProjects,
       [newContainerId]: {
-        name: "New project",
-        description: "",
+        workspaceId: newProject.workspaceId,
+        id: newProject.id,
+        name: newProject.name,
+        description: newProject.description,
         projectTasks: []
       },
-    }));
-  };
+    }))};
+
+  const handleRemove = useCallback(async (containerID: string) => {
+    const result = await deleteProject(projects[containerID].id);
+    if (result.error) {
+      console.error(result.error);
+      return;
+    }
+    setProjects((prevProjects) => {
+      const newProjects = {...prevProjects};
+      delete newProjects[containerID];
+      return newProjects;
+    });
+  }, [deleteProject, projects]);
 
   return (
     <DndContext
@@ -109,26 +129,28 @@ export function MultipleSortableProjects({
                 ))}
                 <Group p={15} justify='center'>
                   <IconCirclePlus
-                  onClick={() => console.log("Add task")}
-                  style={{ width: "45px",
-                    height: "45px",
-                    color:theme.colors.blue[7],
-                    cursor: "pointer"
-                   }}
-                  stroke={1.3} />
-                  </Group>
+                    onClick={() => console.log("Add task")}
+                    style={{
+                      width: "45px",
+                      height: "45px",
+                      color: theme.colors.blue[7],
+                      cursor: "pointer"
+                    }}
+                    stroke={1.3} />
+                </Group>
               </SortableContext>
             </DroppableContainer>
           ))}
-          <DroppableContainer
+        </SortableContext>
+        <Flex p={15} align='center' justify='center'>
+        <Button justify='center'
             id={PLACEHOLDER_ID}
-            items={[]}
             onClick={handleAddColumn}
             placeholder
           >
             + Add column
-          </DroppableContainer>
-        </SortableContext>
+          </Button>
+          </Flex>
       </Flex>
       {createPortal(
         <DragOverlay adjustScale={adjustScale}>

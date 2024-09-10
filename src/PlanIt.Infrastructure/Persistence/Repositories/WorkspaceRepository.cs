@@ -2,6 +2,7 @@ using FluentResults;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using PlanIt.Application.Common.Interfaces.Persistence;
+using PlanIt.Domain.UserAggregate.ValueObjects;
 using PlanIt.Domain.WorkspaceAggregate;
 using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
@@ -32,6 +33,11 @@ public class WorkspaceRepository : IWorkspaceRepository
     public async Task<Workspace?> GetAsync(WorkspaceId workspaceId)
     {
         return await _dbContext.Workspaces.FirstOrDefaultAsync( w => w.Id == workspaceId);
+    }
+
+    public async Task<List<Workspace>> GetUserWorkspacesAsync(WorkspaceOwnerId userId)
+    {
+        return await _dbContext.Workspaces.Where( w => w.WorkspaceOwnerId == userId ).ToListAsync();
     }
 
     public async Task SaveChangesAsync()

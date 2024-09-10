@@ -11,6 +11,7 @@ import {Handle, Remove} from './components';
 import styles from './Item.module.css';
 import { Task } from '../../Task/Task';
 import { ProjectTask } from '../../../types/Project';
+import { useDeleteProjectMutation } from '../../../services/planit-api';
 
 export interface ItemProps {
   dragOverlay?: boolean;
@@ -58,7 +59,6 @@ export const Item = React.memo(
         handleProps,
         index,
         listeners,
-        onRemove,
         sorting,
         style,
         content,
@@ -69,7 +69,9 @@ export const Item = React.memo(
       },
       ref
     ) => {
+      
       useEffect(() => {
+
         if (!dragOverlay) {
           return;
         }
@@ -127,10 +129,7 @@ export const Item = React.memo(
             tabIndex={!handle ? 0 : undefined}
           >
             <Task key={content.id} id={content.id} name={content.name} description={content.description} />
-            <span className={styles.Actions}>
-              {onRemove ? (
-                <Remove className={styles.Remove} onClick={onRemove} />
-              ) : null}
+              <span className={styles.Actions}>
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
             </span>
           </div>

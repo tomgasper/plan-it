@@ -72,7 +72,9 @@ export const Container = forwardRef<HTMLDivElement, Props>(
             name={content?.name}
             description={content?.description}
             onRemove={onRemove}
-            handleProps={handleProps}/>
+            handleProps={handleProps}
+            id={content?.id}
+            />
             </div>
         ) : null}
         {placeholder ? children : <ul>{children}</ul>}

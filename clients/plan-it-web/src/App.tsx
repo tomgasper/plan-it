@@ -1,21 +1,38 @@
 
 import '@mantine/core/styles.css';
 
-import { MantineProvider } from '@mantine/core';
 import { Navbar } from './components/Navbar/Navbar';
 
 import './App.css';
 import { MainWindow } from './components/MainWindow/MainWindow';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { useGetUserWorkspacesQuery } from './services/planit-api';
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useAppDispatch } from './hooks/reduxHooks';
+import { useEffect } from 'react';
+import { setWorkspaces } from './redux/workspacesSlice';
 
 export default function App() {
+  const dispatch = useAppDispatch();
+  const { data, isLoading, error } = useGetUserWorkspacesQuery('e0d91303-b5c9-4530-9914-d27c7a054415');
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setWorkspaces(data));
+    }
+  },[data, dispatch]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error occurred while fetching workspaces</div>;
+
   return (
-    <Provider store={store}>
-    <MantineProvider>
+    <>
+    <BrowserRouter>
       <Navbar />
-      <MainWindow />
-    </MantineProvider>
-    </Provider>
+        <Routes>
+          <Route path="/workspaces/:workspaceId" element={<MainWindow />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 };

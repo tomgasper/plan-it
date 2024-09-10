@@ -21,6 +21,11 @@ public sealed class TaskOwnerId : AggregateRootId<Guid>
         return new TaskOwnerId(id);
     }
 
+    public static TaskOwnerId FromString(string id)
+        {
+            return new TaskOwnerId(new Guid(id));
+        }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

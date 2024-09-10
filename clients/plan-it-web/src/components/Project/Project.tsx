@@ -1,6 +1,7 @@
 import classes from './Project.module.css';
-import { Avatar, Group, Progress, Stack, Title, Text } from "@mantine/core";
+import { Avatar, Group, Progress, Stack, Title, Text, Loader } from "@mantine/core";
 import { Handle, Remove } from "../SortableItems/Item";
+import { useDeleteProjectMutation } from '../../services/planit-api';
 
 const avatars = [
     'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png',
@@ -9,19 +10,20 @@ const avatars = [
   ];
 
 interface ProjectProps {
-    onRemove : (() => void) | undefined;
     handleProps : React.HTMLAttributes<unknown> | undefined;
+    onRemove: () => void;
     name: string;
     description: string;
 }
 
-export function Project({ onRemove, handleProps, name, description } : ProjectProps ) {
+export function Project({ onRemove, handleProps, name, description, id } : ProjectProps ) {
+
   return (
         <Stack className={classes.headerContainer} align="stretch">
         <Group justify="space-between">
-        <Title order={3} >{name} </Title>
+        <Title order={3} >{name + id} </Title>
             <Group>
-                {onRemove ? <Remove onClick={onRemove} /> : undefined}
+                <Remove onClick={onRemove} />
                 <Handle {...handleProps} />
             </Group>
         </Group>

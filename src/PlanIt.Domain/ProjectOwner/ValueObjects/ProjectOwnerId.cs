@@ -21,6 +21,11 @@ namespace PlanIt.Domain.Project.ValueObjects
             return new ProjectOwnerId(projectOwnerId);
         }
 
+        public static ProjectOwnerId FromString(string id)
+        {
+            return new ProjectOwnerId(new Guid(id));
+        }
+
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;

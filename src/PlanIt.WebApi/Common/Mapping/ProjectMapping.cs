@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Contracts.Projects.Requests;
 using PlanIt.Contracts.Projects.Responses;
 using PlanIt.Contracts.Tasks.Responses;
@@ -23,6 +25,19 @@ public static class ProjectMapping
             ProjectOwnerId: project.ProjectOwnerId.Value.ToString(),
             CreatedDateTime: project.CreatedDateTime,
             UpdatedDateTime: project.UpdatedDateTime
+        )
+    );
+
+    public static CreateProjectCommand MapToCommand(this CreateProjectRequest request) =>
+    (
+        new CreateProjectCommand(
+            WorkspaceId: request.WorkspaceId,
+            Name: request.Name,
+            Description: request.Description,
+            ProjectTasks: request.ProjectTasks.Select( pt => new CreateProjectTaskCommand(
+                Name: pt.Name,
+                Description: pt.Description
+            )).ToList()
         )
     );
 

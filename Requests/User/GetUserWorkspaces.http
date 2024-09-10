@@ -1,0 +1,5 @@
+@host=https://localhost:5234
+@userId=e0d91303-b5c9-4530-9914-d27c7a054415
+
+GET {{host}}/api/users/{{userId}}/workspaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6ImUyM2UzMDU1LTBjYTUtNDRhMy05ZjUzLTNjYjkzOWE3YzJhMiIsImV4cCI6MTcyNTg3NzM3NCwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.sKvv3kdMfJ5F28vp6r_6sPNNdG8KWCsX7PFi6reuXes

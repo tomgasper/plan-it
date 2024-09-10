@@ -9,10 +9,14 @@ using PlanIt.Application.Workspaces.Commands.DeleteWorkspace;
 using PlanIt.Application.Workspaces.Commands.UpdateWorkspace;
 using PlanIt.Contracts.Workspace.Requests;
 using PlanIt.Domain.WorkspaceAggregate;
+using PlanIt.Contracts.Projects.Responses;
+using PlanIt.Application.Workspaces.Queries.GetWorkspaceProjects;
+using PlanIt.Contracts.Workspace.Responses;
+using PlanIt.Domain.ProjectAggregate;
 
 namespace PlanIt.WebApi.Controllers;
 
-[Authorize]
+
 [Route("/api/workspaces")]
 public class WorkspaceController : ApiController
 {
@@ -39,6 +43,22 @@ public class WorkspaceController : ApiController
         return Ok(workspaceQueryResult.Value.MapToResponse());
     }
 
+    
+    [HttpGet]
+    [Route("{workspaceId}/projects")]
+    public async Task<IActionResult> GetWorkspaceProjects(string workspaceId)
+    {
+        GetWorkspaceProjectsQuery query = new(workspaceId);
+
+        Result<List<Project>> workspaceProjectsQueryResult = await _mediator.Send(query);
+
+        if (workspaceProjectsQueryResult.IsFailed)
+        {
+            return Problem(workspaceProjectsQueryResult.Errors);
+        }
+
+        return Ok(workspaceProjectsQueryResult.Value.MapToResponse(workspaceId));
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceRequest createWorkspaceRequest)

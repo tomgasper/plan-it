@@ -7,6 +7,8 @@ using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
 using PlanIt.Domain.TaskComment.ValueObjects;
+using PlanIt.Domain.WorkspaceAggregate;
+using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Infrastructure.Persistence.Configurations;
 
@@ -104,6 +106,17 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
             .HasConversion( 
                 id => id.Value, // In conversion
                 value => ProjectId.Create(value)); // Out conversion
+
+        builder.Property( m => m.WorkspaceId)
+            .ValueGeneratedNever()
+            .HasConversion(
+                id => id.Value,
+                value => WorkspaceId.Create(value)
+            );
+
+        builder.HasOne<Workspace>()
+                .WithMany()
+                .HasForeignKey( p => p.WorkspaceId );
         
         builder.Property(m => m.Name)
             .HasMaxLength(100);
