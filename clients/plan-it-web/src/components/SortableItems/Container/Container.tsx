@@ -30,6 +30,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       horizontal,
       hover,
       onClick,
+      onUpdate,
       onRemove,
       label,
       content,
@@ -71,6 +72,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
             <Project
             name={content?.name}
             description={content?.description}
+            onUpdate={onUpdate}
             onRemove={onRemove}
             handleProps={handleProps}
             id={content?.id}

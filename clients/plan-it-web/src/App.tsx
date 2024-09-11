@@ -11,6 +11,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useAppDispatch } from './hooks/reduxHooks';
 import { useEffect } from 'react';
 import { setWorkspaces } from './redux/workspacesSlice';
+import { WorkspaceSettings } from './components/WorkspaceSettings/WorkspaceSettings';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export default function App() {
     <BrowserRouter>
       <Navbar />
         <Routes>
+          <Route path="/workspaces/:workspaceId/settings" element={<WorkspaceSettings />} />
           <Route path="/workspaces/:workspaceId" element={<MainWindow />} />
         </Routes>
       </BrowserRouter>

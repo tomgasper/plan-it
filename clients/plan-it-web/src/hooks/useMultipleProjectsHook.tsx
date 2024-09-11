@@ -84,7 +84,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
         };
       });
     }
-  }, [items, findContainer]);
+  }, [items, findContainer, setItems]);
 
   const onDragEnd = useCallback(({ active, over }) => {
     if (active.id in items && over?.id) {
@@ -147,7 +147,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
     }
 
     setActiveId(null);
-  }, [items, findContainer, getIndex]);
+  }, [items, findContainer, getIndex, setItems]);
 
   const onDragCancel = useCallback(() => {
     if (clonedItems) {
@@ -155,7 +155,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
     }
     setActiveId(null);
     setClonedItems(null);
-  }, [clonedItems]);
+  }, [clonedItems, setItems]);
 
   const renderSortableItemDragOverlay = useCallback((id: UniqueIdentifier) => {
     const containerId = findContainer(id) as UniqueIdentifier;

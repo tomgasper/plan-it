@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import type { Project, Workspace, WorkspaceProjects } from '../types/Project'
-import { deleteWorkspace } from '../redux/workspacesSlice';
+import type { Project, ProjectTask, Workspace, WorkspaceProjects } from '../types/Project'
+import { deleteWorkspace, updateWorkspace } from '../redux/workspacesSlice';
 
 const HOST = "https://localhost:5234";
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6IjY5Yzg5OGVmLWQ2ODctNDdhOS1hNzEzLTgwZmZmODY5MmI1MyIsImV4cCI6MTcyNTk3MTgyNiwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.zBy2yXBVdu9-3RQeFTjFJNCdb0M_6vTAF_N6LNSINEs";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6IjMzMjFlYTgyLTU5ZGUtNDczMS05MDMzLTllM2M4YTAwNDhkMSIsImV4cCI6MTcyNjA2NTEzNywiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.l5Q00XDMDhCw4EQcSHMoUj-Pat7QAMhDFuy9lHWiU0g";
 
 // Define a service using a base URL and expected endpoints
 export const projectApi = createApi({
@@ -15,7 +15,7 @@ export const projectApi = createApi({
     headers: { Authorization: `Bearer ${TOKEN}`}
 }),
   endpoints: (builder) => ({
-    getProjectById: builder.query<Project, string>({
+    getProject: builder.query<Project, string>({
       query: (id) => `projects/${id}`,
     }),
     getUserWorkspaces: builder.query<Workspace[], string>({
@@ -31,11 +31,20 @@ export const projectApi = createApi({
         body: newProject,
       }),
     }),
+    updateProject: builder.mutation<Project, { updatedProject: Partial<Project>, projectId: string }>({
+      query: ({ updatedProject, projectId }) => ({
+        url: `projects/${projectId}`,
+        method: 'PUT',
+        body: updatedProject,
+      })}),
     deleteProject: builder.mutation<void, string>({
       query: (projectId) => ({
         url: `projects/${projectId}`,
         method: 'DELETE',
       }),
+    }),
+    getWorkspace: builder.query<Workspace, string>({
+      query: (workspaceId) => `workspaces/${workspaceId}`,
     }),
     createWorkspace: builder.mutation<Workspace, Partial<Workspace>>({
       query: (newWorkspace) => ({
@@ -44,22 +53,57 @@ export const projectApi = createApi({
         body: newWorkspace,
       }),
     }),
+    updateWorkspace: builder.mutation<Workspace, { updatedWorkspace: Partial<Workspace>, workspaceId: string }>({
+      query: ({ updatedWorkspace, workspaceId }) => ({
+        url: `workspaces/${workspaceId}`,
+        method: 'PUT',
+        body: updatedWorkspace,
+      })}),
     deleteWorkspace: builder.mutation<void, string>({
       query: (workspaceId) => ({
         url: `workspaces/${workspaceId}`,
         method: 'DELETE',
       }),
-    })
+    }),
+    // Project tasks
+    getProjectTasks: builder.query<ProjectTask, string>({
+      query: (projectId) => `projects/${projectId}`,
+    }),
+    createProjectTask: builder.mutation<void, { projectId: string, task: Partial<ProjectTask> }>({
+      query: ({ projectId, task }) => ({
+        url: `projects/${projectId}/tasks`,
+        method: 'POST',
+        body: task,
+      })
+    }),
+    updateProjectTask: builder.mutation<void, { projectId: string, taskId: string, updatedTask: Partial<ProjectTask> }>({
+      query: ({ projectId, taskId, updatedTask }) => ({
+        url: `projects/${projectId}/tasks/${taskId}`,
+        method: 'PUT',
+        body: updatedTask,
+      })}),
+      deleteProjectTask: builder.mutation<void, { projectId: string, taskId: string }>({
+        query: ({ projectId, taskId }) => ({
+          url: `projects/${projectId}/tasks/${taskId}`,
+          method: 'DELETE',
+    })})
 })});
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-  useGetProjectByIdQuery,
+  useGetProjectQuery,
   useGetUserWorkspacesQuery,
   useGetProjectsForWorkspaceQuery,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
   useDeleteProjectMutation,
+  useGetWorkspaceQuery,
   useCreateWorkspaceMutation,
-  useDeleteWorkspaceMutation
+  useUpdateWorkspaceMutation,
+  useDeleteWorkspaceMutation,
+  useCreateProjectTaskMutation,
+  useDeleteProjectTaskMutation,
+  useUpdateProjectTaskMutation,
+  useGetProjectTasksQuery
  } = projectApi;

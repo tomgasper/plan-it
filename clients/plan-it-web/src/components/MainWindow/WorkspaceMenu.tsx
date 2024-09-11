@@ -1,20 +1,20 @@
 import { ActionIcon, Group, Menu } from "@mantine/core";
 import { IconSettings, IconTrash } from "@tabler/icons-react";
 import { useAppDispatch } from "../../hooks/reduxHooks";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useDeleteWorkspaceMutation } from "../../services/planit-api";
-import { deleteWorkspace } from "../../redux/workspacesSlice";
+import { deleteWorkspaceLocal } from "../../redux/workspacesSlice";
 
 export function WorkspaceMenu()
 {
     const { workspaceId } = useParams<{ workspaceId: string }>();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [ deleteWorkspace ] = useDeleteWorkspaceMutation();
 
     const handleDeleteWorkspace = async () => {
+        console.log("calling!");
         if (!workspaceId) return;
-
-        console.log("workspaceId:", workspaceId);
 
         if (!window.confirm('Are you sure you want to delete this workspace?')) return;
 
@@ -25,7 +25,12 @@ export function WorkspaceMenu()
             console.error('Error deleting workspace:', result.error);
         }
 
-        dispatch(deleteWorkspace(workspaceId));
+        dispatch(deleteWorkspaceLocal(workspaceId));
+        navigate('/');
+    }
+
+    const handleWorkspaceSettings = () => {
+        navigate(`/workspaces/${workspaceId}/settings`);
     }
 
     return (
@@ -37,7 +42,7 @@ export function WorkspaceMenu()
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Item>
+                <Menu.Item onClick={handleWorkspaceSettings}>
                     Workspace Settings
                 </Menu.Item>
                 <Menu.Item>

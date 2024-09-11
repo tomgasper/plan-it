@@ -16,13 +16,13 @@ const workspacesSlice = createSlice({
     addWorkspace: (state, action: PayloadAction<Workspace>) => {
       state.workspaces.push(action.payload)
     },
-    updateWorkspace: (state, action: PayloadAction<Workspace>) => {
+    updateWorkspaceLocal: (state, action: PayloadAction<Workspace>) => {
       const index = state.workspaces.findIndex(workspace => workspace.id === action.payload.id)
       if (index !== -1) {
         state.workspaces[index] = action.payload
       }
     },
-    deleteWorkspace: (state, action: PayloadAction<string>) => {
+    deleteWorkspaceLocal: (state, action: PayloadAction<string>) => {
       state.workspaces = state.workspaces.filter(workspace => workspace.id !== action.payload)
     },
     setWorkspaces: (state, action: PayloadAction<Workspace[]>) => {
@@ -33,8 +33,8 @@ const workspacesSlice = createSlice({
 
 export const {
   addWorkspace,
-  updateWorkspace,
-  deleteWorkspace,
+  updateWorkspaceLocal,
+  deleteWorkspaceLocal,
   setWorkspaces
  } = workspacesSlice.actions
 export default workspacesSlice.reducer

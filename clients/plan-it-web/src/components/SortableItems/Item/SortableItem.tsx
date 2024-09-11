@@ -3,6 +3,8 @@ import { Item } from './Item';
 import { ProjectTask } from '../../../types/Project';
 
 interface SortableItemProps {
+  onDeleteTask: () => void;
+  onUpdateTask: () => void;
   containerId: string;
   id: string;
   index: number;
@@ -13,7 +15,10 @@ interface SortableItemProps {
 }
 
 export function SortableItem({
+  onUpdateTask,
+  onDeleteTask,
   disabled,
+  projectId,
   id,
   index,
   handle,
@@ -33,13 +38,17 @@ export function SortableItem({
 
   return (
     <Item
+      onUpdate={onUpdateTask}
+      onDelete={onDeleteTask}
       ref={disabled ? undefined : setNodeRef}
       value={id}
+      taskId={id}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
       handleProps={handle ? {ref: setActivatorNodeRef} : undefined}
       index={index}
+      projectId={projectId}
       content={content}
       transition={transition}
       transform={transform}
