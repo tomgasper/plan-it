@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../redux/store';
 import { LoginCredentials, RegisterData, AuthResponse } from '../types/Auth';
-import { User } from '../types/User';
 
 const HOST = "https://localhost:5234";
 

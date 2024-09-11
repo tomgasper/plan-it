@@ -19,7 +19,6 @@ import {
   import { AuthResponse} from '../../types/Auth';
   
   export function Login() {
-    
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [login, { isLoading }] = useLoginMutation();
@@ -36,7 +35,6 @@ import {
         }
     };
     
-
     return (
       <Container style={{minWidth:'20%'}} size={600} my={'5%'}>
         <Title ta="center" className={classes.title}>
@@ -58,7 +56,7 @@ import {
               Forgot password?
             </Anchor>
           </Group>
-          <Button fullWidth mt="xl" onClick={handleSubmit} loading={isLoading}>
+          <Button fullWidth mt="xl" onClick={ handleSubmit } loading={isLoading}>
             Sign in
           </Button>
         </Paper>

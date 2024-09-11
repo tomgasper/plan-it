@@ -8,15 +8,13 @@ import { MainWindow } from './components/MainWindow/MainWindow';
 import { useGetUserWorkspacesQuery } from './services/planit-api';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from './hooks/reduxHooks';
+import { useAppDispatch} from './hooks/reduxHooks';
 import { useEffect } from 'react';
 import { setWorkspaces } from './redux/workspacesSlice';
 import { WorkspaceSettings } from './components/WorkspaceSettings/WorkspaceSettings';
 import { Login } from './components/Login/Login';
-import { jwtDecode } from 'jwt-decode';
-import { JwtInformation } from './types/Auth';
-import { logOut, setCredentials } from './redux/authSlice';
 import { useJwtAuth } from './hooks/useJwtAuth';
+import { Register } from './components/Register/Register';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -41,6 +39,7 @@ export default function App() {
       {isAuthenticated && <Navbar />}
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/workspaces/:workspaceId/settings" element={<WorkspaceSettings />} />
           <Route path="/workspaces/:workspaceId" element={<MainWindow />} />
         </Routes>
