@@ -17,21 +17,49 @@ import {
   import { setCredentials } from '../../redux/authSlice';
   import { useAppDispatch } from '../../hooks/reduxHooks';
   import { AuthResponse} from '../../types/Auth';
+import { useNavigate } from 'react-router-dom';
+import { notifications } from '@mantine/notifications';
   
   export function Login() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [login, { isLoading }] = useLoginMutation();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
             const userData: AuthResponse = await login({ email, password }).unwrap();
             dispatch(setCredentials({user: userData.user, token: userData.token}));
-        } catch (err) {
-            
-            console.error(err);
+
+            notifications.show({
+                title: 'Login successful',
+                message: 'You have been successfully logged in',
+                color: 'green'
+            });
+            navigate('/workspace');
+        } catch (error) {
+            const err = error as { data?: { title?: string; errors?: Record<string, string[]> } };
+
+        // Display more personalized error message including server validation errors
+        if (err.data?.title)
+        {
+            console.log(err.data)
+            let errorMessage = err.data.title;
+            if (err.data.errors)
+            {
+                for (const [_,value] of Object.entries(err.data.errors)) {
+                    errorMessage += '\n' + value;
+                }
+            }
+
+            notifications.show({
+                title: 'Error logging in',
+                message: errorMessage,
+                color: 'red'
+            });
+            }
         }
     };
     
