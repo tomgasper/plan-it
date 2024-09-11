@@ -15,6 +15,8 @@ public class UserController : ApiController
         _mediator = mediator;
     }
 
+    // Add Get User endpoint
+
     [HttpGet]
     [Route("workspaces")]
     public async Task<IActionResult> GetUserWorkspaces(string userId)

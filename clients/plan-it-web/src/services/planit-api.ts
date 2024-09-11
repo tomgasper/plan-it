@@ -1,10 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import type { Project, ProjectTask, Workspace, WorkspaceProjects } from '../types/Project'
-import { deleteWorkspace, updateWorkspace } from '../redux/workspacesSlice';
+import { User } from '../types/User';
 
 const HOST = "https://localhost:5234";
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6IjMzMjFlYTgyLTU5ZGUtNDczMS05MDMzLTllM2M4YTAwNDhkMSIsImV4cCI6MTcyNjA2NTEzNywiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.l5Q00XDMDhCw4EQcSHMoUj-Pat7QAMhDFuy9lHWiU0g";
 
 // Define a service using a base URL and expected endpoints
 export const projectApi = createApi({
@@ -12,7 +10,13 @@ export const projectApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${HOST}/api`,
     mode: 'cors',
-    headers: { Authorization: `Bearer ${TOKEN}`}
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).auth.token;
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
 }),
   endpoints: (builder) => ({
     getProject: builder.query<Project, string>({
@@ -86,7 +90,11 @@ export const projectApi = createApi({
         query: ({ projectId, taskId }) => ({
           url: `projects/${projectId}/tasks/${taskId}`,
           method: 'DELETE',
-    })})
+    })}),
+    // User
+    getUserQuery: builder.query<User, string>({
+      query: (userId) => `users/${userId}`,
+    }),
 })});
 
 // Export hooks for usage in functional components, which are

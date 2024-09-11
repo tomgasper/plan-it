@@ -8,15 +8,22 @@ import { MainWindow } from './components/MainWindow/MainWindow';
 import { useGetUserWorkspacesQuery } from './services/planit-api';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useAppDispatch } from './hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from './hooks/reduxHooks';
 import { useEffect } from 'react';
 import { setWorkspaces } from './redux/workspacesSlice';
 import { WorkspaceSettings } from './components/WorkspaceSettings/WorkspaceSettings';
 import { Login } from './components/Login/Login';
+import { jwtDecode } from 'jwt-decode';
+import { JwtInformation } from './types/Auth';
+import { logOut, setCredentials } from './redux/authSlice';
+import { useJwtAuth } from './hooks/useJwtAuth';
 
 export default function App() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  const isAuthenticated = useJwtAuth();
+
+  console.log(isAuthenticated);
+
   const { data, isLoading, error } = useGetUserWorkspacesQuery('e0d91303-b5c9-4530-9914-d27c7a054415');
 
   useEffect(() => {
