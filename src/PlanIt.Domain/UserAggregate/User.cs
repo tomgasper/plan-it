@@ -4,16 +4,19 @@ public sealed class User
     public Guid Id {get; private set; }
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;
+    public string AvatarUrl {get; private set;}
 
     private User(
         Guid id,
         string firstName,
-        string lastName
+        string lastName,
+        string avatarUrl
     ) 
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
+        AvatarUrl = avatarUrl;
     }
 
     #pragma warning disable CS8618
@@ -26,13 +29,15 @@ public sealed class User
     public static User Create(
         Guid id,
         string firstName,
-        string lastName
+        string lastName,
+        string avatarUrl = ""
         )
     {
         var user = new User( 
             id,
             firstName,
-            lastName
+            lastName,
+            avatarUrl
         );
 
         return user;

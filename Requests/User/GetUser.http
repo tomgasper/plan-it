@@ -1,0 +1,5 @@
+@host=https://localhost:5234
+@userId=e0d91303-b5c9-4530-9914-d27c7a054415
+
+GET {{host}}/api/users/{{userId}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6IjhjZDRjOWQxLThlNjUtNDNlMy05NTIxLWVkNGI2N2UzYjYxYyIsImV4cCI6MTcyNjEzNjA0MSwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.XyhpGaYaQzxXS2i7O70KxHdJLKjnH0bDhZk3q-bRB24

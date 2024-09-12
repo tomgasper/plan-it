@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.Application.Users.Queries;
+using PlanIt.Application.Users.Queries.GetUser;
+using PlanIt.Application.Users.Queries.GetUserWorkspace;
 using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi.Controllers;
@@ -16,6 +17,21 @@ public class UserController : ApiController
     }
 
     // Add Get User endpoint
+
+    [HttpGet]
+    public async Task<IActionResult> GetUser(string userId)
+    {
+        GetUserQuery query = new(userId);
+
+        var getUserResult = await _mediator.Send(query);
+
+        if (getUserResult.IsFailed)
+        {
+            return Problem(getUserResult.Errors);
+        }
+
+        return Ok(getUserResult.Value.MapToResponse());
+    }
 
     [HttpGet]
     [Route("workspaces")]

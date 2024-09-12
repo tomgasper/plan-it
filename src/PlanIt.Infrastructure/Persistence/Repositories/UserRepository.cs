@@ -1,8 +1,10 @@
 using FluentResults;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.UserAggregate;
+using PlanIt.Domain.UserAggregate.ValueObjects;
 using PlanIt.Infrastructure.Authentication;
 using PlanIt.Infrastructure.Common.Mapping;
 
@@ -22,7 +24,7 @@ public class UserRepository : IUserRepository
     public async Task<Result<User>> AddAsync(User user, string email, string userPassword)
     {
         // Identity and user objects are seperate
-        // User Id is based on the Identity User
+        // User Id is based on the Identity User (FK relationship)
         var appUser = user.ToApplicationUser(email);
         var createUserResult = await _userManager.CreateAsync(appUser, userPassword);
 
@@ -32,6 +34,13 @@ public class UserRepository : IUserRepository
 
         if (createUserResult.Succeeded) return user;
         else return Result.Fail<User>(createUserResult.Errors.Select(e => new IdentityError(e.Description) ));
+    }
+
+    public async Task<User?> GetAsync(UserId userId)
+    {
+        // Identity and user objects are seperate
+        // User Id is based on the Identity User (FK relationship)
+        return await _dbContext.DomainUsers.FirstOrDefaultAsync( domainUser => domainUser.Id == userId.Value );
     }
 
     public async Task<User?> GetUserByEmail(string email)

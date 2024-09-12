@@ -5,7 +5,7 @@ using PlanIt.Domain.UserAggregate.ValueObjects;
 using PlanIt.Domain.WorkspaceAggregate;
 using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
-namespace PlanIt.Application.Users.Queries;
+namespace PlanIt.Application.Users.Queries.GetUserWorkspace;
 public class GetUserWorkspacesQueryHandler : IRequestHandler<GetUserWorkspacesQuery, Result<List<Workspace>>>
 {
     private readonly IWorkspaceRepository _workspaceRepository;

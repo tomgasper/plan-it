@@ -2,7 +2,7 @@ using FluentResults;
 using MediatR;
 using PlanIt.Domain.WorkspaceAggregate;
 
-namespace PlanIt.Application.Users.Queries;
+namespace PlanIt.Application.Users.Queries.GetUserWorkspace;
 
 public record GetUserWorkspacesQuery
 (
