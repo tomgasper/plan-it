@@ -9,6 +9,7 @@ using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Application.Tasks.Commands.CreateTask;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Application.UnitTests.Projects.Commands.CreateTask;
 
@@ -29,10 +30,11 @@ public class CreateTaskCommandHandlerTests
         // Arrange
         var createTaskCommand = CreateTaskCommandUtils.CreateCommand();
         var mockProject = Project.Create(
-            Constants.Project.Name,
-            Constants.Project.Description,
-            ProjectOwnerId.Create(Constants.ProjectOwner.Id.Value),
-            new List<ProjectTask>()
+            name: Constants.Project.Name,
+            description: Constants.Project.Description,
+            workspaceId: WorkspaceId.FromString(Constants.Workspace.Id),
+            projectOwnerId: ProjectOwnerId.Create(Constants.ProjectOwner.Id.Value),
+            projectTasks: new List<ProjectTask>()
         );
 
         _mockProjectRepository.GetAsync(Arg.Any<ProjectId>()).Returns(mockProject);
