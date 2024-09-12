@@ -13,6 +13,8 @@ public static class DependencyInjection
                 builder => {
                     // Allow any part on localhost for dev purposes
                     builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
                 }
             );
         });

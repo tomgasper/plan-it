@@ -3,7 +3,7 @@ using NSubstitute;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Application.UnitTests.Projects.Commands.TestUtils;
-using PlanIt.Application.UnitTests.TestUtils.Projects.Extensions;
+using PlanIt.Application.UnitTests.TestUtils.Projects;
 
 namespace PlanIt.Application.UnitTests.Projects.Commands.CreateProject;
 
@@ -51,7 +51,7 @@ public class CreateProjectCommandHandlerTest
             tasks: CreateProjectCommandUtils.CreateTasksCommand(tasksCount: 3)
         )};
         yield return new[] { CreateProjectCommandUtils.CreateCommand(
-            tasks: CreateProjectCommandUtils.CreateTasksCommand(tasksCount: 3)
+            tasks: CreateProjectCommandUtils.CreateTasksCommand(tasksCount: 5)
         )};
     }
 }

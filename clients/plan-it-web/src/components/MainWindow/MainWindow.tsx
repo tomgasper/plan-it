@@ -1,34 +1,81 @@
-import { Flex, Title } from "@mantine/core";
+import { Flex, Group, Title } from "@mantine/core";
 import { MultipleSortableProjects } from '../SortableItems/MultipleSortableProjects';
 import classes from './MainWindow.module.css';
-import { useGetProjectByIdQuery } from "../../services/planit-api";
+import { useCreateProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery } from "../../services/planit-api";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { WorkspaceMenu } from "./WorkspaceMenu";
+import { Project } from "../../types/Project";
 
 export function MainWindow() {
-    const { data, error, isLoading } = useGetProjectByIdQuery('d0b41044-c9c0-40d3-9750-b1a72d4acbf4');
+    const { workspaceId } = useParams<{ workspaceId: string }>();
 
-    let projects = {};
+    const { data: workspace, error: workspaceFetchError, isLoading: isLoadingWorkspace } = useGetWorkspaceQuery(workspaceId ?? "");
+    const { data : projects, error: workspaceProjectsFetchError, isLoading, refetch } = useGetProjectsForWorkspaceQuery(workspaceId ?? "", {
+        skip: !workspaceId
+    });
+    const [ createProject ] = useCreateProjectMutation();
 
-    console.log(data);
-
-    if (data && typeof(data) === "object")
-    {
-        let inData = [data];
-        for (let i = 0; i < inData.length; i++)
-        {
-            projects[inData[i].id] = inData[i];
-
+    useEffect(() => {
+        if (workspaceId) {
+          refetch().catch(console.error);
         }
-        console.log(projects);
+      }, [workspaceId, refetch]);
+
+      useEffect(() => {
+        console.log('Refetched projects:', projects);
+      }, [projects]);
+    
+      if (workspaceFetchError) {
+        return <div>Incorrect workspace</div>;
+      }
+
+      if (workspaceProjectsFetchError)
+      {
+        return <div>Could not retrieve projects for this workspace</div>;
+      }
+
+    const handleAddNewProject = async () => {
+        const newProject = await createProject({
+            workspaceId: workspaceId,
+            name: "New Project",
+            description: "New Project Description",
+            projectTasks: []
+        });
+    
+        refetch().catch(console.error);
+    
+        return newProject;
     }
+
+    const projectsToObjects = projects?.projects.reduce((prev, cur) => ({...prev, [cur.id]: cur}), {});
 
     return (
         <Flex className={classes.container} direction="column">
-            { isLoading ? <div>Loading...</div> :
+            {isLoading || isLoadingWorkspace ? (
+            <div>Loading...</div>
+            ) : (
             <>
-                <Title>Workspace</Title>
-                <MultipleSortableProjects projects={projects} />
-                </>
-            }
+                <Group>
+                  <Group gap={15}>
+                  <Title>{workspace!.name}</Title>
+                    <WorkspaceMenu />
+                  </Group>
+                 
+                  </Group>
+                {projects?.projects && projects.projects.length > 0 ? (
+                <MultipleSortableProjects
+                    workspaceProjects={projectsToObjects}
+                    onAddNewProject={handleAddNewProject}
+                />
+                ) : (
+                    <>
+                    <div>No projects available</div>
+                    <button onClick={ handleAddNewProject }>Add new project</button>
+                    </>
+                )}
+            </>
+            )}
         </Flex>
     );  
 }

@@ -6,13 +6,12 @@ import classNames from 'classnames';
 import type {DraggableSyntheticListeners} from '@dnd-kit/core';
 import type {Transform} from '@dnd-kit/utilities';
 
-import {Handle, Remove} from './components';
-
 import styles from './Item.module.css';
 import { Task } from '../../Task/Task';
 import { ProjectTask } from '../../../types/Project';
 
 export interface ItemProps {
+  onDelete: () => void;
   dragOverlay?: boolean;
   color?: string;
   disabled?: boolean;
@@ -20,6 +19,8 @@ export interface ItemProps {
   handle?: boolean;
   handleProps?: any;
   height?: number;
+  projectId: string;
+  taskId: string;
   index?: number;
   fadeIn?: boolean;
   content: ProjectTask;
@@ -32,6 +33,8 @@ export interface ItemProps {
   value: React.ReactNode;
   onRemove?(): void;
   renderItem?(args: {
+    onUpdate: () => void;
+    onDelete: () => void;
     dragOverlay: boolean;
     dragging: boolean;
     sorting: boolean;
@@ -50,15 +53,17 @@ export const Item = React.memo(
   React.forwardRef<HTMLLIElement, ItemProps>(
     (
       {
+        onUpdate,
+        onDelete,
         dragOverlay,
         dragging,
         disabled,
         fadeIn,
+        projectId,
+        taskId,
         handle,
-        handleProps,
         index,
         listeners,
-        onRemove,
         sorting,
         style,
         content,
@@ -69,7 +74,9 @@ export const Item = React.memo(
       },
       ref
     ) => {
+      
       useEffect(() => {
+
         if (!dragOverlay) {
           return;
         }
@@ -117,7 +124,6 @@ export const Item = React.memo(
             className={classNames(
               styles.Item,
               dragging && styles.dragging,
-              handle && styles.withHandle,
               dragOverlay && styles.dragOverlay,
               disabled && styles.disabled,
             )}
@@ -126,12 +132,8 @@ export const Item = React.memo(
             {...(!handle ? listeners : undefined)}
             tabIndex={!handle ? 0 : undefined}
           >
-            <Task key={content.id} id={content.id} name={content.name} description={content.description} />
-            <span className={styles.Actions}>
-              {onRemove ? (
-                <Remove className={styles.Remove} onClick={onRemove} />
-              ) : null}
-              {handle ? <Handle {...handleProps} {...listeners} /> : null}
+            <Task onUpdate={onUpdate} onDelete={onDelete} key={content.id} projectId={projectId} id={taskId} name={content.name} description={content.description} />
+              <span className={styles.Actions}>
             </span>
           </div>
         </li>

@@ -15,4 +15,9 @@ public sealed class WorkspaceOwnerId : IdValueObject
     {
         return new WorkspaceOwnerId(value);
     }
+
+     public static WorkspaceOwnerId FromString(string id)
+    {
+        return new WorkspaceOwnerId(new Guid(id));
+    }
 }

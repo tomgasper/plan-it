@@ -12,12 +12,10 @@ const PLACEHOLDER_ID = 'placeholder';
 export type Items = Record<UniqueIdentifier, Project>;
 
 export const useMultipleContainers = (items: Items, setItems: React.Dispatch<React.SetStateAction<Items>>) => {
-  const [containers, setContainers] = useState(Object.keys(items));
   const [activeId, setActiveId] = useState<string | null>(null);
   const [clonedItems, setClonedItems] = useState<Items | null>(null);
   const lastOverId = useRef<string | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
-
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const findContainer = useCallback((id: string) => {
@@ -33,7 +31,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
       return -1;
     }
     return items[container].projectTasks.findIndex((task) => task.id === id);
-  }, [findContainer, items]);
+  }, [items, findContainer]);
 
   const onDragStart = useCallback(({ active }) => {
     setActiveId(active.id);
@@ -50,15 +48,15 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
     if (!overContainer || !activeContainer) return;
 
     if (activeContainer !== overContainer) {
-      setItems((items) => {
-        const activeItems = items[activeContainer].projectTasks;
-        const overItems = items[overContainer].projectTasks;
-        const overIndex = overId in items ? overItems.length + 1 : overItems.findIndex((task) => task.id === overId);
+      setItems((prevItems) => {
+        const activeItems = prevItems[activeContainer].projectTasks;
+        const overItems = prevItems[overContainer].projectTasks;
+        const overIndex = overId in prevItems ? overItems.length + 1 : overItems.findIndex((task) => task.id === overId);
         const activeIndex = activeItems.findIndex((task) => task.id === active.id);
 
         let newIndex: number;
 
-        if (overId in items) {
+        if (overId in prevItems) {
           newIndex = overItems.length + 1;
         } else {
           const isBelowOverItem = over && active.rect.current.translated &&
@@ -70,30 +68,32 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
         recentlyMovedToNewContainer.current = true;
 
         return {
-          ...items,
+          ...prevItems,
           [activeContainer]: {
-            ...items[activeContainer],
-            projectTasks: items[activeContainer].projectTasks.filter((item) => item.id !== active.id)
+            ...prevItems[activeContainer],
+            projectTasks: prevItems[activeContainer].projectTasks.filter((item) => item.id !== active.id)
           },
           [overContainer]: {
-            ...items[overContainer],
+            ...prevItems[overContainer],
             projectTasks: [
-              ...items[overContainer].projectTasks.slice(0, newIndex),
-              items[activeContainer].projectTasks.find((item) => item.id === active.id)!,
-              ...items[overContainer].projectTasks.slice(newIndex)
+              ...prevItems[overContainer].projectTasks.slice(0, newIndex),
+              prevItems[activeContainer].projectTasks.find((item) => item.id === active.id)!,
+              ...prevItems[overContainer].projectTasks.slice(newIndex)
             ],
           }
         };
       });
     }
-  }, [findContainer, items]);
+  }, [items, findContainer, setItems]);
 
   const onDragEnd = useCallback(({ active, over }) => {
     if (active.id in items && over?.id) {
-      setContainers((containers) => {
-        const activeIndex = containers.indexOf(active.id);
-        const overIndex = containers.indexOf(over.id);
-        return arrayMove(containers, activeIndex, overIndex);
+      setItems((prevItems) => {
+        const activeIndex = Object.keys(prevItems).indexOf(active.id);
+        const overIndex = Object.keys(prevItems).indexOf(over.id);
+        return Object.fromEntries(
+          arrayMove(Object.entries(prevItems), activeIndex, overIndex)
+        );
       });
     }
 
@@ -113,17 +113,16 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
 
     if (overId === PLACEHOLDER_ID) {
       const newContainerId = getNextContainerId();
-      setContainers((containers) => [...containers, newContainerId]);
-      setItems((items) => ({
-        ...items,
+      setItems((prevItems) => ({
+        ...prevItems,
         [activeContainer]: {
-          ...items[activeContainer],
-          projectTasks: items[activeContainer].projectTasks.filter((task) => task.id !== active.id)
+          ...prevItems[activeContainer],
+          projectTasks: prevItems[activeContainer].projectTasks.filter((task) => task.id !== active.id)
         },
         [newContainerId]: {
           name: "New project",
           description: "",
-          projectTasks: [items[activeContainer].projectTasks.find((task) => task.id === active.id)!]
+          projectTasks: [prevItems[activeContainer].projectTasks.find((task) => task.id === active.id)!]
         },
       }));
       setActiveId(null);
@@ -137,18 +136,18 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
       const overIndex = getIndex(overId);
 
       if (activeIndex !== overIndex) {
-        setItems((items) => ({
-          ...items,
+        setItems((prevItems) => ({
+          ...prevItems,
           [overContainer]: {
-            ...items[overContainer],
-            projectTasks: arrayMove(items[overContainer].projectTasks, activeIndex, overIndex)
+            ...prevItems[overContainer],
+            projectTasks: arrayMove(prevItems[overContainer].projectTasks, activeIndex, overIndex)
           },
         }));
       }
     }
 
     setActiveId(null);
-  }, [findContainer, getIndex, items]);
+  }, [items, findContainer, getIndex, setItems]);
 
   const onDragCancel = useCallback(() => {
     if (clonedItems) {
@@ -156,11 +155,11 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
     }
     setActiveId(null);
     setClonedItems(null);
-  }, [clonedItems]);
+  }, [clonedItems, setItems]);
 
-  function renderSortableItemDragOverlay(id: UniqueIdentifier) {
+  const renderSortableItemDragOverlay = useCallback((id: UniqueIdentifier) => {
     const containerId = findContainer(id) as UniqueIdentifier;
-    const projectTask = items[containerId].projectTasks.find( (task) => task.id === id);
+    const projectTask = items[containerId].projectTasks.find((task) => task.id === id);
 
     return (
       <Item
@@ -171,9 +170,9 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
         dragOverlay
       />
     );
-  }
+  }, [items, findContainer]);
 
-  function renderContainerDragOverlay(containerId: UniqueIdentifier) {
+  const renderContainerDragOverlay = useCallback((containerId: UniqueIdentifier) => {
     return (
       <Container
         label={`Column ${containerId}`}
@@ -184,7 +183,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
         shadow
         unstyled={false}
       >
-        {items[containerId].projectTasks.map((item, index) => (
+        {items[containerId].projectTasks.map((item) => (
           <Item
             key={item.id}
             value={item.id}
@@ -195,13 +194,11 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
         ))}
       </Container>
     );
-  }
+  }, [items]);
 
   return {
     sensors,
     activeId,
-    containers,
-    setContainers,
     onDragStart,
     onDragOver,
     onDragEnd,
@@ -211,5 +208,4 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
     collisionDetectionStrategy: collisionDetectionStrategy(lastOverId, recentlyMovedToNewContainer, activeId, items),
     renderSortableItemDragOverlay,
     renderContainerDragOverlay,
-  };
-};
+  }}

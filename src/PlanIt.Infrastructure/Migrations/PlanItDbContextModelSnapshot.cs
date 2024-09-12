@@ -177,7 +177,12 @@ namespace PlanIt.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("Projects", (string)null);
                 });
@@ -350,6 +355,12 @@ namespace PlanIt.Infrastructure.Migrations
 
             modelBuilder.Entity("PlanIt.Domain.ProjectAggregate.Project", b =>
                 {
+                    b.HasOne("PlanIt.Domain.WorkspaceAggregate.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsMany("PlanIt.Domain.ProjectAggregate.Entities.ProjectTask", "ProjectTasks", b1 =>
                         {
                             b1.Property<Guid>("Id")

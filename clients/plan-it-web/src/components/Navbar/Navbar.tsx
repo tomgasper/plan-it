@@ -10,10 +10,15 @@ import {
     Group,
     ActionIcon,
     Tooltip,
+    Loader,
   } from '@mantine/core';
-  import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus } from '@tabler/icons-react';
+  import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus} from '@tabler/icons-react';
   import { UserButton } from '../UserButton/UserButton';
   import classes from './Navbar.module.css';
+import { NavLink, useNavigate } from 'react-router-dom';
+import {  useCreateWorkspaceMutation } from '../../services/planit-api';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { addWorkspace } from '../../redux/workspacesSlice';
   
   
   const links: { icon: any; label: string; notifications?: number }[] = [
@@ -22,19 +27,30 @@ import {
     { icon: IconUser, label: 'Contacts' },
   ];
   
-  const collections = [
-    { emoji: '👍', label: 'Sales' },
-    { emoji: '🚚', label: 'Deliveries' },
-    { emoji: '💸', label: 'Discounts' },
-    { emoji: '💰', label: 'Profits' },
-    { emoji: '✨', label: 'Reports' },
-    { emoji: '🛒', label: 'Orders' },
-    { emoji: '📅', label: 'Events' },
-    { emoji: '🙈', label: 'Debts' },
-    { emoji: '💁‍♀️', label: 'Customers' },
-  ];
+
   
   export function Navbar() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const workspaces = useAppSelector( state => state.workspaces.workspaces);
+    const [ createWorkspace ]= useCreateWorkspaceMutation();
+
+    const handleClickIconPlus = async () => {
+      const newWorkspace = await createWorkspace({
+        name: "New Workspace",
+        description: "",
+        projectIds: []
+      });
+
+      if (!newWorkspace.data) return;
+
+      dispatch(addWorkspace(newWorkspace.data));
+    }
+
+    const handleUserButtonClick = () => {
+      navigate('/profile');
+    }
+
     const mainLinks = links.map((link) => (
       <UnstyledButton key={link.label} className={classes.mainLink}>
         <div className={classes.mainLinkInner}>
@@ -49,22 +65,24 @@ import {
       </UnstyledButton>
     ));
   
-    const collectionLinks = collections.map((collection) => (
-      <a
-        href="#"
-        onClick={(event) => event.preventDefault()}
-        key={collection.label}
-        className={classes.collectionLink}
-      >
-        <span style={{ marginRight: String(9), fontSize: String(16) }}>{collection.emoji}</span>{' '}
-        {collection.label}
-      </a>
-    ));
+    const workspacesLinks = workspaces
+    ? workspaces.map((workspace) => (
+        <NavLink
+          to={`/workspaces/${workspace.id}`}
+          key={workspace.id}
+          className={({ isActive }) =>
+            `${classes.workspaceLink} ${isActive ? classes.workspaceLinkActive : ''}`
+          }
+        >
+          <span>{workspace.name}</span>
+        </NavLink>
+      ))
+    : null;
   
     return (
       <nav className={classes.navbar}>
         <div className={classes.section}>
-          <UserButton />
+          <UserButton onClick={handleUserButtonClick}/>
         </div>
   
         <TextInput
@@ -82,17 +100,17 @@ import {
         </div>
   
         <div className={classes.section}>
-          <Group className={classes.collectionsHeader} justify="space-between">
+          <Group className={classes.workspacesHeader} justify="space-between">
             <Text size="xs" fw={500} c="dimmed">
               Workspaces
             </Text>
-            <Tooltip label="Create collection" withArrow position="right">
-              <ActionIcon variant="default" size={18}>
+            <Tooltip label="Create workspace" withArrow position="right">
+              <ActionIcon variant="default" size={18} onClick={handleClickIconPlus}>
                 <IconPlus style={{ width: String(12), height: String(12) }} stroke={1.5} />
               </ActionIcon>
             </Tooltip>
           </Group>
-          <div className={classes.collections}>{collectionLinks}</div>
+          <div className={classes.workspaces}>{!workspacesLinks ? <Loader color="blue" /> : workspacesLinks}</div>
         </div>
       </nav>
     );

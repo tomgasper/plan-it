@@ -2,9 +2,10 @@
 
 POST {{host}}/api/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6IjQ0NTkyMjQ0LWU0NzgtNDBjNC1hMzY5LTg2NWE5ZWExM2FmOCIsImV4cCI6MTcyNTQ0ODg3NCwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.E6iCIp1c3QGt5PAdXVsk9UZkFR9vmRSCMXU4poJl1Dw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6ImE2ZmI3YmEwLTZiNjUtNGEyMS1hYmFkLTYxOWZjMzExOTNmYyIsImV4cCI6MTcyNTg5NTA3MiwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.pd_wuO_8FZ-AL0_GKE4QaxTxwdL4LKOR1IOi6DdvPtM
 
 {
+    "workspaceId": "e02023fa-6b10-46b8-9315-f53a081bf46d",
     "name": "Project 1",
     "description": "Project 1 description",
     "projectTasks": 

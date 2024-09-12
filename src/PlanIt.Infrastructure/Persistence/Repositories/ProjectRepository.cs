@@ -3,6 +3,7 @@ using PlanIt.Domain.ProjectAggregate;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Infrastructure.Persistence.Repositories;
 
@@ -15,15 +16,20 @@ public class ProjectRepository : IProjectRepository
         _dbContext = dbContext;
     }
 
-    public void Add(Project project)
+    public async Task AddAsync(Project project)
     {
         _dbContext.Add(project);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<Project?> GetAsync(ProjectId projectId)
     {
         return await _dbContext.Projects.FirstOrDefaultAsync( p => p.Id == projectId  );
+    }
+
+    public async Task<List<Project>> GetProjectsForWorkspaceAsync(WorkspaceId workspaceId)
+    {
+        return await _dbContext.Projects.Where( p => p.WorkspaceId == workspaceId).ToListAsync();
     }
 
     public async Task UpdateAsync()

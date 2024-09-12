@@ -3,15 +3,20 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.Application.Workspaces.Commands.AssignProjectToWorkspace;
+using PlanIt.Application.Workspaces.Queries.GetWorkspace;
 using PlanIt.Application.Workspaces.Commands.CreateWorkspace;
 using PlanIt.Application.Workspaces.Commands.DeleteWorkspace;
 using PlanIt.Application.Workspaces.Commands.UpdateWorkspace;
 using PlanIt.Contracts.Workspace.Requests;
 using PlanIt.Domain.WorkspaceAggregate;
+using PlanIt.Contracts.Projects.Responses;
+using PlanIt.Application.Workspaces.Queries.GetWorkspaceProjects;
+using PlanIt.Contracts.Workspace.Responses;
+using PlanIt.Domain.ProjectAggregate;
 
 namespace PlanIt.WebApi.Controllers;
 
-[Authorize]
+
 [Route("/api/workspaces")]
 public class WorkspaceController : ApiController
 {
@@ -20,6 +25,39 @@ public class WorkspaceController : ApiController
     public WorkspaceController(ISender mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [Route("{workspaceId}")]
+    public async Task<IActionResult> GetWorkspace(string workspaceId)
+    {
+        GetWorkspaceQuery query = new(workspaceId);
+
+        Result<Workspace> workspaceQueryResult = await _mediator.Send(query);
+
+        if (workspaceQueryResult.IsFailed)
+        {
+            return Problem(workspaceQueryResult.Errors);
+        }
+
+        return Ok(workspaceQueryResult.Value.MapToResponse());
+    }
+
+    
+    [HttpGet]
+    [Route("{workspaceId}/projects")]
+    public async Task<IActionResult> GetWorkspaceProjects(string workspaceId)
+    {
+        GetWorkspaceProjectsQuery query = new(workspaceId);
+
+        Result<List<Project>> workspaceProjectsQueryResult = await _mediator.Send(query);
+
+        if (workspaceProjectsQueryResult.IsFailed)
+        {
+            return Problem(workspaceProjectsQueryResult.Errors);
+        }
+
+        return Ok(workspaceProjectsQueryResult.Value.MapToResponse(workspaceId));
     }
 
     [HttpPost]

@@ -11,7 +11,7 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
     private readonly IWorkspaceRepository _workspaceRepository;
     private readonly IUserContext _userContext;
 
-    public CreateWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository, IUserContext userContext)
+    public CreateWorkspaceCommandHandler(IUserContext userContext, IWorkspaceRepository workspaceRepository)
     {
         _workspaceRepository = workspaceRepository;
         _userContext = userContext;
@@ -21,7 +21,10 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
     {
         var userId = _userContext.TryGetUserId();
 
-        var workspace = Workspace.Create(command.Name, command.Description, WorkspaceOwnerId.Create(new Guid(userId)));
+        var workspace = Workspace.Create(
+            name: command.Name,
+            description: command.Description,
+            workspaceOwnerId: WorkspaceOwnerId.Create(new Guid(userId)));
 
         await _workspaceRepository.AddAsync(workspace);
 

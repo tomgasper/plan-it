@@ -23,10 +23,9 @@ public class ProjectController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject([FromBody]CreateProjectRequest request)
+    public async Task<IActionResult> CreateProject([FromBody]CreateProjectRequest createProjectRequest)
     {
-        var userId = GetUserId();
-        CreateProjectCommand command = _mapper.Map<CreateProjectCommand>((request, userId));
+        CreateProjectCommand command = createProjectRequest.MapToCommand();
 
         var createProjectResult = await _mediator.Send(command);
 
@@ -35,7 +34,7 @@ public class ProjectController : ApiController
             return Problem(createProjectResult.Errors);
         }
 
-        return Ok(_mapper.Map<ProjectResponse>(createProjectResult.Value));
+        return Ok(createProjectResult.Value.MapToResponse());
     }
 
     [HttpGet("{projectId}")]

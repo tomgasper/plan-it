@@ -1,20 +1,20 @@
-import {useSortable} from '@dnd-kit/sortable';
-import {CSS} from '@dnd-kit/utilities';
 import { TaskCard } from './TaskCard';
 import classes from './Task.module.css';
 
 interface SortableItemProps {
-  id: number;
-  key: number;
+  id: string;
+  projectId: string;
   name: string;
   description: string;
+  onDelete: () => void;
+  onUpdate: () => void;
 }
 
-export function Task( {id, name, description, key} : SortableItemProps) {
-  
+export function Task( {id, projectId, name, description, onDelete, onUpdate} : SortableItemProps) {
   return (
-    <div className={classes.container} key={key} id={id.toString()}>
-     <TaskCard id={id} name={name} description={description}  />
+    <div className={classes.container} key={id} id={id}>
+      
+     <TaskCard onUpdate={onUpdate} projectId={projectId} taskId={id} name={name} description={description} onDelete={onDelete}/>
     </div>
   );
 }

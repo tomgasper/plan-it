@@ -1,6 +1,10 @@
 import classes from './Project.module.css';
-import { Avatar, Group, Progress, Stack, Title, Text } from "@mantine/core";
+import { Avatar, Group, Progress, Stack, Title, Text, Loader, Modal, ActionIcon } from "@mantine/core";
 import { Handle, Remove } from "../SortableItems/Item";
+import { useDisclosure } from '@mantine/hooks';
+import { IconAdjustments } from '@tabler/icons-react';
+import { ProjectSettings } from './ProjectSettings';
+import { ExtendedModal } from '../Common/ExtendedModal';
 
 const avatars = [
     'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png',
@@ -9,19 +13,29 @@ const avatars = [
   ];
 
 interface ProjectProps {
-    onRemove : (() => void) | undefined;
     handleProps : React.HTMLAttributes<unknown> | undefined;
+    onUpdate: () => void;
+    onRemove: () => void;
     name: string;
+    id: string;
     description: string;
 }
 
-export function Project({ onRemove, handleProps, name, description } : ProjectProps ) {
+export function Project({ onUpdate, onRemove, handleProps, name, description, id } : ProjectProps ) {
+    const [modalOpened, { open, close }] = useDisclosure(false);
+
   return (
-        <Stack className={classes.headerContainer} align="stretch">
+    <>
+        <ExtendedModal title="Project Settings" opened={modalOpened} onClose={close} >
+            <ProjectSettings onUpdate={onUpdate} onRemove={onRemove} projectId={id} />
+        </ExtendedModal>
+        <Stack className={classes.headerContainer} align="stretch" >
         <Group justify="space-between">
         <Title order={3} >{name} </Title>
             <Group>
-                {onRemove ? <Remove onClick={onRemove} /> : undefined}
+                <ActionIcon variant='transparent' onClick={open} >
+                    <IconAdjustments />
+                </ActionIcon>
                 <Handle {...handleProps} />
             </Group>
         </Group>
@@ -41,5 +55,6 @@ export function Project({ onRemove, handleProps, name, description } : ProjectPr
         </Avatar.Group>
         </Group>
     </Stack>
+    </>
   );
 }
