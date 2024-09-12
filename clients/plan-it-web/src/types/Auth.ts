@@ -15,6 +15,7 @@ export interface LoginCredentials {
     id: string;
     firstName: string;
     lastName: string;
+    avatarUrl: string;
     token: string;
   }
 
