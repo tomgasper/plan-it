@@ -17,7 +17,7 @@ export const useJwtAuth = () => {
         const decodedToken: JwtInformation = jwtDecode(token);
 
         const userFromToken = {
-          id: decodedToken.jti,
+          id: decodedToken.sub,
           firstName: decodedToken.given_name,
           lastName: decodedToken.family_name,
         };
