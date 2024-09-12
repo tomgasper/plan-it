@@ -92,10 +92,25 @@ export const projectApi = createApi({
           method: 'DELETE',
     })}),
     // User
-    getUserQuery: builder.query<User, string>({
+    getUser: builder.query<User, string>({
       query: (userId) => `users/${userId}`,
     }),
-})});
+    updateUser: builder.mutation<User, Partial<User> & { userId: string }>({
+      query: ({ userId, ...patch }) => ({
+        url: `/users/${userId}`,
+        method: 'PATCH',
+        body: patch,
+      }),
+    }),
+    uploadAvatar: builder.mutation<{ avatarUrl: string }, { userId: string, avatar: FormData }>({
+      query: ({ userId, avatar }) => ({
+        url: `/users/${userId}/avatar`,
+        method: 'POST',
+        body: avatar,
+      }),
+    }),
+  }),
+});
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -113,5 +128,8 @@ export const {
   useCreateProjectTaskMutation,
   useDeleteProjectTaskMutation,
   useUpdateProjectTaskMutation,
-  useGetProjectTasksQuery
+  useGetProjectTasksQuery,
+  useGetUserQuery,
+  useUpdateUserMutation,
+  useUploadAvatarMutation
  } = projectApi;

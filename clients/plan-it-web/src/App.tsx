@@ -15,12 +15,12 @@ import { WorkspaceSettings } from './components/WorkspaceSettings/WorkspaceSetti
 import { Login } from './components/Login/Login';
 import { useJwtAuth } from './hooks/useJwtAuth';
 import { Register } from './components/Register/Register';
+import { ProfilePage } from './components/Profile/ProfilePage';
+import { ProtectedRoute } from './router/ProtectedRoute';
 
 export default function App() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useJwtAuth();
-
-  console.log(isAuthenticated);
 
   const { data, isLoading, error } = useGetUserWorkspacesQuery('e0d91303-b5c9-4530-9914-d27c7a054415');
 
@@ -40,8 +40,9 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/workspaces/:workspaceId/settings" element={<WorkspaceSettings />} />
-          <Route path="/workspaces/:workspaceId" element={<MainWindow />} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/workspaces/:workspaceId/settings" element={<ProtectedRoute><WorkspaceSettings /></ProtectedRoute>} />
+          <Route path="/workspaces/:workspaceId" element={<ProtectedRoute><MainWindow /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </>

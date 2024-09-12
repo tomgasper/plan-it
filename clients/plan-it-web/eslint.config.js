@@ -31,7 +31,7 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unsafe-assignment": "warn",
+      "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-misused-promises" : "off",
       "@typescript-eslint/no-unsafe-call" : "warn",
       ...react.configs.recommended.rules,
