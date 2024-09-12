@@ -22,11 +22,9 @@ export const useJwtAuth = () => {
           lastName: decodedToken.family_name,
         };
         
-        // Sprawdzenie, czy token jest nadal ważny
         if (decodedToken.exp && decodedToken.exp * 1000 > Date.now()) {
           dispatch(setCredentials({ token, user: userFromToken }));
         } else {
-          // Token wygasł
           dispatch(logOut());
         }
       } catch (err) {

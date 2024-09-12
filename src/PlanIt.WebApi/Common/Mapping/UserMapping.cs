@@ -1,4 +1,5 @@
-using PlanIt.Application.Users.Commands;
+using PlanIt.Application.Users.Commands.UpdateUser;
+using PlanIt.Application.Users.Commands.UpdateUserAvatarCommand;
 using PlanIt.Contracts.Users.Requests;
 using PlanIt.Contracts.Users.Responses;
 using PlanIt.Contracts.Workspace.Responses;
@@ -28,6 +29,17 @@ public static class UserMapping
         new UpdateUserAvatarCommand(
             UserId: userId,
             Avatar: request.Avatar
+        )
+    );
+
+    public static UpdateUserCommand MapToCommand(this UpdateUserRequest request, string userId) => (
+        new UpdateUserCommand(
+            UserId: userId,
+            FirstName: request.FirstName,
+            LastName: request.LastName,
+            Email: request.Email,
+            OldPassword: request.OldPassword,
+            NewPassword: request.NewPassword
         )
     );
 }

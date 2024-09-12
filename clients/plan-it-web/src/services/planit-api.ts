@@ -105,7 +105,7 @@ export const projectApi = createApi({
     uploadAvatar: builder.mutation<{ avatarUrl: string }, { userId: string, avatar: FormData }>({
       query: ({ userId, avatar }) => ({
         url: `/users/${userId}/avatar`,
-        method: 'POST',
+        method: 'PATCH',
         body: avatar,
       }),
     }),

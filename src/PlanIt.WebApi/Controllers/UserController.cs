@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.Application.Users.Commands;
+using PlanIt.Application.Users.Commands.UpdateUser;
+using PlanIt.Application.Users.Commands.UpdateUserAvatarCommand;
 using PlanIt.Application.Users.Queries.GetUser;
 using PlanIt.Application.Users.Queries.GetUserWorkspace;
 using PlanIt.Contracts.Users.Requests;
@@ -35,8 +36,23 @@ public class UserController : ApiController
     }
 
     [HttpPatch]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest updateUserRequest, string userId)
+    {
+        UpdateUserCommand command = updateUserRequest.MapToCommand(userId);
+
+        var updateUserResult = await _mediator.Send(command);
+
+        if (updateUserResult.IsFailed)
+        {
+            return Problem(updateUserResult.Errors);
+        }
+
+        return Ok(updateUserResult.Value.MapToResponse());
+    }
+
+    [HttpPatch]
     [Route("avatar")]
-    public async Task<IActionResult> UpdateUserAvatar([FromForm] UpdateUserAvatarRequest request, string userId)
+    public async Task<IActionResult> UploadUserAvatar([FromForm] UpdateUserAvatarRequest request, string userId)
     {
         UpdateUserAvatarCommand command = request.MapToCommand(userId);
 

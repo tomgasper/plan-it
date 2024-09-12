@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using FluentResults;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
@@ -60,5 +61,43 @@ public class UserRepository : IUserRepository
     public async Task SaveChangesAsync()
     {
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Result> UpdateIdentityUserAsync(
+        Guid userId,
+        string? email,
+        string? oldPassword,
+        string? newPassword)
+    {
+        var identityUser = await _userManager.FindByIdAsync(userId.ToString());
+
+        if (identityUser is null)
+        {
+            return Result.Fail(new NotFoundError($"Couldn't find identity user with id: {userId}"));
+        }
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            var token = await _userManager.GenerateChangeEmailTokenAsync(identityUser, email);
+            var result = await _userManager.ChangeEmailAsync(identityUser, email, token);
+
+            if (!result.Succeeded)
+            {
+                return Result.Fail(new InternalServerError("Couldn't change the user's email. Please try again later."));
+            }
+
+        }
+
+        if (!string.IsNullOrEmpty(oldPassword) && !string.IsNullOrEmpty(newPassword))
+        {
+            var result = await _userManager.ChangePasswordAsync(identityUser, oldPassword, newPassword);
+
+            if (!result.Succeeded)
+            {
+                return Result.Fail(new InternalServerError("Couldn't change the user's password. Please try again later."));
+            }
+        }
+
+        return Result.Ok();
     }
 }

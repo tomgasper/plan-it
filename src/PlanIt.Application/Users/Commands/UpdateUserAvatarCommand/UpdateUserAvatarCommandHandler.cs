@@ -5,7 +5,7 @@ using PlanIt.Application.Common.Interfaces.Services.ImageStorage;
 using PlanIt.Domain.UserAggregate;
 using PlanIt.Domain.UserAggregate.ValueObjects;
 
-namespace PlanIt.Application.Users.Commands;
+namespace PlanIt.Application.Users.Commands.UpdateUserAvatarCommand;
 
 public class UpdateUserAvatarCommandHandler : IRequestHandler<UpdateUserAvatarCommand, Result<User>>
 {
