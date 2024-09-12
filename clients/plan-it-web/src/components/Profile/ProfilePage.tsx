@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+import { useState, useEffect } from 'react';
 import {
-  Container,
   Title,
   TextInput,
   PasswordInput,
@@ -9,12 +11,12 @@ import {
   Box,
   Avatar,
   FileInput,
+  Flex,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useGetUserQuery, useUpdateUserMutation, useUploadAvatarMutation } from '../../services/planit-api';
 import { showNotification } from '@mantine/notifications';
 import { useAppSelector } from '../../hooks/reduxHooks';
-import { useNavigate } from 'react-router-dom';
 
 interface ProfileFormValues {
   firstName: string;
@@ -88,7 +90,7 @@ export function ProfilePage() {
         message: 'Profile updated successfully',
         color: 'green',
       });
-    } catch (error) {
+    } catch {
       showNotification({
         title: 'Error',
         message: 'Failed to update profile',
@@ -98,8 +100,8 @@ export function ProfilePage() {
   };
 
   return (
-    <Container size="sm">
-      <Title order={2} mb="xl">Edit Profile</Title>
+    <Flex style={{width:"100%"}} justify='center' direction='column' align='center'>
+      <Title order={3} mb="xl" mt={25} >Edit Profile</Title>
       <Box mb="xl">
         <Group justify="center">
           <Avatar 
@@ -148,6 +150,6 @@ export function ProfilePage() {
           </Button>
         </Group>
       </form>
-    </Container>
+      </Flex>
   );
 }

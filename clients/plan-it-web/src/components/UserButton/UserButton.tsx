@@ -2,9 +2,13 @@ import { UnstyledButton, Group, Avatar, Text } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './UserButton.module.css';
 
-export function UserButton() {
+interface UserButton {
+  onClick: () => void;
+}
+
+export function UserButton({onClick} : UserButton) {
   return (
-    <UnstyledButton className={classes.user}>
+    <UnstyledButton onClick={onClick} className={classes.user}>
       <Group className={classes.container}>
         <Avatar
           src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"

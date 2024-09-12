@@ -76,7 +76,7 @@ import { notifications } from '@mantine/notifications';
         </Text>
   
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-          <TextInput label="Email" placeholder="you@mantine.dev" value={email} onChange={(e) => setEmail(e.target.value) } required />
+          <TextInput label="Email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value) } required />
           <PasswordInput label="Password" placeholder="Your password" onChange={(e) => setPassword(e.target.value)} required mt="md" />
           <Group justify="space-between" mt="lg">
             <Checkbox label="Remember me" />

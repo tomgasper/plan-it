@@ -15,7 +15,7 @@ import {
   import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus} from '@tabler/icons-react';
   import { UserButton } from '../UserButton/UserButton';
   import classes from './Navbar.module.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {  useCreateWorkspaceMutation } from '../../services/planit-api';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { addWorkspace } from '../../redux/workspacesSlice';
@@ -31,6 +31,7 @@ import { addWorkspace } from '../../redux/workspacesSlice';
   
   export function Navbar() {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const workspaces = useAppSelector( state => state.workspaces.workspaces);
     const [ createWorkspace ]= useCreateWorkspaceMutation();
 
@@ -44,6 +45,10 @@ import { addWorkspace } from '../../redux/workspacesSlice';
       if (!newWorkspace.data) return;
 
       dispatch(addWorkspace(newWorkspace.data));
+    }
+
+    const handleUserButtonClick = () => {
+      navigate('/profile');
     }
 
     const mainLinks = links.map((link) => (
@@ -77,7 +82,7 @@ import { addWorkspace } from '../../redux/workspacesSlice';
     return (
       <nav className={classes.navbar}>
         <div className={classes.section}>
-          <UserButton />
+          <UserButton onClick={handleUserButtonClick}/>
         </div>
   
         <TextInput

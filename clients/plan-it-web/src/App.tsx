@@ -17,6 +17,7 @@ import { useJwtAuth } from './hooks/useJwtAuth';
 import { Register } from './components/Register/Register';
 import { ProfilePage } from './components/Profile/ProfilePage';
 import { ProtectedRoute } from './router/ProtectedRoute';
+import { Flex, Loader } from '@mantine/core';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -30,7 +31,11 @@ export default function App() {
     }
   },[data, dispatch]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+  {
+    return <Flex style={{width: "100%", height: "100vh"}}justify='center' align='center'><Loader /></Flex>
+  }
+
   if (error) return <div>Error occurred while fetching workspaces</div>;
 
   return (
