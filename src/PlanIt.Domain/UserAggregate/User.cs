@@ -48,4 +48,9 @@ public sealed class User
         FirstName = firstName;
         LastName = lastName;
     }
+
+    public void ChangeAvatar(string newAvatarUrl)
+    {
+        AvatarUrl = newAvatarUrl;
+    }
 }

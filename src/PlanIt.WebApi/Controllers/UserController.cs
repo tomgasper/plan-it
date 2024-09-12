@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PlanIt.Application.Users.Commands;
 using PlanIt.Application.Users.Queries.GetUser;
 using PlanIt.Application.Users.Queries.GetUserWorkspace;
+using PlanIt.Contracts.Users.Requests;
 using PlanIt.WebApi.Common.Mapping;
 
 namespace PlanIt.WebApi.Controllers;
@@ -17,7 +19,6 @@ public class UserController : ApiController
     }
 
     // Add Get User endpoint
-
     [HttpGet]
     public async Task<IActionResult> GetUser(string userId)
     {
@@ -31,6 +32,22 @@ public class UserController : ApiController
         }
 
         return Ok(getUserResult.Value.MapToResponse());
+    }
+
+    [HttpPatch]
+    [Route("avatar")]
+    public async Task<IActionResult> UpdateUserAvatar([FromForm] UpdateUserAvatarRequest request, string userId)
+    {
+        UpdateUserAvatarCommand command = request.MapToCommand(userId);
+
+        var updateUserAvatarResult = await _mediator.Send(command);
+
+        if (updateUserAvatarResult.IsFailed)
+        {
+            return Problem(updateUserAvatarResult.Errors);
+        }
+
+        return Ok(updateUserAvatarResult.Value.MapToResponse());
     }
 
     [HttpGet]
