@@ -4,18 +4,21 @@ using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Application.UnitTests.Projects.Commands.TestUtils;
 using PlanIt.Application.UnitTests.TestUtils.Projects;
+using PlanIt.Application.UnitTests.TestUtils.Constants;
 
 namespace PlanIt.Application.UnitTests.Projects.Commands.CreateProject;
 
 public class CreateProjectCommandHandlerTest
 {
     private readonly IProjectRepository _mockProjectRepository;
+    private readonly IUserContext _userContext;
     private readonly CreateProjectCommandHandler _handler;
 
     public CreateProjectCommandHandlerTest()
     {
         _mockProjectRepository = Substitute.For<IProjectRepository>();
-        _handler = new CreateProjectCommandHandler(_mockProjectRepository);
+        _userContext = Substitute.For<IUserContext>();
+        _handler = new CreateProjectCommandHandler(_mockProjectRepository, _userContext);
     }
 
     // T1: SUT - component what we're testing
@@ -30,6 +33,7 @@ public class CreateProjectCommandHandlerTest
         // Arrange
         // The hold of a valid project
         // var createProjectCommand = CreateProjectCommandUtils.CreateCommand();
+        _userContext.TryGetUserId().Returns(Constants.User.Id);
 
         // Act
         // Invoke the handler
@@ -40,8 +44,8 @@ public class CreateProjectCommandHandlerTest
         // 2. Project added to repository
         result.IsFailed.Should().BeFalse();
         result.Value.ValidateCreatedFrom(createProjectCommand);
-        _mockProjectRepository.Received().Add(result.Value);
-        _mockProjectRepository.Received(1).Add(result.Value);
+        await _mockProjectRepository.Received().AddAsync(result.Value);
+        await _mockProjectRepository.Received(1).AddAsync(result.Value);
     }
 
     public static IEnumerable<object[]> ValidCreateProjectCommands()
