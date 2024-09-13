@@ -19,28 +19,12 @@ export function ProjectSettings({
 {
     const navigate = useNavigate();
     // Get the project ID from the URL
-
-    if (!projectId)
-    {
-        console.error('No project ID found');
-
-        notifications.show({
-            title: 'Erorr accessing project',
-            message: 'project was not found, please try again!',
-            color: 'red'
-          })
-
-        navigate('/');
-
-        return;
-    }
-
      // Get details about the project and project projects
     const { data: project, error : projectError , isLoading : projectLoading } = useGetProjectQuery(projectId);
 
     // Local state for the project settings
     const [ projectName, setProjectName ] = useState(project?.name);
-    const [ projectDescription, setProjectDescription ] =useState(project?.description);
+    const [ projectDescription, setProjectDescription ] = useState(project?.description);
 
     const [ updateproject, { isLoading : projectUpdating } ] = useUpdateProjectMutation();
     

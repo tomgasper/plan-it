@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { CancelDrop, DndContext, DragOverlay, Modifiers } from '@dnd-kit/core';
 import { SortableContext, SortingStrategy } from '@dnd-kit/sortable';
@@ -10,12 +12,13 @@ import { SortableItem } from './Item/SortableItem';
 import classes from './MultipleSortableProjects.module.css';
 
 import { IconCirclePlus } from '@tabler/icons-react';
-import { Project } from '../../types/Project';
+import { Project, ProjectTask } from '../../types/Project';
 import { useCreateProjectTaskMutation, useDeleteProjectMutation } from '../../services/planit-api';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { ExtendedModal } from '../Common/ExtendedModal';
 import { ProjectSettings } from '../Project/ProjectSettings';
+import { NewTaskModal } from '../Task/NewTaskModal';
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -69,32 +72,14 @@ export function MultipleSortableProjects({
   
   const containers = useMemo(() => Object.keys(projects), [projects]);
 
-  const handleAddTask = async ( projectId : string ) => {
-    const result = await createProjectTask({
-      projectId: projectId,
-      task: {
-        name: "New Task",
-        description: "New Task"
-      }
-    });
-
-    if (result.error) {
-      console.error('Error adding project task:', result.error);
-      notifications.show({
-        title: 'Error adding project task',
-        message: 'Could not add project task, please try again!',
-        color: 'red'
-      });
-      return;
-    }
-
-    if (projects[projectId].projectTasks.find((task) => task.id === result.data.id) != undefined) return;
+  const handleAddTask = ( projectId : string, addedTask : ProjectTask ) => {
+    if (projects[projectId].projectTasks.find((task) => task.id === addedTask.id) != undefined) return;
 
     setProjects((prevProjects : object) => {
-      if (prevProjects[projectId].projectTasks.find((task) => task.id === result.data.id) != undefined) return prevProjects;
+      if (prevProjects[projectId].projectTasks.find((task) => task.id === addedTask.id) != undefined) return prevProjects;
 
       const newProjects = {...prevProjects};
-      newProjects[projectId].projectTasks.push(result.data);
+      newProjects[projectId].projectTasks.push(addedTask);
       return newProjects;
     });
   }
@@ -181,10 +166,9 @@ export function MultipleSortableProjects({
     >
       <Flex className={classes.projectsContainer}>
         <ExtendedModal title="New project" opened={modalOpened} onClose={close}>
-            <div onClick={ () => {
-              handleAddTask(projectIdToAddNewTask)
-              setProjectIdToAddNewTask(null);
-            }}>Hello</div>
+            <NewTaskModal closeWindow={close} projectId={projectIdToAddNewTask} onClose={ (task: ProjectTask) => {
+                      handleAddTask(projectIdToAddNewTask, task)
+                      setProjectIdToAddNewTask(null); }} />
         </ExtendedModal>
         <SortableContext items={[...containers, PLACEHOLDER_ID]} strategy={strategy}>
           {containers.map((containerId) => (
