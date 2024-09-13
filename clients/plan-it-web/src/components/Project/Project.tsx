@@ -1,6 +1,6 @@
 import classes from './Project.module.css';
-import { Avatar, Group, Progress, Stack, Title, Text, Loader, Modal, ActionIcon } from "@mantine/core";
-import { Handle, Remove } from "../SortableItems/Item";
+import { Avatar, Group, Progress, Stack, Title, Text, ActionIcon } from "@mantine/core";
+import { Handle, } from "../SortableItems/Item";
 import { useDisclosure } from '@mantine/hooks';
 import { IconAdjustments } from '@tabler/icons-react';
 import { ProjectSettings } from './ProjectSettings';

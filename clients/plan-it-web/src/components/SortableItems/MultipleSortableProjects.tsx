@@ -13,6 +13,9 @@ import { IconCirclePlus } from '@tabler/icons-react';
 import { Project } from '../../types/Project';
 import { useCreateProjectTaskMutation, useDeleteProjectMutation } from '../../services/planit-api';
 import { notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
+import { ExtendedModal } from '../Common/ExtendedModal';
+import { ProjectSettings } from '../Project/ProjectSettings';
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -45,6 +48,8 @@ export function MultipleSortableProjects({
   const [projects, setProjects] = useState(workspaceProjects);
   const [deleteProject] = useDeleteProjectMutation();
   const [createProjectTask] = useCreateProjectTaskMutation();
+  const [modalOpened, { open, close }] = useDisclosure(false);
+  const [projectIdToAddNewTask, setProjectIdToAddNewTask] = useState<string | null>(null);
 
   useEffect(() => {
     setProjects(structuredClone(workspaceProjects));
@@ -175,6 +180,12 @@ export function MultipleSortableProjects({
       modifiers={modifiers}
     >
       <Flex className={classes.projectsContainer}>
+        <ExtendedModal title="New project" opened={modalOpened} onClose={close}>
+            <div onClick={ () => {
+              handleAddTask(projectIdToAddNewTask)
+              setProjectIdToAddNewTask(null);
+            }}>Hello</div>
+        </ExtendedModal>
         <SortableContext items={[...containers, PLACEHOLDER_ID]} strategy={strategy}>
           {containers.map((containerId) => (
             <DroppableContainer
@@ -205,7 +216,10 @@ export function MultipleSortableProjects({
                 ))}
                 <Group p={15} justify='center'>
                   <IconCirclePlus
-                    onClick={() => handleAddTask(projects[containerId].id) }
+                    onClick={() => {
+                      setProjectIdToAddNewTask(projects[containerId].id);
+                      open();
+                    }}
                     style={{
                       width: "45px",
                       height: "45px",

@@ -44,7 +44,9 @@ public static class DependencyInjection
         services.AddSingleton(Options.Create(jwtSettings));
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
 
-        services.AddIdentityCore<ApplicationUser>()
+        services.AddIdentityCore<ApplicationUser>( configuration => {
+            configuration.SignIn.RequireConfirmedEmail = false;
+        })
             .AddSignInManager<SignInManager<ApplicationUser>>()
             .AddEntityFrameworkStores<PlanItDbContext>();
 

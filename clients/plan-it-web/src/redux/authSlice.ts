@@ -4,12 +4,14 @@ interface AuthState {
     user: UserFromJwt | null;
     token: string | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
 }
 
 const initialState: AuthState = {
     user: null,
     token: localStorage.getItem('token'),
     isAuthenticated: false,
+    isLoading: true
 };
 
 const authSlice = createSlice({
@@ -28,10 +30,17 @@ const authSlice = createSlice({
             state.token = null;
             state.isAuthenticated = false;
             localStorage.removeItem('token');
-        }
+        },
+        setAuthLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+          },
+        setAuthState: (state, action: PayloadAction<{ isAuthenticated: boolean; isLoading: boolean }>) => {
+        state.isAuthenticated = action.payload.isAuthenticated;
+        state.isLoading = action.payload.isLoading;
+        },
     }
 });
 
-export const { setCredentials, logOut } = authSlice.actions;
+export const { setCredentials, logOut, setAuthLoading, setAuthState } = authSlice.actions;
 
 export default authSlice.reducer;

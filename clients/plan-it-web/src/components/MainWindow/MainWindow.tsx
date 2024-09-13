@@ -5,7 +5,6 @@ import { useCreateProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorksp
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { WorkspaceMenu } from "./WorkspaceMenu";
-import { Project } from "../../types/Project";
 
 export function MainWindow() {
     const { workspaceId } = useParams<{ workspaceId: string }>();
