@@ -28,7 +28,8 @@ public class CreateTaskCommandHandlerTests
     public async Task HandleCreateTaskCommand_WhenTaskIsValid_ShouldCreateAndReturnTask()
     {
         // Arrange
-        var createTaskCommand = CreateTaskCommandUtils.CreateCommand();
+        var dueDate = CreateTaskCommandUtils.CreateDueDateForTask(7);
+        var createTaskCommand = CreateTaskCommandUtils.CreateCommand(dueDate);
         var mockProject = Project.Create(
             name: Constants.Project.Name,
             description: Constants.Project.Description,

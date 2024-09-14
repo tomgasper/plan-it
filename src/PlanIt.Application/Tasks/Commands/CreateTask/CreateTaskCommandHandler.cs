@@ -3,6 +3,7 @@ using MediatR;
 using PlanIt.Application.Common.Interfaces.Persistence;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.TaskWorker.ValueObjects;
 
 namespace PlanIt.Application.Tasks.Commands.CreateTask;
 
@@ -28,7 +29,12 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
         }
 
         // Create task and add to the Project
-        var createdTask = project.AddNewTask(request.Name, request.Description);
+        var createdTask = project.AddNewTask(
+            name: request.Name,
+            description: request.Description,
+            dueDate: request.DueDate,
+            assignedUsers: request.AssignedUsers is not null ? request.AssignedUsers.ConvertAll( u => TaskWorkerId.FromString(u)) : []
+            );
 
         // Persist Project
         await _projectRepository.UpdateAsync();

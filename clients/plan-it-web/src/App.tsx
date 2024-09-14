@@ -7,9 +7,9 @@ import './App.css';
 import { MainWindow } from './components/MainWindow/MainWindow';
 import { useGetUserWorkspacesQuery } from './services/planit-api';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useAppDispatch} from './hooks/reduxHooks';
-import { useEffect } from 'react';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector} from './hooks/reduxHooks';
+import { useEffect, useState } from 'react';
 import { setWorkspaces } from './redux/workspacesSlice';
 import { WorkspaceSettings } from './components/WorkspaceSettings/WorkspaceSettings';
 import { Login } from './components/Login/Login';
@@ -18,12 +18,16 @@ import { Register } from './components/Register/Register';
 import { ProfilePage } from './components/Profile/ProfilePage';
 import { ProtectedRoute } from './router/ProtectedRoute';
 import { Flex, Loader } from '@mantine/core';
+import { UserFromJwt } from './types/User';
 
 export default function App() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useJwtAuth();
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const { isAuthenticated } = useJwtAuth();
+  const user : UserFromJwt | null = useAppSelector(state => state.auth.user);
+  const { data, isLoading, error } = useGetUserWorkspacesQuery(user?.id ?? '', { skip: user == null});
 
-  const { data, isLoading, error } = useGetUserWorkspacesQuery('e0d91303-b5c9-4530-9914-d27c7a054415');
+  console.log(isAuthenticated);
 
   useEffect(() => {
     if (data) {
@@ -31,7 +35,13 @@ export default function App() {
     }
   },[data, dispatch]);
 
-  if (isLoading)
+  useEffect(() => {
+    if (isAuthenticated !== null) {
+      setIsAuthChecking(false);
+    }
+  }, [isAuthenticated]);
+
+  if (isAuthChecking || isLoading)
   {
     return <Flex style={{width: "100%", height: "100vh"}}justify='center' align='center'><Loader /></Flex>
   }
@@ -43,6 +53,7 @@ export default function App() {
     <BrowserRouter>
       {isAuthenticated && <Navbar />}
         <Routes>
+          <Route path="/" element={<ProtectedRoute><MainWindow /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

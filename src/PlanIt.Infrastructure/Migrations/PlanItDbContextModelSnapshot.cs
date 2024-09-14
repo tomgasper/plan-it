@@ -192,6 +192,10 @@ namespace PlanIt.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -374,6 +378,9 @@ namespace PlanIt.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(200)
                                 .HasColumnType("nvarchar(200)");
+
+                            b1.Property<DateTime>("DueDate")
+                                .HasColumnType("datetime2");
 
                             b1.Property<string>("Name")
                                 .IsRequired()

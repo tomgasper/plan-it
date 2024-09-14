@@ -13,5 +13,7 @@ public record CreateProjectCommand(
 public record CreateProjectTaskCommand
 (
     string Name,
-    string Description
+    string Description,
+    DateTime DueDate,
+    List<string>? AssignedUsers = null
 );

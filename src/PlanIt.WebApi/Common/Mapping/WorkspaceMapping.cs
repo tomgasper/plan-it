@@ -1,12 +1,12 @@
+using PlanIt.Application.Projects.Queries.GetProjectWithDetails.Dto;
 using PlanIt.Application.Workspaces.Commands.AssignProjectToWorkspace;
 using PlanIt.Application.Workspaces.Commands.CreateWorkspace;
 using PlanIt.Application.Workspaces.Commands.UpdateWorkspace;
+using PlanIt.Application.Workspaces.Queries.GetWorkspaceProjects.Dto;
 using PlanIt.Contracts.Workspace.Requests;
 using PlanIt.Contracts.Workspace.Responses;
-using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.WorkspaceAggregate;
-using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
-using PlanIt.WebApi.Common.Mapping;
+
 
 public static class WorkspaceMapping
 {
@@ -40,10 +40,10 @@ public static class WorkspaceMapping
         )
     );
 
-    public static WorkspaceProjectsResponse MapToResponse(this List<Project> projects, string workspaceId) => (
+    public static WorkspaceProjectsResponse MapToResponse(this List<DetailedProjectResponse> projects, string workspaceId) => (
         new WorkspaceProjectsResponse(
             WorkspaceId: workspaceId,
-            Projects: projects.Select( p => p.MapToResponse() ).ToList()
+            Projects: projects
         )
     );
 }

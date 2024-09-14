@@ -8,6 +8,8 @@ using PlanIt.Contracts.Projects.Requests;
 using PlanIt.Contracts.Projects.Responses;
 using PlanIt.WebApi.Common.Mapping;
 
+using PlanIt.Application.Projects.Queries.GetProjectWithDetails;
+
 namespace PlanIt.WebApi.Controllers;
 
 [Route("api/projects")]
@@ -50,6 +52,21 @@ public class ProjectController : ApiController
         }
 
         return Ok(getProjectResult.Value.MapToResponse());
+    }
+
+    [HttpGet("{projectId}/details")]
+    public async Task<IActionResult> GetProjectDetails(string projectId)
+    {
+        GetProjectWitDetailsQuery query = new (projectId);
+
+        var getProjectResult = await _mediator.Send(query);
+
+        if (getProjectResult.IsFailed)
+        {
+            return Problem(getProjectResult.Errors);
+        }
+
+        return Ok(getProjectResult.Value);
     }
 
     [HttpPut("{projectId}")]

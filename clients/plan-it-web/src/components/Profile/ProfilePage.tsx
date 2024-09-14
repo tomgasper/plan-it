@@ -21,13 +21,15 @@ import { useAppSelector } from '../../hooks/reduxHooks';
 interface ProfileFormValues {
   firstName: string;
   lastName: string;
-  password: string;
-  confirmPassword: string;
+  oldPassword: string;
+  newPassword: string;
 }
 
 export function ProfilePage() {
+  const authState = useAppSelector(state => state.auth);
   const userFromToken = useAppSelector(state => state.auth.user);
-  const { data: currentUser } = useGetUserQuery(userFromToken?.id ?? "");
+  console.log(authState);
+  const { data: currentUser, refetch: refetchUser } = useGetUserQuery(userFromToken?.id ?? "");
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
   const [uploadAvatar, { isLoading: isUploading }] = useUploadAvatarMutation();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -36,19 +38,21 @@ export function ProfilePage() {
     initialValues: {
       firstName: currentUser?.firstName ?? '',
       lastName: currentUser?.lastName ?? '',
-      password: '',
-      confirmPassword: '',
+      oldPassword: '',
+      newPassword: '',
     },
     validate: {
       firstName: (value : string) => (value.length < 2 ? 'First name must have at least 2 characters' : null),
       lastName: (value: string) => (value.length < 2 ? 'Last name must have at least 2 characters' : null),
-      password: (value : string) => (
+      oldPassword: (value : string) => (
         value.length > 0 && value.length < 8
           ? 'Password must be at least 8 characters long'
           : null
       ),
-      confirmPassword: (value: string, values: ProfileFormValues) => 
-        value !== values.password ? 'Passwords do not match' : null,
+      newPassword: (value: string) => 
+        value.length > 0 && value.length < 8
+          ? 'Password must be at least 8 characters long'
+          : null
     },
   });
 
@@ -59,7 +63,7 @@ export function ProfilePage() {
         lastName: currentUser.lastName || '',
       });
     }
-  }, [currentUser, form]);
+  }, [currentUser]);
 
   const handleSubmit = async (values: ProfileFormValues) => {
     if (!currentUser) {
@@ -76,7 +80,8 @@ export function ProfilePage() {
         userId: currentUser.id,
         firstName: values.firstName,
         lastName: values.lastName,
-        ...(values.password ? { password: values.password } : {}),
+        ...(values.oldPassword ? { oldPassword: values.oldPassword } : {}),
+        ...(values.newPassword ? { newPassword: values.newPassword } : {}),
       }).unwrap();
 
       if (avatarFile) {
@@ -90,6 +95,8 @@ export function ProfilePage() {
         message: 'Profile updated successfully',
         color: 'green',
       });
+
+      await refetchUser();
     } catch {
       showNotification({
         title: 'Error',
@@ -133,15 +140,15 @@ export function ProfilePage() {
           mb="md"
         />
         <PasswordInput
-          label="New Password"
-          placeholder="Enter new password"
-          {...form.getInputProps('password')}
+          label="Old Password"
+          placeholder="Enter old password"
+          {...form.getInputProps('oldPassword')}
           mb="md"
         />
         <PasswordInput
-          label="Confirm New Password"
+          label="New Password"
           placeholder="Confirm new password"
-          {...form.getInputProps('confirmPassword')}
+          {...form.getInputProps('newPassword')}
           mb="xl"
         />
         <Group justify="right">

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Project, ProjectTask, Workspace, WorkspaceProjects } from '../types/Project'
+import type { Project, ProjectTask, ProjectWithDetails, Workspace, WorkspaceProjects } from '../types/Project'
 import { User } from '../types/User';
 
 const HOST = "https://localhost:5234";
@@ -21,6 +21,9 @@ export const projectApi = createApi({
   endpoints: (builder) => ({
     getProject: builder.query<Project, string>({
       query: (id) => `projects/${id}`,
+    }),
+    getProjectWithDetails: builder.query<ProjectWithDetails, string>({
+      query: (id) => `projects/${id}/details`,
     }),
     getUserWorkspaces: builder.query<Workspace[], string>({
       query: (userId) => `users/${userId}/workspaces/`,
@@ -95,6 +98,9 @@ export const projectApi = createApi({
     getUser: builder.query<User, string>({
       query: (userId) => `users/${userId}`,
     }),
+    getUsers: builder.query<User[], void>({
+      query: () => `users`,
+    }),
     updateUser: builder.mutation<User, Partial<User> & { userId: string }>({
       query: ({ userId, ...patch }) => ({
         url: `/users/${userId}`,
@@ -105,17 +111,17 @@ export const projectApi = createApi({
     uploadAvatar: builder.mutation<{ avatarUrl: string }, { userId: string, avatar: FormData }>({
       query: ({ userId, avatar }) => ({
         url: `/users/${userId}/avatar`,
-        method: 'POST',
+        method: 'PATCH',
         body: avatar,
       }),
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
 export const {
   useGetProjectQuery,
+  useGetProjectWithDetailsQuery,
+  useLazyGetProjectWithDetailsQuery,
   useGetUserWorkspacesQuery,
   useGetProjectsForWorkspaceQuery,
   useCreateProjectMutation,
@@ -130,6 +136,7 @@ export const {
   useUpdateProjectTaskMutation,
   useGetProjectTasksQuery,
   useGetUserQuery,
+  useGetUsersQuery,
   useUpdateUserMutation,
   useUploadAvatarMutation
  } = projectApi;

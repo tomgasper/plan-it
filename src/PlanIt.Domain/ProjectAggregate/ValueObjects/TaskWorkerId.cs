@@ -9,4 +9,10 @@ public sealed class TaskWorkerId : IdValueObject
     {
         return new( Guid.NewGuid());
     }
+
+
+    public static TaskWorkerId FromString(string id)
+    {
+        return new TaskWorkerId( new Guid(id) );
+    }
 }

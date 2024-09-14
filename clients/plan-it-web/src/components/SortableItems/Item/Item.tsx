@@ -132,7 +132,7 @@ export const Item = React.memo(
             {...(!handle ? listeners : undefined)}
             tabIndex={!handle ? 0 : undefined}
           >
-            <Task onUpdate={onUpdate} onDelete={onDelete} key={content.id} projectId={projectId} id={taskId} name={content.name} description={content.description} />
+            <Task onUpdate={onUpdate} onDelete={onDelete} key={content.id} projectId={projectId} id={taskId} taskContent={content} />
               <span className={styles.Actions}>
             </span>
           </div>

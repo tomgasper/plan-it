@@ -67,19 +67,19 @@
     pointer-events: none;
   }
   
-  .collections {
+  .workspaces {
     padding-left: calc(var(--mantine-spacing-md) - rem(6px));
     padding-right: calc(var(--mantine-spacing-md) - rem(6px));
     padding-bottom: var(--mantine-spacing-md);
   }
   
-  .collectionsHeader {
+  .workspacesHeader {
     padding-left: calc(var(--mantine-spacing-md) + rem(2px));
     padding-right: var(--mantine-spacing-md);
     margin-bottom: rem(5px);
   }
   
-  .collectionLink {
+  .workspaceLink {
     display: block;
     padding: rem(8px) var(--mantine-spacing-xs);
     text-decoration: none;
@@ -87,7 +87,7 @@
     font-size: var(--mantine-font-size-xs);
     color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
     line-height: 1;
-    font-weight: 500;
+    font-weight: 700;
   
     &:hover {
       background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));

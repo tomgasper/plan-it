@@ -3,6 +3,7 @@ using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.Events;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.TaskWorker.ValueObjects;
 using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
 namespace PlanIt.Domain.ProjectAggregate;
@@ -99,12 +100,15 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return project;
     }
 
-    public ProjectTask AddNewTask(string name, string description)
+    public ProjectTask AddNewTask(string name, string description, DateTime dueDate, List<TaskWorkerId> assignedUsers)
     {
         ProjectTask? newTask = ProjectTask.Create(
                 taskOwnerId: TaskOwnerId.Create(ProjectOwnerId.Value),
                 name: name,
-                description: description);
+                description: description,
+                dueDate: dueDate,
+                assignedUsers: assignedUsers
+                );
 
         _projectTasks.Add(newTask);
 

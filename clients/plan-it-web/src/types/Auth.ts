@@ -1,6 +1,4 @@
 import { JwtPayload } from "jwt-decode";
-import { User } from "./User";
-
 export interface LoginCredentials {
     email: string;
     password: string;
@@ -14,7 +12,10 @@ export interface LoginCredentials {
   }
   
   export interface AuthResponse {
-    user: User;
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string;
     token: string;
   }
 

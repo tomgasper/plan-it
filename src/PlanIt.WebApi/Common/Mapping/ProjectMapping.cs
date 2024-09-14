@@ -18,9 +18,10 @@ public static class ProjectMapping
                 Id: task.Id.Value,
                 Name: task.Name,
                 Description: task.Description,
+                DueDate: task.DueDate,
                 TaskOwnerId: task.TaskOwnerId.Value.ToString(),
                 TaskComments: task.TaskComments.Select( tc => new TaskCommentResponse(tc.Name, tc.Description)).ToList(), // Temporary
-                TaskWorkerIds: new List<string>() // Temporary
+                TaskWorkerIds: task.TaskWorkerIds.Select( tw => tw.MapToResponse() ).ToList()
             )).ToList(),
             ProjectOwnerId: project.ProjectOwnerId.Value.ToString(),
             CreatedDateTime: project.CreatedDateTime,
@@ -36,7 +37,9 @@ public static class ProjectMapping
             Description: request.Description,
             ProjectTasks: request.ProjectTasks.Select( pt => new CreateProjectTaskCommand(
                 Name: pt.Name,
-                Description: pt.Description
+                Description: pt.Description,
+                DueDate: pt.DueDate,
+                AssignedUsers: pt.AssignedUsers
             )).ToList()
         )
     );

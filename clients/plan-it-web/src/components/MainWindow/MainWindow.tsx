@@ -1,26 +1,35 @@
-import { Flex, Group, Title } from "@mantine/core";
+import { Flex, Group, Loader, Title } from "@mantine/core";
 import { MultipleSortableProjects } from '../SortableItems/MultipleSortableProjects';
 import classes from './MainWindow.module.css';
 import { useCreateProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery } from "../../services/planit-api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { WorkspaceMenu } from "./WorkspaceMenu";
-import { Project } from "../../types/Project";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 export function MainWindow() {
+    const navigate = useNavigate();
+    const { workspaces }= useAppSelector(state => state.workspaces);
     const { workspaceId } = useParams<{ workspaceId: string }>();
 
-    const { data: workspace, error: workspaceFetchError, isLoading: isLoadingWorkspace } = useGetWorkspaceQuery(workspaceId ?? "");
+    const { data: workspace, error: workspaceFetchError, isLoading: isLoadingWorkspace, refetch : refetchWorkspace } = useGetWorkspaceQuery(workspaceId ?? "");
     const { data : projects, error: workspaceProjectsFetchError, isLoading, refetch } = useGetProjectsForWorkspaceQuery(workspaceId ?? "", {
         skip: !workspaceId
     });
     const [ createProject ] = useCreateProjectMutation();
 
+    console.log(projects);
+
     useEffect(() => {
         if (workspaceId) {
+          refetchWorkspace().catch(console.error);
           refetch().catch(console.error);
         }
-      }, [workspaceId, refetch]);
+
+        if (!workspaceId && workspaces && workspaces.length > 0) {
+          navigate(`/workspaces/${workspaces[0].id}`);
+        }
+      }, [workspace, navigate, workspaces, workspaceId, refetch, refetchWorkspace]);
 
       useEffect(() => {
         console.log('Refetched projects:', projects);
@@ -58,7 +67,7 @@ export function MainWindow() {
             <>
                 <Group>
                   <Group gap={15}>
-                  <Title>{workspace!.name}</Title>
+                  <Title>{workspace!.name} </Title>
                     <WorkspaceMenu />
                   </Group>
                  

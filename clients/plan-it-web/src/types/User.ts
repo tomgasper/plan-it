@@ -5,3 +5,9 @@ export interface User {
     lastName: string;
     avatarUrl: string | null;
 }
+
+export interface UserFromJwt {
+    id: string;
+    firstName: string;
+    lastName: string;
+}

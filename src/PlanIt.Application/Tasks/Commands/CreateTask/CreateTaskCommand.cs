@@ -8,5 +8,7 @@ public record CreateTaskCommand(
     string UserId,
     string ProjectId,
     string Name,
-    string Description
+    string Description,
+    DateTime DueDate,
+    List<string> AssignedUsers
 ) : IRequest<Result<ProjectTask>>;

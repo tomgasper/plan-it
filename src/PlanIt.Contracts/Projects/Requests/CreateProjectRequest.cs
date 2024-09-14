@@ -9,5 +9,7 @@ public record CreateProjectRequest(
 public record ProjectTaskRequest
 (
     string Name,
-    string Description
+    string Description,
+    DateTime DueDate,
+    List<string>? AssignedUsers
 );

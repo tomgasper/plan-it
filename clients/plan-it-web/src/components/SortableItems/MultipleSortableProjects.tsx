@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { CancelDrop, DndContext, DragOverlay, Modifiers } from '@dnd-kit/core';
 import { SortableContext, SortingStrategy } from '@dnd-kit/sortable';
@@ -10,9 +12,12 @@ import { SortableItem } from './Item/SortableItem';
 import classes from './MultipleSortableProjects.module.css';
 
 import { IconCirclePlus } from '@tabler/icons-react';
-import { Project } from '../../types/Project';
+import { Project, ProjectTask } from '../../types/Project';
 import { useCreateProjectTaskMutation, useDeleteProjectMutation } from '../../services/planit-api';
 import { notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
+import { ExtendedModal } from '../Common/ExtendedModal';
+import { NewTaskModal } from '../Task/NewTaskModal';
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -45,6 +50,8 @@ export function MultipleSortableProjects({
   const [projects, setProjects] = useState(workspaceProjects);
   const [deleteProject] = useDeleteProjectMutation();
   const [createProjectTask] = useCreateProjectTaskMutation();
+  const [modalOpened, { open, close }] = useDisclosure(false);
+  const [projectIdToAddNewTask, setProjectIdToAddNewTask] = useState<string | null>(null);
 
   useEffect(() => {
     setProjects(structuredClone(workspaceProjects));
@@ -64,35 +71,28 @@ export function MultipleSortableProjects({
   
   const containers = useMemo(() => Object.keys(projects), [projects]);
 
-  const handleAddTask = async ( projectId : string ) => {
-    const result = await createProjectTask({
-      projectId: projectId,
-      task: {
-        name: "New Task",
-        description: "New Task"
+  const handleAddTask = (projectId: string, addedTask: ProjectTask) => {
+    setProjects((prevProjects: Projects) => {
+      if (!prevProjects[projectId]) {
+        console.error(`Projekt o ID ${projectId} nie istnieje`);
+        return prevProjects;
       }
+  
+      if (prevProjects[projectId].projectTasks.some(task => task.id === addedTask.id)) {
+        console.log(`Zadanie o ID ${addedTask.id} już istnieje w projekcie ${projectId}`);
+        return prevProjects;
+      }
+  
+      return {
+        ...prevProjects,
+        [projectId]: {
+          ...prevProjects[projectId],
+          projectTasks: [...prevProjects[projectId].projectTasks, addedTask]
+        }
+      };
     });
-
-    if (result.error) {
-      console.error('Error adding project task:', result.error);
-      notifications.show({
-        title: 'Error adding project task',
-        message: 'Could not add project task, please try again!',
-        color: 'red'
-      });
-      return;
-    }
-
-    if (projects[projectId].projectTasks.find((task) => task.id === result.data.id) != undefined) return;
-
-    setProjects((prevProjects : object) => {
-      if (prevProjects[projectId].projectTasks.find((task) => task.id === result.data.id) != undefined) return prevProjects;
-
-      const newProjects = {...prevProjects};
-      newProjects[projectId].projectTasks.push(result.data);
-      return newProjects;
-    });
-  }
+  };
+  
 
   const handleAddColumn = async () => {
     const result = await onAddNewProject();
@@ -147,6 +147,9 @@ export function MultipleSortableProjects({
     setProjects((prevProjects) => {
       const newProjects = {...prevProjects};
       newProjects[projectId].projectTasks = newProjects[projectId].projectTasks.filter((task) => task.id !== taskId);
+
+      newProjects[projectId] = {...newProjects[projectId]};
+
       return newProjects;
     });
   }
@@ -175,6 +178,11 @@ export function MultipleSortableProjects({
       modifiers={modifiers}
     >
       <Flex className={classes.projectsContainer}>
+        <ExtendedModal title="New project" opened={modalOpened} onClose={close}>
+            <NewTaskModal closeWindow={close} projectId={projectIdToAddNewTask} onClose={ (task: ProjectTask) => {
+                      handleAddTask(projectIdToAddNewTask, task)
+                      setProjectIdToAddNewTask(null); }} />
+        </ExtendedModal>
         <SortableContext items={[...containers, PLACEHOLDER_ID]} strategy={strategy}>
           {containers.map((containerId) => (
             <DroppableContainer
@@ -205,7 +213,10 @@ export function MultipleSortableProjects({
                 ))}
                 <Group p={15} justify='center'>
                   <IconCirclePlus
-                    onClick={() => handleAddTask(projects[containerId].id) }
+                    onClick={() => {
+                      setProjectIdToAddNewTask(projects[containerId].id);
+                      open();
+                    }}
                     style={{
                       width: "45px",
                       height: "45px",

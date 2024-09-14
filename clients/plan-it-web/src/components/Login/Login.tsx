@@ -31,14 +31,20 @@ import { notifications } from '@mantine/notifications';
         e.preventDefault();
         try {
             const userData: AuthResponse = await login({ email, password }).unwrap();
-            dispatch(setCredentials({user: userData.user, token: userData.token}));
+            dispatch(setCredentials({user: 
+              {
+                id: userData.id,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                avatarUrl: userData.avatarUrl
+              }, token: userData.token}));
 
             notifications.show({
                 title: 'Login successful',
                 message: 'You have been successfully logged in',
                 color: 'green'
             });
-            navigate('/workspace');
+            navigate('/');
         } catch (error) {
             const err = error as { data?: { title?: string; errors?: Record<string, string[]> } };
 
