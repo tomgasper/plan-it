@@ -7,7 +7,7 @@ import './App.css';
 import { MainWindow } from './components/MainWindow/MainWindow';
 import { useGetUserWorkspacesQuery } from './services/planit-api';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector} from './hooks/reduxHooks';
 import { useEffect, useState } from 'react';
 import { setWorkspaces } from './redux/workspacesSlice';
@@ -53,6 +53,7 @@ export default function App() {
     <BrowserRouter>
       {isAuthenticated && <Navbar />}
         <Routes>
+          <Route path="/" element={<ProtectedRoute><MainWindow /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

@@ -95,6 +95,9 @@ export const projectApi = createApi({
     getUser: builder.query<User, string>({
       query: (userId) => `users/${userId}`,
     }),
+    getUsers: builder.query<User[], void>({
+      query: () => `users`,
+    }),
     updateUser: builder.mutation<User, Partial<User> & { userId: string }>({
       query: ({ userId, ...patch }) => ({
         url: `/users/${userId}`,
@@ -130,6 +133,7 @@ export const {
   useUpdateProjectTaskMutation,
   useGetProjectTasksQuery,
   useGetUserQuery,
+  useGetUsersQuery,
   useUpdateUserMutation,
   useUploadAvatarMutation
  } = projectApi;

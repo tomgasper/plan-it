@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button, Flex, Group, Loader, Stack, TextInput } from "@mantine/core";
+import { Button, Flex, Group, Loader, Text, Stack, Textarea, TextInput, MultiSelect } from "@mantine/core";
 import { notifications } from '@mantine/notifications';
-import { useGetProjectQuery, useCreateProjectTaskMutation } from "../../services/planit-api";
+import { useGetProjectQuery, useCreateProjectTaskMutation, useGetUsersQuery } from "../../services/planit-api";
 import classes from "./NewTaskModal.module.css";
-import { ProjectTask } from "../../types/Project";
+import { ProjectTask, User } from "../../types/Project";
 
 interface NewTaskModalProps {
-  onClose: (task : ProjectTask) => void;
+  onClose: (task: ProjectTask) => void;
   closeWindow: () => void;
   projectId: string;
 }
@@ -14,7 +14,10 @@ interface NewTaskModalProps {
 export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalProps) {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [assignedUsers, setAssignedUsers] = useState<string[]>([]);
   const [createProjectTask, { isLoading: taskCreating }] = useCreateProjectTaskMutation();
+  const { data: users, isLoading: usersLoading } = useGetUsersQuery();
 
   const handleAddTask = async () => {
     if (!taskName || !taskDescription) {
@@ -31,7 +34,9 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
         projectId,
         task: {
           name: taskName,
-          description: taskDescription
+          description: taskDescription,
+          dueDate,
+          assignedUsers
         }
       }).unwrap();
 
@@ -40,6 +45,7 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
         message: 'Task added successfully',
         color: 'green'
       });
+
       console.log('Task created:', result);
       onClose(result);
       closeWindow();
@@ -64,12 +70,26 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
             value={taskName}
             onChange={(e) => setTaskName(e.currentTarget.value)}
           />
-          <TextInput
+          <Textarea
             label="Description"
             placeholder="Enter task description"
-            required
+            autosize
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.currentTarget.value)}
+          />
+          <TextInput
+            label="Due Date"
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.currentTarget.value)}
+          />
+          <MultiSelect
+            label="Assign Users"
+            placeholder="Select users to assign"
+            data={users ? users.map((user: User) => ({ value: user.id, label: user.name })) : []}
+            value={assignedUsers}
+            onChange={setAssignedUsers}
+            loading={usersLoading}
           />
         </Stack>
         <Group justify="space-between">

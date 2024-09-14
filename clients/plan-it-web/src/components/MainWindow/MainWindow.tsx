@@ -2,11 +2,14 @@ import { Flex, Group, Loader, Title } from "@mantine/core";
 import { MultipleSortableProjects } from '../SortableItems/MultipleSortableProjects';
 import classes from './MainWindow.module.css';
 import { useCreateProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery } from "../../services/planit-api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { WorkspaceMenu } from "./WorkspaceMenu";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 export function MainWindow() {
+    const navigate = useNavigate();
+    const { workspaces }= useAppSelector(state => state.workspaces);
     const { workspaceId } = useParams<{ workspaceId: string }>();
 
     const { data: workspace, error: workspaceFetchError, isLoading: isLoadingWorkspace, refetch : refetchWorkspace } = useGetWorkspaceQuery(workspaceId ?? "");
@@ -20,7 +23,11 @@ export function MainWindow() {
           refetchWorkspace().catch(console.error);
           refetch().catch(console.error);
         }
-      }, [workspace,workspaceId, refetch, refetchWorkspace]);
+
+        if (!workspaceId && workspaces && workspaces.length > 0) {
+          navigate(`/workspaces/${workspaces[0].id}`);
+        }
+      }, [workspace, navigate, workspaces, workspaceId, refetch, refetchWorkspace]);
 
       useEffect(() => {
         console.log('Refetched projects:', projects);

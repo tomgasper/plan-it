@@ -44,7 +44,7 @@ import { notifications } from '@mantine/notifications';
                 message: 'You have been successfully logged in',
                 color: 'green'
             });
-            navigate('/workspace');
+            navigate('/');
         } catch (error) {
             const err = error as { data?: { title?: string; errors?: Record<string, string[]> } };
 
