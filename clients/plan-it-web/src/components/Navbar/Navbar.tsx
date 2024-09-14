@@ -12,20 +12,17 @@ import {
     Tooltip,
     Loader,
   } from '@mantine/core';
-  import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus} from '@tabler/icons-react';
+  import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus, IconClipboard, IconLogout} from '@tabler/icons-react';
   import { UserButton } from '../UserButton/UserButton';
   import classes from './Navbar.module.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {  useCreateWorkspaceMutation } from '../../services/planit-api';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { addWorkspace } from '../../redux/workspacesSlice';
+import { logOut } from '../../redux/authSlice';
   
   
-  const links: { icon: any; label: string; notifications?: number }[] = [
-    { icon: IconBulb, label: 'Activity', notifications: 3 },
-    { icon: IconCheckbox, label: 'Tasks', notifications: 4 },
-    { icon: IconUser, label: 'Contacts' },
-  ];
+  
   
 
   
@@ -51,8 +48,14 @@ import { addWorkspace } from '../../redux/workspacesSlice';
       navigate('/profile');
     }
 
+    const links: { icon: any; label: string; notifications?: number, onClick?: () => void }[] = [
+      { icon: IconBulb, label: 'Activity', notifications: 3 },
+      { icon: IconCheckbox, label: 'Tasks', notifications: 4 },
+      { icon: IconLogout, label: 'Log out', onClick: () => dispatch(logOut()) },
+    ];
+
     const mainLinks = links.map((link) => (
-      <UnstyledButton key={link.label} className={classes.mainLink}>
+      <UnstyledButton key={link.label} className={classes.mainLink} onClick={link.onClick}>
         <div className={classes.mainLinkInner}>
           <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
           <span>{link.label}</span>
@@ -74,7 +77,10 @@ import { addWorkspace } from '../../redux/workspacesSlice';
             `${classes.workspaceLink} ${isActive ? classes.workspaceLinkActive : ''}`
           }
         >
-          <span>{workspace.name}</span>
+          <Group>
+            <IconClipboard size={15} /> <span>{workspace.name}</span>
+          </Group>
+          
         </NavLink>
       ))
     : null;

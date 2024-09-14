@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Flex, Group, Loader, Text, Stack, Textarea, TextInput, MultiSelect } from "@mantine/core";
 import { notifications } from '@mantine/notifications';
-import { useGetProjectQuery, useCreateProjectTaskMutation, useGetUsersQuery } from "../../services/planit-api";
+import { useGetProjectQuery, useCreateProjectTaskMutation, useGetUsersQuery, useLazyGetProjectWithDetailsQuery } from "../../services/planit-api";
 import classes from "./NewTaskModal.module.css";
 import { ProjectTask } from "../../types/Project";
 import { User } from "../../types/User";
@@ -19,6 +19,7 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
   const [assignedUsers, setAssignedUsers] = useState<string[]>([]);
   const [createProjectTask, { isLoading: taskCreating }] = useCreateProjectTaskMutation();
   const { data: users, isLoading: usersLoading } = useGetUsersQuery();
+  const [triggerGetProject, { data: project, isLoading: projectLoading }] = useLazyGetProjectWithDetailsQuery();
 
   const handleAddTask = async () => {
     if (!taskName || !taskDescription) {
@@ -31,7 +32,6 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
     }
 
     try {
-      console.log(assignedUsers);
       const result = await createProjectTask({
         projectId,
         task: {
@@ -42,14 +42,21 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
         }
       }).unwrap();
 
+      const projectResult = await triggerGetProject(projectId).unwrap();
+      const detailedTask = projectResult.projectTasks.find((task) => task.id === result.id);
+
+      if (!detailedTask) {
+        throw new Error('Could not find task in project');
+      }
+
       notifications.show({
         title: 'Success',
         message: 'Task added successfully',
         color: 'green'
       });
 
-      console.log('Task created:', result);
-      onClose(result);
+      console.log('Task created:', detailedTask);
+      onClose(detailedTask);
       closeWindow();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -76,6 +83,7 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
             label="Description"
             placeholder="Enter task description"
             autosize
+            minRows={3}
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.currentTarget.value)}
           />

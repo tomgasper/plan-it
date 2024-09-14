@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using PlanIt.Application.Tasks.Commands.AddComment;
 using PlanIt.Application.Tasks.Commands.CreateTask;
 using PlanIt.Application.Tasks.Commands.UpdateTask;
@@ -35,6 +36,7 @@ public static class TaskMapping
             Name: projectTask.Name,
             Description: projectTask.Description,
             TaskOwnerId: projectTask.TaskOwnerId.MapToResponse(),
+            DueDate: projectTask.DueDate,
             TaskComments: projectTask.TaskComments.Select( tc => new TaskCommentResponse(tc.Name, tc.Description)).ToList(),
             TaskWorkerIds: IdMapping.MapIdsToStrings(projectTask.TaskWorkerIds)
         )

@@ -7,6 +7,7 @@ public record ProjectTaskResponse(
     string Name,
     string Description,
     string TaskOwnerId,
+    DateTime DueDate,
     IReadOnlyList<TaskCommentResponse> TaskComments,
     IReadOnlyList<string> TaskWorkerIds
 );

@@ -1,20 +1,25 @@
-import {  Button, Flex, Group, Loader, Stack, TextInput, Title } from "@mantine/core";
+import {  Button, Flex, Group, Loader, Stack, TextInput,Text, Avatar } from "@mantine/core";
 import classes from "./TaskSettings.module.css"
 import { useEffect, useState } from "react";
 import { notifications } from '@mantine/notifications';
-import { useGetProjectQuery, useGetProjectTasksQuery, useUpdateProjectTaskMutation, } from "../../services/planit-api";
+import { useGetProjectQuery, useUpdateProjectTaskMutation, } from "../../services/planit-api";
 import { Task } from "../../types/Task";
+import { ProjectTask } from "../../types/Project";
+import { User } from "../../types/User";
 
 interface TaskSettingsProps {
     onUpdate: (projectId: string, taskId: string, updatedTask: Task) => void;
     projectId: string;
     taskId: string;
+    assignedUsers: User[];
 }
 
 export function TaskSettings({
     onUpdate,
     projectId,
-    taskId} : TaskSettingsProps)
+    taskId,
+    assignedUsers
+} : TaskSettingsProps)
 {
      // Get details about the Task and Task Tasks
     const { data: project, error : taskError , isLoading : projectLoading } = useGetProjectQuery(projectId);
@@ -24,8 +29,7 @@ export function TaskSettings({
     const [ taskDescription, setTaskDescription ] =useState("");
     const [ updateProjectTask, { isLoading : TaskUpdating } ] = useUpdateProjectTaskMutation();
 
-    let task;
-
+    let task : ProjectTask | undefined = undefined;
     if (!projectLoading)
     {
         if (project)
@@ -33,6 +37,14 @@ export function TaskSettings({
             task = project.projectTasks.find(t => t.id === taskId);
         }
     }
+
+    useEffect(() => {
+        if (task)
+        {
+            setTaskName(task.name);
+            setTaskDescription(task.description);
+        }
+    }, [task]);
     
     
     const handleSaveTask = async () => {
@@ -72,7 +84,16 @@ export function TaskSettings({
                         <TextInput label="Name" placeholder={task?.name} required value={taskName} onChange={ e => setTaskName(e.currentTarget.value) } />
                         <TextInput label="Description" placeholder={task?.description} required value={taskDescription} onChange={ e => setTaskDescription(e.currentTarget.value) }/>
                     </Stack>
-                    <Group justify="space-between">
+                    <Stack>
+                        <Text>Assigned users:</Text>
+                        <Group gap={5}>
+                        {assignedUsers.map((user : User) => (
+                            <Avatar alt={`${user.firstName} ${user.lastName}`} key={user.id} src={user.avatarUrl} radius="xl" />
+                        ))}
+                        </Group>
+                    </Stack>
+                    <Group justify="flex-end">
+
                     <Button  color="blue" onClick={ handleSaveTask } loading={TaskUpdating }>Save</Button>
                     </Group>
                 </Stack>

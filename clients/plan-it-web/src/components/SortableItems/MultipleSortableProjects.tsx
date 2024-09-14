@@ -17,7 +17,6 @@ import { useCreateProjectTaskMutation, useDeleteProjectMutation } from '../../se
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { ExtendedModal } from '../Common/ExtendedModal';
-import { ProjectSettings } from '../Project/ProjectSettings';
 import { NewTaskModal } from '../Task/NewTaskModal';
 
 const PLACEHOLDER_ID = 'placeholder';
@@ -72,17 +71,28 @@ export function MultipleSortableProjects({
   
   const containers = useMemo(() => Object.keys(projects), [projects]);
 
-  const handleAddTask = ( projectId : string, addedTask : ProjectTask ) => {
-    if (projects[projectId].projectTasks.find((task) => task.id === addedTask.id) != undefined) return;
-
-    setProjects((prevProjects : object) => {
-      if (prevProjects[projectId].projectTasks.find((task) => task.id === addedTask.id) != undefined) return prevProjects;
-
-      const newProjects = {...prevProjects};
-      newProjects[projectId].projectTasks.push(addedTask);
-      return newProjects;
+  const handleAddTask = (projectId: string, addedTask: ProjectTask) => {
+    setProjects((prevProjects: Projects) => {
+      if (!prevProjects[projectId]) {
+        console.error(`Projekt o ID ${projectId} nie istnieje`);
+        return prevProjects;
+      }
+  
+      if (prevProjects[projectId].projectTasks.some(task => task.id === addedTask.id)) {
+        console.log(`Zadanie o ID ${addedTask.id} już istnieje w projekcie ${projectId}`);
+        return prevProjects;
+      }
+  
+      return {
+        ...prevProjects,
+        [projectId]: {
+          ...prevProjects[projectId],
+          projectTasks: [...prevProjects[projectId].projectTasks, addedTask]
+        }
+      };
     });
-  }
+  };
+  
 
   const handleAddColumn = async () => {
     const result = await onAddNewProject();
@@ -137,6 +147,9 @@ export function MultipleSortableProjects({
     setProjects((prevProjects) => {
       const newProjects = {...prevProjects};
       newProjects[projectId].projectTasks = newProjects[projectId].projectTasks.filter((task) => task.id !== taskId);
+
+      newProjects[projectId] = {...newProjects[projectId]};
+
       return newProjects;
     });
   }

@@ -1,77 +1,98 @@
-import {  Button, Flex, Group, Loader, Stack, TextInput, Title } from "@mantine/core";
-import classes from "./projectSettings.module.css"
-import {  useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Button, Flex, Group, Loader, Stack, Textarea, TextInput } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 import { notifications } from '@mantine/notifications';
-import { useGetProjectQuery, useUpdateProjectMutation } from "../../services/planit-api";
+import { useLazyGetProjectWithDetailsQuery, useUpdateProjectMutation } from "../../services/planit-api";
 import { Project } from "../../types/Project";
+import classes from "./projectSettings.module.css";
 
 interface ProjectSettingsProps {
-    onUpdate: (project: Project) => void;
-    onRemove: () => void;
-    projectId: string;
+  onUpdate: (project: Project) => void;
+  onRemove: () => void;
+  projectId: string;
 }
 
 export function ProjectSettings({
-    onUpdate,
-    onRemove,
-    projectId} : ProjectSettingsProps)
-{
-    const navigate = useNavigate();
-    // Get the project ID from the URL
-     // Get details about the project and project projects
-    const { data: project, error : projectError , isLoading : projectLoading } = useGetProjectQuery(projectId);
+  onUpdate,
+  onRemove,
+  projectId,
+  workspaceId
+}: ProjectSettingsProps) {
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
 
-    // Local state for the project settings
-    const [ projectName, setProjectName ] = useState(project?.name);
-    const [ projectDescription, setProjectDescription ] = useState(project?.description);
+  const [getProject, { data: project, error: projectError, isLoading: projectLoading }] = useLazyGetProjectWithDetailsQuery();
+  const [updateProject, { isLoading: projectUpdating }] = useUpdateProjectMutation();
 
-    const [ updateproject, { isLoading : projectUpdating } ] = useUpdateProjectMutation();
-    
-    
-    const handleSaveproject = async () => {
-        // Save the project settings
-        const updatedProject = {
-            name: projectName,
-            description: projectDescription
-        };
+  const fetchProject = useCallback(() => {
+    getProject(projectId);
+  }, [getProject, projectId]);
 
-        const result = await updateproject({updatedProject, projectId: projectId});
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject, workspaceId]);
 
-        if (result.error)
-        {
-            console.error('Error updating project:', result.error);
-            notifications.show({
-                title: 'Erorr updating project',
-                message: `${result.error.data.title}`,
-                color: 'red'
-              })
-            return;
-        }
-
-        onUpdate(result.data);
-
-        notifications.show({
-            title: 'Success',
-            message: 'Project settings saved successfuly',
-            color: 'green'
-          });
+  useEffect(() => {
+    if (project) {
+      setProjectName(project.name);
+      setProjectDescription(project.description);
     }
+  }, [project]);
 
-    return (
-        <Flex className={classes.container} justify="center" align="center">
-            {(projectLoading) &&  <Loader />}
-                <Stack mb={25}>
-                    <Stack>
-                        <TextInput label="Name" placeholder={project?.name} required value={projectName} onChange={ e => setProjectName(e.currentTarget.value) } />
-                        <TextInput label="Description" placeholder={project?.description} required value={projectDescription} onChange={ e => setProjectDescription(e.currentTarget.value) }/>
-                    </Stack>
-                    <Group justify="space-between">
-                    <Button variant='light' color='red' onClick={onRemove} >Delete</Button>
-                    <Button  color="blue" onClick={ handleSaveproject } loading={projectUpdating }>Save</Button>
-                    </Group>
-                
-                </Stack>
-        </Flex>
-    )
+  const handleSaveProject = async () => {
+    const updatedProject = {
+      name: projectName,
+      description: projectDescription
+    };
+
+    try {
+      const result = await updateProject({ updatedProject, projectId }).unwrap();
+      const projectWithDetails = await getProject(projectId).unwrap();
+      onUpdate(projectWithDetails);
+      notifications.show({
+        title: 'Success',
+        message: 'Project settings saved successfully',
+        color: 'green'
+      });
+    } catch (error) {
+      console.error('Error updating project:', error);
+      notifications.show({
+        title: 'Error updating project',
+        message: 'An error occurred while updating the project.',
+        color: 'red'
+      });
+    }
+  };
+
+  if (projectLoading) return <Loader />;
+  if (projectError) return <div>Error loading project</div>;
+
+  return (
+    <Flex className={classes.container} justify="center" align="center">
+      <Stack mb={25}>
+        <Stack>
+          <TextInput
+            label="Name"
+            placeholder="Project name"
+            required
+            value={projectName}
+            onChange={(e) => setProjectName(e.currentTarget.value)}
+          />
+          <Textarea
+            autosize
+            minRows={3}
+            label="Description"
+            placeholder="Project description"
+            required
+            value={projectDescription}
+            onChange={(e) => setProjectDescription(e.currentTarget.value)}
+          />
+        </Stack>
+        <Group justify="space-between">
+          <Button variant='light' color='red' onClick={onRemove}>Delete</Button>
+          <Button color="blue" onClick={handleSaveProject} loading={projectUpdating}>Save</Button>
+        </Group>
+      </Stack>
+    </Flex>
+  );
 }

@@ -18,6 +18,8 @@ export function MainWindow() {
     });
     const [ createProject ] = useCreateProjectMutation();
 
+    console.log(projects);
+
     useEffect(() => {
         if (workspaceId) {
           refetchWorkspace().catch(console.error);

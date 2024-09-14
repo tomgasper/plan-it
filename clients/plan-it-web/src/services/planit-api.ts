@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Project, ProjectTask, Workspace, WorkspaceProjects } from '../types/Project'
+import type { Project, ProjectTask, ProjectWithDetails, Workspace, WorkspaceProjects } from '../types/Project'
 import { User } from '../types/User';
 
 const HOST = "https://localhost:5234";
@@ -21,6 +21,9 @@ export const projectApi = createApi({
   endpoints: (builder) => ({
     getProject: builder.query<Project, string>({
       query: (id) => `projects/${id}`,
+    }),
+    getProjectWithDetails: builder.query<ProjectWithDetails, string>({
+      query: (id) => `projects/${id}/details`,
     }),
     getUserWorkspaces: builder.query<Workspace[], string>({
       query: (userId) => `users/${userId}/workspaces/`,
@@ -115,10 +118,10 @@ export const projectApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
 export const {
   useGetProjectQuery,
+  useGetProjectWithDetailsQuery,
+  useLazyGetProjectWithDetailsQuery,
   useGetUserWorkspacesQuery,
   useGetProjectsForWorkspaceQuery,
   useCreateProjectMutation,

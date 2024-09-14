@@ -13,6 +13,7 @@ using PlanIt.Contracts.Projects.Responses;
 using PlanIt.Application.Workspaces.Queries.GetWorkspaceProjects;
 using PlanIt.Contracts.Workspace.Responses;
 using PlanIt.Domain.ProjectAggregate;
+using PlanIt.Application.Projects.Queries.GetProjectWithDetails.Dto;
 
 namespace PlanIt.WebApi.Controllers;
 
@@ -50,7 +51,7 @@ public class WorkspaceController : ApiController
     {
         GetWorkspaceProjectsQuery query = new(workspaceId);
 
-        Result<List<Project>> workspaceProjectsQueryResult = await _mediator.Send(query);
+        Result<List<DetailedProjectResponse>> workspaceProjectsQueryResult = await _mediator.Send(query);
 
         if (workspaceProjectsQueryResult.IsFailed)
         {

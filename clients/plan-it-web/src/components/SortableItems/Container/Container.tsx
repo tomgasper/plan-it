@@ -70,8 +70,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
         {label ? (
           <div className={styles.Header}>
             <Project
-            name={content?.name}
-            description={content?.description}
+            project={content}
             onUpdate={onUpdate}
             onRemove={onRemove}
             handleProps={handleProps}
