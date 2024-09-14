@@ -1,3 +1,4 @@
+using NSubstitute.Routing.Handlers;
 using PlanIt.Application.Projects.Commands.CreateProject;
 using PlanIt.Application.UnitTests.TestUtils.Constants;
 
@@ -16,12 +17,15 @@ public static class CreateProjectCommandUtils
             ));
     
     public static List<CreateProjectTaskCommand> CreateTasksCommand(
-        int tasksCount = 1
-        ) => (
-        Enumerable.Range(0, tasksCount)
-            .Select( index => new CreateProjectTaskCommand(
-                Constants.Project.ProjectTaskNameFromIndex(index),
-                 Constants.Project.ProjectTaskDescriptionFromIndex(index)
-            )).ToList()
-    );
+        int tasksCount = 1,
+        List<DateTime>? DueDates = null
+    )
+        {
+            return Enumerable.Range(0, tasksCount)
+                .Select( index => new CreateProjectTaskCommand(
+                    Constants.Project.ProjectTaskNameFromIndex(index),
+                    Constants.Project.ProjectTaskDescriptionFromIndex(index),
+                    ( DueDates is not null && DueDates.Count == tasksCount) ? DueDates[index] : DateTime.UtcNow.AddDays(7 + index)
+                )).ToList();
+        }
 }

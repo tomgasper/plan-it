@@ -1,5 +1,6 @@
 using PlanIt.Application.Users.Commands.UpdateUser;
 using PlanIt.Application.Users.Commands.UpdateUserAvatarCommand;
+using PlanIt.Application.Users.Queries.GetAllUsers;
 using PlanIt.Contracts.Users.Requests;
 using PlanIt.Contracts.Users.Responses;
 using PlanIt.Contracts.Workspace.Responses;
@@ -42,4 +43,9 @@ public static class UserMapping
             NewPassword: request.NewPassword
         )
     );
+
+    public static List<UserResponse> MapToResponse(this List<User> users)
+    {
+        return users.ConvertAll( user => user.MapToResponse());
+    }
 }

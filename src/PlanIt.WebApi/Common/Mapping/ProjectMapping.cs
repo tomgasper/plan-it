@@ -36,7 +36,9 @@ public static class ProjectMapping
             Description: request.Description,
             ProjectTasks: request.ProjectTasks.Select( pt => new CreateProjectTaskCommand(
                 Name: pt.Name,
-                Description: pt.Description
+                Description: pt.Description,
+                DueDate: pt.DueDate,
+                AssignedUsers: pt.AssignedUsers
             )).ToList()
         )
     );

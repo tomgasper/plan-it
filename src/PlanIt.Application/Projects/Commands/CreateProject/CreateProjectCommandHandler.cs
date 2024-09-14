@@ -5,6 +5,7 @@ using PlanIt.Domain.Project.ValueObjects;
 using PlanIt.Domain.ProjectAggregate;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Domain.TaskWorker.ValueObjects;
 using PlanIt.Domain.UserAggregate.ValueObjects;
 using PlanIt.Domain.WorkspaceAggregate.ValueObjects;
 
@@ -37,7 +38,9 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             projectTasks: request.ProjectTasks.ConvertAll(projectTask => ProjectTask.Create(
                 taskOwnerId: taskOwnerId,
                 name: projectTask.Name,
-                description: projectTask.Description
+                description: projectTask.Description,
+                dueDate: projectTask.DueDate,
+                assignedUsers: projectTask.AssignedUsers.ConvertAll( u => TaskWorkerId.FromString(u))
             ))
         );
 

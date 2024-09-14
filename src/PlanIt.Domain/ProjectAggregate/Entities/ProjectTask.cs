@@ -7,13 +7,21 @@ namespace PlanIt.Domain.ProjectAggregate.Entities;
 public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
 {
     private readonly List<TaskComment> _taskComments = new();
-    private readonly List<TaskWorkerId> _taskWorkerIds = new();
-    private ProjectTask(ProjectTaskId id, TaskOwnerId taskOwnerId, string name, string description) : base(id)
+    private readonly List<TaskWorkerId> _taskWorkerIds;
+    private ProjectTask(ProjectTaskId id,
+        TaskOwnerId taskOwnerId,
+        string name,
+        string description,
+        DateTime dueDate,
+        List<TaskWorkerId> assignedUsers
+        ) : base(id)
     {
         Id = id;
         TaskOwnerId = taskOwnerId;
         Name = name;
         Description = description;
+        DueDate = dueDate; 
+        _taskWorkerIds = assignedUsers.ToList();
     }
 
     #pragma warning disable CS8618
@@ -25,17 +33,19 @@ public sealed class ProjectTask : AggregateRoot<ProjectTaskId, Guid>
 
     public string Name { get; private set; }
     public string Description { get; private set; }
-
+    public DateTime DueDate {get; private set;}
     public TaskOwnerId TaskOwnerId { get; private set; }
     public IReadOnlyList<TaskComment> TaskComments => _taskComments;
     public IReadOnlyList<TaskWorkerId> TaskWorkerIds => _taskWorkerIds;
-    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description)
+    public static ProjectTask Create(TaskOwnerId taskOwnerId, string name, string description, DateTime dueDate, List<TaskWorkerId> assignedUsers)
     {
         return new(
             ProjectTaskId.CreateUnique(),
             taskOwnerId,
             name,
-            description
+            description,
+            dueDate,
+            assignedUsers
         );
     }
     public void ChangeName(string newName)

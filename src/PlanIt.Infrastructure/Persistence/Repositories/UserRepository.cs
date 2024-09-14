@@ -37,6 +37,11 @@ public class UserRepository : IUserRepository
         else return Result.Fail<User>(createUserResult.Errors.Select(e => new IdentityError(e.Description) ));
     }
 
+    public async Task<List<User>> GetAllAsync()
+    {
+        return await _dbContext.DomainUsers.ToListAsync();
+    }
+
     public async Task<User?> GetAsync(UserId userId)
     {
         // Identity and user objects are seperate

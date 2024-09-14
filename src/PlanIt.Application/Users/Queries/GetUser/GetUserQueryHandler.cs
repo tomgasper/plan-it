@@ -6,11 +6,11 @@ using PlanIt.Domain.UserAggregate.ValueObjects;
 
 namespace PlanIt.Application.Users.Queries.GetUser;
 
-public class GetUserQueryCommand : IRequestHandler<GetUserQuery, Result<User>>
+public class GetUserQueryHandler : IRequestHandler<GetUserQuery, Result<User>>
 {
     private readonly IUserRepository _userRepository;
 
-    public GetUserQueryCommand(IUserRepository userRepository)
+    public GetUserQueryHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }

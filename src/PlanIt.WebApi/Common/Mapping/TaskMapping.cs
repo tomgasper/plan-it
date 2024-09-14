@@ -14,7 +14,10 @@ public static class TaskMapping
             UserId: userId,
             ProjectId: projectId,
             Name: request.Name,
-            Description: request.Description)
+            Description: request.Description,
+            DueDate: request.DueDate,
+            AssignedUsers: request.AssignedUsers
+            )
     );
 
     public static UpdateTaskCommand MapToCommand(this UpdateTaskRequest request, string userId, string projectId, string taskId) => (

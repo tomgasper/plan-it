@@ -3,7 +3,8 @@ import { Button, Flex, Group, Loader, Text, Stack, Textarea, TextInput, MultiSel
 import { notifications } from '@mantine/notifications';
 import { useGetProjectQuery, useCreateProjectTaskMutation, useGetUsersQuery } from "../../services/planit-api";
 import classes from "./NewTaskModal.module.css";
-import { ProjectTask, User } from "../../types/Project";
+import { ProjectTask } from "../../types/Project";
+import { User } from "../../types/User";
 
 interface NewTaskModalProps {
   onClose: (task: ProjectTask) => void;
@@ -30,13 +31,14 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
     }
 
     try {
+      console.log(assignedUsers);
       const result = await createProjectTask({
         projectId,
         task: {
           name: taskName,
           description: taskDescription,
-          dueDate,
-          assignedUsers
+          dueDate: dueDate,
+          assignedUsers: assignedUsers
         }
       }).unwrap();
 
@@ -86,9 +88,11 @@ export function NewTaskModal({ onClose, closeWindow, projectId }: NewTaskModalPr
           <MultiSelect
             label="Assign Users"
             placeholder="Select users to assign"
-            data={users ? users.map((user: User) => ({ value: user.id, label: user.name })) : []}
+            data={users ? users.map((user: User) => ({ value: user.id, label: `${user.firstName} ${user.lastName}`})) : []}
             value={assignedUsers}
             onChange={setAssignedUsers}
+            searchable
+            nothingFoundMessage="Nothing found..."
             loading={usersLoading}
           />
         </Stack>
