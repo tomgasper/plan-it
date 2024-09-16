@@ -53,6 +53,9 @@ public class MoveToAnotherProjectCommandHandler : IRequestHandler<MoveToAnotherP
         {
             return Result.Fail(new NotFoundError($"The task with id:{taskId.Value} you're trying to move doesn't exist."));
         }
+        // We need to save current changes at this point because otherwise there will be issues with modified PK in DB
+        await _projectRepository.UpdateAsync();
+
         toProject.CopyTask(taskToMove);
 
         // Persist the changes

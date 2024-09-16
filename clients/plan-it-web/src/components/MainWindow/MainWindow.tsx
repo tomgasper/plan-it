@@ -75,6 +75,7 @@ export function MainWindow() {
                 {projects?.projects && projects.projects.length > 0 ? (
                 <MultipleSortableProjects
                     workspaceProjects={projectsToObjects}
+                    refetchWorkspaceProjects={refetch}
                     onAddNewProject={handleAddNewProject}
                 />
                 ) : (

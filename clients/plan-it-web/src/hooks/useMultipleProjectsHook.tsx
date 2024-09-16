@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { useState, useRef, useCallback } from 'react';
 import { useSensors, useSensor, MouseSensor, TouchSensor, UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -11,8 +12,9 @@ const PLACEHOLDER_ID = 'placeholder';
 
 export type Items = Record<UniqueIdentifier, Project>;
 
-export const useMultipleContainers = (items: Items, setItems: React.Dispatch<React.SetStateAction<Items>>) => {
+export const useMultipleContainers = ( onMoveTaskToNewContainer : Function, items: Items, setItems: React.Dispatch<React.SetStateAction<Items>>) => {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeContainerId, setActiveContainerId] = useState<string | null>(null);
   const [clonedItems, setClonedItems] = useState<Items | null>(null);
   const lastOverId = useRef<string | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
@@ -34,7 +36,9 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
   }, [items, findContainer]);
 
   const onDragStart = useCallback(({ active }) => {
+    console.log(active.id);
     setActiveId(active.id);
+    setActiveContainerId(findContainer(active.id));
     setClonedItems(items);
   }, [items]);
 
@@ -135,6 +139,16 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
       const activeIndex = getIndex(active.id);
       const overIndex = getIndex(overId);
 
+      if (overContainer != activeContainerId && !(active.id in items)) {
+        console.log("Moved a task to a new container");
+
+        const prevContainerId = activeContainerId;
+        const currContainerId = overContainer;
+        const itemId = activeId;
+
+        onMoveTaskToNewContainer(prevContainerId, itemId, currContainerId);
+      }
+
       if (activeIndex !== overIndex) {
         setItems((prevItems) => ({
           ...prevItems,
@@ -143,8 +157,7 @@ export const useMultipleContainers = (items: Items, setItems: React.Dispatch<Rea
             projectTasks: arrayMove(prevItems[overContainer].projectTasks, activeIndex, overIndex)
           },
         }));
-      }
-    }
+      }}
 
     setActiveId(null);
   }, [items, findContainer, getIndex, setItems]);
