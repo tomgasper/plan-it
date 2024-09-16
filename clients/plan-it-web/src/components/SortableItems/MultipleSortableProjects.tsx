@@ -13,7 +13,7 @@ import classes from './MultipleSortableProjects.module.css';
 
 import { IconCirclePlus } from '@tabler/icons-react';
 import { Project, ProjectTask } from '../../types/Project';
-import { useCreateProjectTaskMutation, useDeleteProjectMutation } from '../../services/planit-api';
+import { useCreateProjectTaskMutation, useDeleteProjectMutation, useMoveTaskToAnotherProjectMutation } from '../../services/planit-api';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { ExtendedModal } from '../Common/ExtendedModal';
@@ -25,6 +25,7 @@ export interface MultipleSortableProjectsProps {
   adjustScale?: boolean;
   cancelDrop?: CancelDrop;
   onAddNewProject: any;
+  refetchWorkspaceProjects: () => void;
   columns?: number;
   containerStyle?: React.CSSProperties;
   handle?: boolean;
@@ -38,6 +39,7 @@ export function MultipleSortableProjects({
   adjustScale = false,
   cancelDrop,
   onAddNewProject,
+  refetchWorkspaceProjects,
   columns,
   handle = false,
   workspaceProjects,
@@ -50,12 +52,43 @@ export function MultipleSortableProjects({
   const [projects, setProjects] = useState(workspaceProjects);
   const [deleteProject] = useDeleteProjectMutation();
   const [createProjectTask] = useCreateProjectTaskMutation();
+  const [ moveTaskToAnotherProject ] = useMoveTaskToAnotherProjectMutation();
   const [modalOpened, { open, close }] = useDisclosure(false);
   const [projectIdToAddNewTask, setProjectIdToAddNewTask] = useState<string | null>(null);
 
   useEffect(() => {
+    setProjects(workspaceProjects);
+  },[workspaceProjects]);
+
+  useEffect(() => {
     setProjects(structuredClone(workspaceProjects));
   }, [JSON.stringify(workspaceProjects)])
+
+  const handleMoveTaskToNewContainer = async (oldProjectId : string, taskId: string, newProjectId: string) => {
+    const result = await moveTaskToAnotherProject({ projectId: oldProjectId, taskId, newProjectId });
+
+    if (result.error)
+      {
+        console.error('Error moving task to another project', result.error);
+    
+        notifications.show({
+          title: 'Error moving task to antoher project',
+          message: 'Could not move task to another project, please try again!',
+          color: 'red'
+        });
+
+        refetchWorkspaceProjects();
+    
+        return;
+      }
+
+    notifications.show({
+      title: 'Success',
+      message: 'Task moved successfully',
+      color: 'green'
+  });}
+
+  const containers = useMemo(() => Object.keys(projects), [projects]);
 
   const {
     sensors,
@@ -67,19 +100,17 @@ export function MultipleSortableProjects({
     getIndex,
     renderSortableItemDragOverlay,
     renderContainerDragOverlay,
-  } = useMultipleContainers(projects, setProjects);
+  } = useMultipleContainers(handleMoveTaskToNewContainer, projects, setProjects);
   
-  const containers = useMemo(() => Object.keys(projects), [projects]);
-
   const handleAddTask = (projectId: string, addedTask: ProjectTask) => {
     setProjects((prevProjects: Projects) => {
       if (!prevProjects[projectId]) {
-        console.error(`Projekt o ID ${projectId} nie istnieje`);
+        console.error(`Project with id: ${projectId} doesn't exist`);
         return prevProjects;
       }
   
       if (prevProjects[projectId].projectTasks.some(task => task.id === addedTask.id)) {
-        console.log(`Zadanie o ID ${addedTask.id} już istnieje w projekcie ${projectId}`);
+        console.log(`Task with id: ${addedTask.id} alread exists in the project with id: ${projectId}`);
         return prevProjects;
       }
   

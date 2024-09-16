@@ -94,6 +94,12 @@ export const projectApi = createApi({
           url: `projects/${projectId}/tasks/${taskId}`,
           method: 'DELETE',
     })}),
+    moveTaskToAnotherProject: builder.mutation<void, { projectId: string, taskId: string, newProjectId: string }>({
+      query: ({ projectId, taskId, newProjectId }) => ({
+        url: `projects/${projectId}/tasks/${taskId}/move/${newProjectId}`,
+        method: 'PUT'
+      }),
+    }),
     // User
     getUser: builder.query<User, string>({
       query: (userId) => `users/${userId}`,
@@ -134,6 +140,7 @@ export const {
   useCreateProjectTaskMutation,
   useDeleteProjectTaskMutation,
   useUpdateProjectTaskMutation,
+  useMoveTaskToAnotherProjectMutation,
   useGetProjectTasksQuery,
   useGetUserQuery,
   useGetUsersQuery,
