@@ -115,6 +115,25 @@ public sealed class Project : AggregateRoot<ProjectId, Guid>
         return newTask;
     }
 
+    public ProjectTask? MoveOutTask(ProjectTaskId taskId)
+    {
+        ProjectTask? task = ProjectTasks.FirstOrDefault(t => t.Id == taskId);
+
+        // Abort operation if task not found
+        if (task is null)
+        {
+            return null;
+        }
+
+        _projectTasks.Remove(task);
+        return task;
+    }
+
+    public void CopyTask(ProjectTask projectTask)
+    {
+        _projectTasks.Add(projectTask);
+    }
+
     public void DeleteTask(ProjectTaskId taskId, string userId)
     {
         ProjectTask? task = ProjectTasks.FirstOrDefault(t => t.Id == taskId);

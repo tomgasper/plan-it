@@ -17,7 +17,7 @@ public static class TaskMapping
             Name: request.Name,
             Description: request.Description,
             DueDate: request.DueDate,
-            AssignedUsers: request.AssignedUsers
+            AssignedUsers: request.AssignedUsers ?? []
             )
     );
 
