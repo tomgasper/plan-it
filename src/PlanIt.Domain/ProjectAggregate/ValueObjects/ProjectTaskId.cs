@@ -22,6 +22,11 @@ namespace PlanIt.Domain.ProjectAggregate.ValueObjects
             return new(Guid.NewGuid());
         }
 
+        public static ProjectTaskId FromString(string id)
+        {
+            return new ProjectTaskId(new Guid(id));
+        }
+
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;

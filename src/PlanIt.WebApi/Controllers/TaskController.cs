@@ -9,6 +9,8 @@ using PlanIt.WebApi.Common.Mapping;
 using FluentResults;
 using PlanIt.Domain.ProjectAggregate.Entities;
 using PlanIt.Application.Tasks.Commands.DeleteTask;
+using PlanIt.Domain.ProjectAggregate.ValueObjects;
+using PlanIt.Application.Tasks.Commands.MoveToAnotherProject;
 
 namespace PlanIt.WebApi.Controllers;
 
@@ -58,6 +60,21 @@ public class TaskController : ApiController
         }
 
         return Ok(projectTasksResult.Value.MapToResponse());
+    }
+
+    [HttpPut("{taskId}/move/{anotherProjectId}")]
+    public async Task<IActionResult> MoveToAnotherProject(string projectId, string taskId, string anotherProjectId)
+    {
+        var command = new MoveToAnotherProjectCommand(projectId, taskId, anotherProjectId);
+
+        var moveToAnotherProjectResult = await _mediator.Send(command);
+
+        if (moveToAnotherProjectResult.IsFailed)
+        {
+            return Problem(moveToAnotherProjectResult.Errors);
+        }
+
+        return Ok(moveToAnotherProjectResult.Value.MapToResponse());
     }
 
     [HttpPut("{taskId}")]
