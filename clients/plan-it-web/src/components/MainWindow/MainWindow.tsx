@@ -1,4 +1,4 @@
-import { Flex, Group, Loader, Title } from "@mantine/core";
+import { Flex, Group, Title } from "@mantine/core";
 import { MultipleSortableProjects } from '../SortableItems/MultipleSortableProjects';
 import classes from './MainWindow.module.css';
 import { useCreateProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery } from "../../services/planit-api";
@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { WorkspaceMenu } from "./WorkspaceMenu";
 import { useAppSelector } from "../../hooks/reduxHooks";
+import { AddNewProjectButton } from "./AddNewProjectButton";
 
 export function MainWindow() {
     const navigate = useNavigate();
@@ -18,14 +19,11 @@ export function MainWindow() {
     });
     const [ createProject ] = useCreateProjectMutation();
 
-    console.log(projects);
-
     useEffect(() => {
         if (workspaceId) {
           refetchWorkspace().catch(console.error);
           refetch().catch(console.error);
         }
-
         if (!workspaceId && workspaces && workspaces.length > 0) {
           navigate(`/workspaces/${workspaces[0].id}`);
         }
@@ -48,7 +46,7 @@ export function MainWindow() {
         const newProject = await createProject({
             workspaceId: workspaceId,
             name: "New Project",
-            description: "New Project Description",
+            description: "New Project Descrtipion",
             projectTasks: []
         });
     
@@ -70,7 +68,6 @@ export function MainWindow() {
                   <Title>{workspace!.name} </Title>
                     <WorkspaceMenu />
                   </Group>
-                 
                   </Group>
                 {projects?.projects && projects.projects.length > 0 ? (
                 <MultipleSortableProjects
@@ -80,8 +77,10 @@ export function MainWindow() {
                 />
                 ) : (
                     <>
+                    <Group>
                     <div>No projects available</div>
-                    <button onClick={ handleAddNewProject }>Add new project</button>
+                      <AddNewProjectButton onClick={handleAddNewProject} />
+                      </Group>
                     </>
                 )}
             </>

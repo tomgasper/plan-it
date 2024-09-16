@@ -18,6 +18,7 @@ import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { ExtendedModal } from '../Common/ExtendedModal';
 import { NewTaskModal } from '../Task/NewTaskModal';
+import { AddNewProjectButton } from '../MainWindow/AddNewProjectButton';
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -261,12 +262,7 @@ export function MultipleSortableProjects({
           ))}
         </SortableContext>
         <Flex p={15} align='center' justify='center'>
-        <Button justify='center'
-            id={PLACEHOLDER_ID}
-            onClick={handleAddColumn}
-          >
-            + Add column
-          </Button>
+        <AddNewProjectButton onClick={ handleAddColumn } />
           </Flex>
       </Flex>
       {createPortal(

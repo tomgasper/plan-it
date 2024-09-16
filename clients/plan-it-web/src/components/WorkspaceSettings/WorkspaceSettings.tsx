@@ -15,24 +15,20 @@ export function WorkspaceSettings()
     // Get the workspace ID from the URL
     const { workspaceId } = useParams<{ workspaceId: string }>();
 
-    if (!workspaceId)
-    {
-        console.error('No workspace ID found');
+     // Get details about the workspace and workspace projects
+    const { data: workspace, error : workspaceError , isLoading : workspaceLoading } = useGetWorkspaceQuery(workspaceId ?? '');
+    const { data : projects, error : projectsError , isLoading : projectsLoading, refetch } = useGetProjectsForWorkspaceQuery(workspaceId ?? '');
 
+    if (workspaceError || projectsError)
+    {
+        console.error('Error loading workspace settings:', workspaceError, projectsError);
         notifications.show({
-            title: 'Erorr accessing workspace',
-            message: 'Workspace was not found, please try again!',
+            title: 'Error loading workspace settings',
+            message: 'Could not load workspace settings, please try again!',
             color: 'red'
           })
-
         navigate('/');
-
-        return;
     }
-
-     // Get details about the workspace and workspace projects
-    const { data: workspace, error : workspaceError , isLoading : workspaceLoading } = useGetWorkspaceQuery(workspaceId);
-    const { data : projects, error : projectsError , isLoading : projectsLoading, refetch } = useGetProjectsForWorkspaceQuery(workspaceId);
 
     // Local state for the workspace settings
     const [ workspaceName, setWorkspaceName ] = useState(workspace?.name);
