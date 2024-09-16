@@ -1,7 +1,7 @@
 import {  Button, Flex, Paper, Stack, Text, TextInput, Title } from "@mantine/core";
 import classes from "./WorkspaceSettings.module.css"
 import {  useNavigate, useParams } from "react-router-dom";
-import { useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery, useUpdateWorkspaceMutation } from "../../services/planit-api";
+import { useDeleteProjectMutation, useGetProjectsForWorkspaceQuery, useGetWorkspaceQuery, useUpdateWorkspaceMutation } from "../../services/planit-api";
 import { WorkspaceProjectsTable } from "./WorkspaceProjectsTable";
 import { useState } from "react";
 import { updateWorkspaceLocal } from "../../redux/workspacesSlice";
@@ -18,6 +18,7 @@ export function WorkspaceSettings()
      // Get details about the workspace and workspace projects
     const { data: workspace, error : workspaceError , isLoading : workspaceLoading } = useGetWorkspaceQuery(workspaceId ?? '');
     const { data : projects, error : projectsError , isLoading : projectsLoading, refetch } = useGetProjectsForWorkspaceQuery(workspaceId ?? '');
+    const [ deleteProject ] = useDeleteProjectMutation();
 
     if (workspaceError || projectsError)
     {
@@ -60,6 +61,31 @@ export function WorkspaceSettings()
         dispatch(updateWorkspaceLocal(result.data));
     }
 
+    const handleDeleteProject = async (projectId: string) => {
+        if (!window.confirm('Are you sure you want to delete this project?')) return;
+
+        const result = await deleteProject(projectId);
+
+        if (result.error)
+        {
+            console.error('Error deleting project:', result.error);
+            notifications.show({
+                title: 'Error deleting project',
+                message: 'Could not delete project, please try again!',
+                color: 'red'
+              })
+            return;
+        }
+
+        notifications.show({
+            title: 'Project deleted',
+            message: 'Project has been deleted successfully!',
+            color: 'green'
+        });
+
+        refetch().catch(console.error);
+    }
+
     return (
         <Flex className={classes.container} justify="center" align="center">
             {(workspaceLoading || projectsLoading) && <Text>Loading...</Text>}
@@ -71,7 +97,7 @@ export function WorkspaceSettings()
                         <TextInput label="Description" placeholder={workspace?.description} required value={workspaceDescription} onChange={ e => setWorkspaceDescription(e.currentTarget.value) }/>
                     </Stack>
                 <Title mt={20} order={6}>Projects</Title>
-                <WorkspaceProjectsTable projects={projects ? projects?.projects : []} />
+                <WorkspaceProjectsTable onDeleteProject={handleDeleteProject} projects={projects ? projects?.projects : []} />
                 <Button variant="light" color="blue" onClick={ handleSaveWorkspace } loading={workspaceUpdating }>Save</Button>
                 </Stack>
             </Paper>

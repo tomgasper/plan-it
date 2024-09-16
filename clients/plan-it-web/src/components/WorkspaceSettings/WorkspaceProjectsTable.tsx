@@ -1,54 +1,16 @@
-import { Table, Progress, Anchor, Text, Group, ActionIcon, Avatar } from '@mantine/core';
+import { Table, Progress, Anchor, Text, ActionIcon } from '@mantine/core';
 import classes from './WorkspaceProjectsTable.module.css';
 import { IconTrash } from '@tabler/icons-react';
-import { Project } from '../../types/Project';
-
-const data = [
-  {
-    title: 'Foundation',
-    author: 'Isaac Asimov',
-    year: 1951,
-    reviews: { positive: 2223, negative: 259 },
-  },
-  {
-    title: 'Frankenstein',
-    author: 'Mary Shelley',
-    year: 1818,
-    reviews: { positive: 5677, negative: 1265 },
-  },
-  {
-    title: 'Solaris',
-    author: 'Stanislaw Lem',
-    year: 1961,
-    reviews: { positive: 3487, negative: 1845 },
-  },
-  {
-    title: 'Dune',
-    author: 'Frank Herbert',
-    year: 1965,
-    reviews: { positive: 8576, negative: 663 },
-  },
-  {
-    title: 'The Left Hand of Darkness',
-    author: 'Ursula K. Le Guin',
-    year: 1969,
-    reviews: { positive: 6631, negative: 993 },
-  },
-  {
-    title: 'A Scanner Darkly',
-    author: 'Philip K Dick',
-    year: 1977,
-    reviews: { positive: 8124, negative: 1847 },
-  },
-];
+import { ProjectWithDetails } from '../../types/Project';
+import { ProjectAssignedUsers } from '../Project/ProjectAssignedUsers';
 
 interface WorkspaceProjectsTableProps {
-    projects: Project[];
+    onDeleteProject: (projectId : string) => Promise<void>;
+    projects: ProjectWithDetails[];
 }
 
-export function WorkspaceProjectsTable({projects} : WorkspaceProjectsTableProps ) {
+export function WorkspaceProjectsTable({projects, onDeleteProject} : WorkspaceProjectsTableProps ) {
   const rows = projects.map((row) => {
-
     return (
       <Table.Tr key={row.id}>
         <Table.Td>
@@ -58,31 +20,20 @@ export function WorkspaceProjectsTable({projects} : WorkspaceProjectsTableProps 
         </Table.Td>
         <Table.Td>{row.description}</Table.Td>
         <Table.Td>
-          <Anchor component="button" fz="sm">
-          <Avatar
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-          radius="xl"
-        />
-          </Anchor>
+          { <ProjectAssignedUsers project={row} /> ?? <Text>-</Text> }
         </Table.Td>
         <Table.Td>
           <Progress.Root>
             <Progress.Section
               className={classes.progressSection}
-              value={10}
+              value={0}
               color="teal"
-            />
-
-            <Progress.Section
-              className={classes.progressSection}
-              value={90}
-              color="red"
             />
           </Progress.Root>
         </Table.Td>
         <Table.Td>
             <ActionIcon variant="transparent">
-                <IconTrash />
+                <IconTrash onClick={ (_e) => onDeleteProject(row.id) } />
             </ActionIcon>
         </Table.Td>
       </Table.Tr>
@@ -97,7 +48,7 @@ export function WorkspaceProjectsTable({projects} : WorkspaceProjectsTableProps 
             <Table.Th>Title</Table.Th>
             <Table.Th>Description</Table.Th>
             <Table.Th>Assigned users</Table.Th>
-            <Table.Th>Reviews distribution</Table.Th>
+            <Table.Th>Completed tasks</Table.Th>
             <Table.Th>Delete</Table.Th>
           </Table.Tr>
         </Table.Thead>
