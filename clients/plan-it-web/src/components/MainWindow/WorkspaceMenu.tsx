@@ -1,7 +1,7 @@
 import { ActionIcon, Group, Menu } from "@mantine/core";
-import { IconSettings, IconTrash } from "@tabler/icons-react";
+import { IconAdjustments, IconSettings, IconTrash } from "@tabler/icons-react";
 import { useAppDispatch } from "../../hooks/reduxHooks";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { useDeleteWorkspaceMutation } from "../../services/planit-api";
 import { deleteWorkspaceLocal } from "../../redux/workspacesSlice";
 
@@ -43,16 +43,12 @@ export function WorkspaceMenu()
 
             <Menu.Dropdown>
                 <Menu.Item onClick={handleWorkspaceSettings}>
-                    Workspace Settings
+                    <Group><IconAdjustments /> Workspace Settings</Group>
                 </Menu.Item>
-                <Menu.Item>
-                    Option 2
-                </Menu.Item>
-                <Menu.Item leftSection={
-                    <IconTrash />}
-                    onClick={handleDeleteWorkspace}
-                >
-                        Delete Workspace
+                <Menu.Item onClick={handleDeleteWorkspace}>
+                    <Group>
+                        <IconTrash />
+                        Delete Workspace</Group>
                 </Menu.Item>
             </Menu.Dropdown>
 

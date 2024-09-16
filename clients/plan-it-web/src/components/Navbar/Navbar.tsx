@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import {
-    TextInput,
-    Code,
     UnstyledButton,
     Badge,
     Text,
@@ -12,7 +10,7 @@ import {
     Tooltip,
     Loader,
   } from '@mantine/core';
-  import { IconBulb, IconUser, IconCheckbox, IconSearch, IconPlus, IconClipboard, IconLogout} from '@tabler/icons-react';
+  import { IconPlus, IconClipboard, IconLogout} from '@tabler/icons-react';
   import { UserButton } from '../UserButton/UserButton';
   import classes from './Navbar.module.css';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -20,12 +18,7 @@ import {  useCreateWorkspaceMutation } from '../../services/planit-api';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { addWorkspace } from '../../redux/workspacesSlice';
 import { logOut } from '../../redux/authSlice';
-  
-  
-  
-  
 
-  
   export function Navbar() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -49,8 +42,8 @@ import { logOut } from '../../redux/authSlice';
     }
 
     const links: { icon: any; label: string; notifications?: number, onClick?: () => void }[] = [
-      { icon: IconBulb, label: 'Activity', notifications: 3 },
-      { icon: IconCheckbox, label: 'Tasks', notifications: 4 },
+      // { icon: IconBulb, label: 'Activity'}, To be implemented
+      // { icon: IconCheckbox, label: 'Assigned Tasks' },
       { icon: IconLogout, label: 'Log out', onClick: () => dispatch(logOut()) },
     ];
 
@@ -89,18 +82,7 @@ import { logOut } from '../../redux/authSlice';
       <nav className={classes.navbar}>
         <div className={classes.section}>
           <UserButton onClick={handleUserButtonClick}/>
-        </div>
-  
-        <TextInput
-          placeholder="Search"
-          size="xs"
-          leftSection={<IconSearch style={{ width: String(12), height: String(12) }} stroke={1.5} />}
-          rightSectionWidth={70}
-          rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
-          styles={{ section: { pointerEvents: 'none' } }}
-          mb="sm"
-        />
-  
+        </div>  
         <div className={classes.section}>
           <div className={classes.mainLinks}>{mainLinks}</div>
         </div>
