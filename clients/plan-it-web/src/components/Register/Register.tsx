@@ -2,7 +2,6 @@ import {
     TextInput,
     PasswordInput,
     Checkbox,
-    Anchor,
     Paper,
     Title,
     Text,
@@ -17,7 +16,7 @@ import {
   import { useAppDispatch } from '../../hooks/reduxHooks';
   import { AuthResponse } from '../../types/Auth';
  import { notifications } from '@mantine/notifications';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
   
   export function Register() {
     const [email, setEmail] = useState<string>('');
@@ -87,9 +86,9 @@ import { useNavigate } from 'react-router-dom';
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           Already have an account?{' '}
-          <Anchor size="sm" component="button">
+          <Link to="/login">
             Login
-          </Anchor>
+          </Link>
         </Text>
   
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">

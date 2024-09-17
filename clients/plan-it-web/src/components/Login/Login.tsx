@@ -17,7 +17,7 @@ import {
   import { setCredentials } from '../../redux/authSlice';
   import { useAppDispatch } from '../../hooks/reduxHooks';
   import { AuthResponse} from '../../types/Auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
   
   export function Login() {
@@ -76,9 +76,9 @@ import { notifications } from '@mantine/notifications';
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           Do not have an account yet?{' '}
-          <Anchor size="sm" component="button">
+          <Link to="/register">
             Create account
-          </Anchor>
+          </Link>
         </Text>
   
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
@@ -86,9 +86,6 @@ import { notifications } from '@mantine/notifications';
           <PasswordInput label="Password" placeholder="Your password" onChange={(e) => setPassword(e.target.value)} required mt="md" />
           <Group justify="space-between" mt="lg">
             <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
-              Forgot password?
-            </Anchor>
           </Group>
           <Button fullWidth mt="xl" onClick={ handleSubmit } loading={isLoading}>
             Sign in
