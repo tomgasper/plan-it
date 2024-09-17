@@ -40,7 +40,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
                 name: projectTask.Name,
                 description: projectTask.Description,
                 dueDate: projectTask.DueDate,
-                assignedUsers: projectTask.AssignedUsers.ConvertAll( u => TaskWorkerId.FromString(u))
+                assignedUsers: projectTask.AssignedUsers is not null ? projectTask.AssignedUsers.ConvertAll( u => TaskWorkerId.FromString(u)) : []
             ))
         );
 
