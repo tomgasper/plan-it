@@ -1,5 +1,0 @@
-@host=https://localhost:5234
-@projectOwnerId=94cacc8a-a08e-4b79-a728-58dd2884364a
-@projectId=d4effab5-cad5-4eb4-93a1-aff94b62db5c
-
-GET {{host}}/projectOwners/{{projectOwnerId}}/project/{{projectId}}/tasks

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { setCredentials, logOut, setAuthState } from '../redux/authSlice';
 import { JwtInformation } from '../types/Auth';
 import { jwtDecode } from 'jwt-decode';

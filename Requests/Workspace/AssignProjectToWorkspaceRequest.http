@@ -1,9 +1,0 @@
-@host=https://localhost:5234
-
-POST {{host}}/api/workspaces/e02023fa-6b10-46b8-9315-f53a081bf46d/assignProject
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMGQ5MTMwMy1iNWM5LTQ1MzAtOTkxNC1kMjdjN2EwNTQ0MTUiLCJnaXZlbl9uYW1lIjoiSmFjdcWbIiwiZmFtaWx5X25hbWUiOiJCb3NhayIsImp0aSI6ImE3YTRhMmMwLTI5ZjktNGQyYi05ODNkLTY4OGFiNDJkMmVjMyIsImV4cCI6MTcyNTQ1Nzc5MiwiaXNzIjoiUGxhbkl0IiwiYXVkIjoiUGxhbkl0In0.RjHbsxb4brByveqjz9AVJ-au7cOotcTEeLToOFx5bcE
-
-{
-    "ProjectId": "a2a52276-dc54-441d4-b654-299f8fb04f8d"
-}
