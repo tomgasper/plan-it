@@ -11,7 +11,10 @@ The frontend utilizes React 18 with Redux RTK for efficient state management, pr
 
 ## Demo
 
-https://github.com/tomgasper/plan-it/blob/main/example/demo.mp4
+
+
+https://github.com/user-attachments/assets/4db370ee-171c-4509-a81d-7727a1c94668
+
 
 ## Features
 - [x] Create, read, update, and delete workspaces/projects/tasks
