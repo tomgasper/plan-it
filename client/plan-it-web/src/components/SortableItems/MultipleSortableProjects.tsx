@@ -177,27 +177,36 @@ export function MultipleSortableProjects({
 
   const onDeleteTask = (projectId, taskId) => {
     setProjects((prevProjects) => {
-      const newProjects = {...prevProjects};
-      newProjects[projectId].projectTasks = newProjects[projectId].projectTasks.filter((task) => task.id !== taskId);
-
-      newProjects[projectId] = {...newProjects[projectId]};
-
+      const newProjects = { ...prevProjects };
+      const updatedProjectTasks = newProjects[projectId].projectTasks.filter((task) => task.id !== taskId);
+      
+      newProjects[projectId] = {
+        ...newProjects[projectId],
+        projectTasks: updatedProjectTasks,
+      };
+  
       return newProjects;
     });
-  }
+  };
 
   const onUpdateTask = (projectId, taskId, updatedTask) => {
     setProjects((prevProjects) => {
       const newProjects = {...prevProjects};
-      newProjects[projectId].projectTasks = newProjects[projectId].projectTasks.map((task) => {
+      const updatedProjectTasks = newProjects[projectId].projectTasks.map((task) => {
         if (task.id === taskId) {
           return updatedTask;
         }
         return task;
       });
-
+      
+      newProjects[projectId] = {
+        ...newProjects[projectId],
+        projectTasks: updatedProjectTasks,
+      };
+  
       return newProjects;
-    })};
+    });
+  };
 
   return (
     <DndContext
@@ -210,7 +219,7 @@ export function MultipleSortableProjects({
       modifiers={modifiers}
     >
       <Flex className={classes.projectsContainer}>
-        <ExtendedModal title="New project" opened={modalOpened} onClose={close}>
+        <ExtendedModal title="New task" opened={modalOpened} onClose={close}>
             <NewTaskModal closeWindow={close} projectId={projectIdToAddNewTask} onClose={ (task: ProjectTask) => {
                       handleAddTask(projectIdToAddNewTask, task)
                       setProjectIdToAddNewTask(null); }} />

@@ -2,13 +2,14 @@ import {  Button, Flex, Group, Loader, Stack, TextInput,Text, Avatar } from "@ma
 import classes from "./TaskSettings.module.css"
 import { useEffect, useState } from "react";
 import { notifications } from '@mantine/notifications';
-import { useGetProjectQuery, useUpdateProjectTaskMutation, } from "../../services/planit-api";
+import { useGetProjectQuery, useGetProjectWithDetailsQuery, useUpdateProjectTaskMutation, } from "../../services/planit-api";
 import { Task } from "../../types/Task";
 import { ProjectTask } from "../../types/Project";
 import { User } from "../../types/User";
 
 interface TaskSettingsProps {
     onUpdate: (projectId: string, taskId: string, updatedTask: Task) => void;
+    closeModal: () => void;
     projectId: string;
     taskId: string;
     assignedUsers: User[];
@@ -16,13 +17,14 @@ interface TaskSettingsProps {
 
 export function TaskSettings({
     onUpdate,
+    closeModal,
     projectId,
     taskId,
     assignedUsers
 } : TaskSettingsProps)
 {
      // Get details about the Task and Task Tasks
-    const { data: project, error : taskError , isLoading : projectLoading } = useGetProjectQuery(projectId);
+    const { data: project, error : taskError , isLoading : projectLoading } = useGetProjectWithDetailsQuery(projectId);
 
     // Local state for the Task settings
     const [ taskName, setTaskName ] = useState("");
@@ -51,7 +53,7 @@ export function TaskSettings({
         // Save the Task settings
         const updatedTask = {
             name: taskName,
-            description: taskDescription
+            description: taskDescription,
         };
 
         const result = await updateProjectTask({projectId, taskId, updatedTask});
@@ -68,12 +70,14 @@ export function TaskSettings({
         }
 
         onUpdate(projectId, taskId, result.data);
+        closeModal();
 
         notifications.show({
             title: 'Success',
             message: 'Task settings saved successfuly',
             color: 'green'
           });
+        
     }
 
     return (
@@ -87,9 +91,9 @@ export function TaskSettings({
                     <Stack>
                         <Text>Assigned users:</Text>
                         <Group gap={5}>
-                        {assignedUsers.map((user : User) => (
+                        {assignedUsers ? assignedUsers.map((user : User) => (
                             <Avatar alt={`${user.firstName} ${user.lastName}`} key={user.id} src={user.avatarUrl} radius="xl" />
-                        ))}
+                        )) : null}
                         </Group>
                     </Stack>
                     <Group justify="flex-end">

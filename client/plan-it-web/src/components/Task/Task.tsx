@@ -50,7 +50,7 @@ export function Task( {id, projectId, taskContent, onDelete, onUpdate} : Sortabl
   return (
     <>
     <ExtendedModal opened={modalOpened} onClose={close} title="Task Settings" >
-      <TaskSettings onUpdate={onUpdate} projectId={projectId} taskId={id} assignedUsers={taskContent.taskWorkers} />
+      <TaskSettings closeModal={close} onUpdate={onUpdate} projectId={projectId} taskId={id} assignedUsers={taskContent.taskWorkers} />
      </ExtendedModal>
     <Card pt={0} pl={10} pb={15} className={classes.container} >
       <Stack gap={3}>

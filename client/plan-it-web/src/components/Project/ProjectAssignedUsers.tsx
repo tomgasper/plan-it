@@ -10,7 +10,7 @@ export function ProjectAssignedUsers({ project } : { project : ProjectWithDetail
         const userIds = new Set<string>(); 
     
         for (const task of project.projectTasks) {
-            if (task.taskWorkers === null) continue;
+            if (task.taskWorkers === null || task.taskWorkers == undefined) continue;
             for (const user of task.taskWorkers) {
                 if (userIds.size >= maxNumOfUsers) break;
                 if (userIds.has(user.id)) continue;
@@ -27,7 +27,7 @@ export function ProjectAssignedUsers({ project } : { project : ProjectWithDetail
 
         const users = new Set<string>();
         for (const task of project.projectTasks) {
-            if (task.taskWorkers === null) continue;
+            if (task.taskWorkers === null || task.taskWorkers == undefined) continue;
             for (const user of task.taskWorkers) {
                 users.add(user.id);
             }
