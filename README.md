@@ -9,6 +9,10 @@ The frontend utilizes React 18 with Redux RTK for efficient state management, pr
 * RESTful API: Serves as the main interface for client interactions, providing clear endpoints for workspace, project, and task management operations
 * JWT Authentication: Implements secure user authentication and authorization
 
+## Demo
+
+https://github.com/tomgasper/plan-it/blob/main/example/demo.mp4
+
 ## Features
 - [x] Create, read, update, and delete workspaces/projects/tasks
 - [x] Move tasks from one project to another via drag and drop
